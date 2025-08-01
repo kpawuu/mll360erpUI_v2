@@ -34,11 +34,11 @@ export async function handleApiError(error: any, authStore: any, router: any) {
   if (error?.status === 401 || error?.message?.includes('Authentication') || error?.message?.includes('401')) {
     console.warn('Authentication error detected, logging out user')
     
-    await authStore.logout()
+    // await authStore.logout()
     
     // Redirect to login page if not already there
     if (router.currentRoute.value.path !== '/auth/login') {
-      router.push('/auth/login')
+      // router.push('/auth/login')
     }
     
     throw new Error('Authentication failed. Please log in again.')

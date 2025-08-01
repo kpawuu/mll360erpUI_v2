@@ -8,7 +8,7 @@ export const entityController = {
         try {
             // Check if user is authenticated
             const authStore = useAuthStore();
-            const isValid = await authStore.isAccessTokenValid();
+            const isValid = await (authStore as any).isAccessTokenValid();
             if (!isValid) {
                 throw new Error('Authentication required. Please login again.');
             }
@@ -25,7 +25,7 @@ export const entityController = {
         try {
             // Check if user is authenticated
             const authStore = useAuthStore();
-            const isValid = await authStore.isAccessTokenValid();
+            const isValid = await (authStore as any).isAccessTokenValid();
             if (!isValid) {
                 throw new Error('Authentication required. Please login again.');
             }
