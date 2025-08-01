@@ -1,6 +1,6 @@
 import feathersClient from "../feathers.ts";
 import type { AuthManagement } from "../models/authManagement.model.ts";
-import type {Users} from "../models/users.model.ts";
+import type {User} from "../models/user.model";
 
 export const authController = {
     //login
@@ -13,7 +13,7 @@ export const authController = {
     },
 
     //register
-    async register(user: Users) {
+    async register(user: User) {
         return await feathersClient.service('users').create(user)
     },
 

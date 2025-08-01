@@ -55,7 +55,7 @@ body, * {
   font-optical-sizing: auto;
   /*font-weight: 600;*/
   font-style: normal;
-  font-size: 12px;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -66,4 +66,27 @@ h1,h2,h3,h4,h5,h6 {
   font-weight: bold !important;
   font-style: normal !important;
   font-size: 18px !important;
+}
+
+/* Custom styling for date inputs */
+input[type="date"] {
+  position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+/* Dark mode support for date inputs */
+.dark input[type="date"] {
+  color-scheme: dark;
 }

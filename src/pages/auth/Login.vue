@@ -199,8 +199,24 @@ const handleLogin = async () => {
         localStorage.removeItem('rememberedEmail');
       }
       
-      // Only redirect to dashboard after successful login
-      router.push('/crm');
+      // Check user type and redirect accordingly
+      console.log('User data after login:', authStore.user)
+      console.log('User type ID:', authStore.user?.usertype_id)
+      console.log('Full user object:', JSON.stringify(authStore.user, null, 2))
+      
+      // Check for different possible usertype field names
+      const usertypeId = authStore.user?.usertype_id || authStore.user?.usertype || authStore.user?.type_id || authStore.user?.type
+      console.log('Resolved usertype ID:', usertypeId)
+      
+      if (authStore.user && usertypeId === 1) {
+        // User type 1 (admin) - redirect to settings dashboard
+        console.log('Admin user detected, redirecting to settings dashboard')
+        router.push('/settings/dashboard');
+      } else {
+        // Other user types - redirect to CRM dashboard
+        console.log('Regular user detected, redirecting to CRM dashboard')
+        router.push('/crm/dashboard');
+      }
     }
     if (authStore.error) {
       console.log('Login error:', authStore.error)

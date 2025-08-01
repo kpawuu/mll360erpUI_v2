@@ -23,6 +23,7 @@
             
             <CRM/>
             <CSandOPS/>
+            <Settings/>
             <!-- {{ authStore }} -->
             <!-- Remove the authStore display as it's causing a lint error -->
             
@@ -225,11 +226,11 @@
 <script setup lang="ts">
 import CRM from './navigations/CRM.vue';
 import CSandOPS from './navigations/CSandOPS.vue';
+import Settings from './navigations/Settings.vue';
 
-import { useAuthStore } from '../../store/auth.store';
-
-
-const authStore = useAuthStore();
+// Temporarily comment out auth store for testing
+// import { useAuthStore } from '../../store/auth.store';
+// const authStore = useAuthStore();
 
 </script>
 

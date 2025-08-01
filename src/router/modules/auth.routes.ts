@@ -1,9 +1,9 @@
-import type { AppRouteModule } from '../types';
+import type { RouteRecordRaw } from "vue-router";
 import AuthLayout from "../../layouts/AuthLayout.vue";
 import Login from "../../pages/auth/Login.vue";
 import VerifyOTP from "../../pages/auth/VerifyOTP.vue";
 
-export const authRoutes: AppRouteModule = [
+export const authRoutes: RouteRecordRaw[] = [
   {
     path: "/auth",
     component: AuthLayout,

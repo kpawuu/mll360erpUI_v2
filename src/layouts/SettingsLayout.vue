@@ -14,7 +14,7 @@ import { defineComponent } from 'vue';
 import SideBar from '../components/app/SideBar.vue';
 import TopNav from '../components/app/TopNav.vue';
 export default defineComponent({
-    name: 'MainLayout',
+    name: 'SettingsLayout',
     components: {
         SideBar,
         TopNav,
@@ -24,4 +24,4 @@ export default defineComponent({
 
 <style scoped>
 /* Add your styles here */
-</style>
+</style> 

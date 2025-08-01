@@ -1,9 +1,9 @@
 <template>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <topNav />
+        <TopNav />
         <!-- Sidebar -->
-        <sideBar />
-        <main class="p-4 md:ml-64 h-auto pt-20">
+        <SideBar />
+        <main class="p-4 md:ml-64 min-h-screen pt-20">
             <router-view />
         </main>
     </div>
@@ -11,13 +11,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import sideBar from '../components/app/sideBar.vue';
-import topNav from '../components/app/TopNav.vue';
+import SideBar from '../components/app/SideBar.vue';
+import TopNav from '../components/app/TopNav.vue';
 export default defineComponent({
-    name: 'MainLayout',
+    name: 'CRMLayout',
     components: {
-        sideBar,
-        topNav,
+        SideBar,
+        TopNav,
     },
 });
 </script>

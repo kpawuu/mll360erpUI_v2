@@ -1,20 +1,24 @@
-import type { AppRouteModule } from '../types';
-import MainLayout from "../../layouts/CRMLayout.vue";
-import Dashboard from "../../pages/crm/Dashboard.vue";
+import type { RouteRecordRaw } from "vue-router";
+import CRMLayout from "../../layouts/CRMLayout.vue";
 import Leads from "../../pages/crm/Leads.vue";
 import Opportunities from "../../pages/crm/Opportunities.vue";
 import Tasks from "../../pages/crm/Tasks.vue";
 import Companies from "../../pages/crm/Companies.vue";
 import Contacts from "../../pages/crm/Contacts.vue";
+import Dashboard from "../../pages/crm/Dashboard.vue";
 
-export const crmRoutes: AppRouteModule = [
+export const crmRoutes: RouteRecordRaw[] = [
   {
     path: "/crm",
-    component: MainLayout,
+    component: CRMLayout,
     children: [
       {
         path: "",
-        name: "dashboard",
+        redirect: "dashboard",
+      },
+      {
+        path: "dashboard",
+        name: "crm-dashboard",
         component: Dashboard,
         meta: { 
           requiresAuth: true,
@@ -23,7 +27,7 @@ export const crmRoutes: AppRouteModule = [
       },
       {
         path: "leads",
-        name: "leads",
+        name: "crm-leads",
         component: Leads,
         meta: { 
           requiresAuth: true,
@@ -32,7 +36,7 @@ export const crmRoutes: AppRouteModule = [
       },
       {
         path: "opportunities",
-        name: "opportunities",
+        name: "crm-opportunities",
         component: Opportunities,
         meta: { 
           requiresAuth: true,
@@ -41,7 +45,7 @@ export const crmRoutes: AppRouteModule = [
       },
       {
         path: "tasks",
-        name: "tasks",
+        name: "crm-tasks",
         component: Tasks,
         meta: { 
           requiresAuth: true,
@@ -50,7 +54,7 @@ export const crmRoutes: AppRouteModule = [
       },
       {
         path: "companies",
-        name: "companies",
+        name: "crm-companies",
         component: Companies,
         meta: { 
           requiresAuth: true,
@@ -59,7 +63,7 @@ export const crmRoutes: AppRouteModule = [
       },
       {
         path: "contacts",
-        name: "contacts",
+        name: "crm-contacts",
         component: Contacts,
         meta: { 
           requiresAuth: true,

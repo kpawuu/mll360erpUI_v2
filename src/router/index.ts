@@ -1,14 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
-import type { AppRouteModule } from './types';
+import type { RouteRecordRaw } from "vue-router";
 import { setupNavigationGuards } from './guards';
 import { authRoutes } from './modules/auth.routes';
 import { crmRoutes } from './modules/crm.routes';
 import { csRoutes } from './modules/cs.routes';
+import { settingsRoutes } from './modules/settings.routes';
 
-const routes: AppRouteModule = [
+const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...crmRoutes,
   ...csRoutes,
+  ...settingsRoutes,
   // Redirect root to dashboard
   {
     path: '/',

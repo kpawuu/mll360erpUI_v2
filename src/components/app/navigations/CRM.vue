@@ -1,7 +1,7 @@
 <template>
     <ul class="space-y-4">
         <li>
-            <a href="/crm"
+            <router-link to="/crm"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg aria-hidden="true"
                     class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -10,10 +10,10 @@
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                 </svg>
                 <span class="ml-3">Dashboard</span>
-            </a>
+            </router-link>
         </li>
         <li>
-            <a href="/crm/leads"
+            <router-link to="/crm/leads"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -23,10 +23,10 @@
                 </svg>
 
                 <span class="ml-3">Leads</span>
-            </a>
+            </router-link>
         </li>
         <li>
-            <a href="/crm/opportunities"
+            <router-link to="/crm/opportunities"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -35,10 +35,10 @@
                         clip-rule="evenodd" />
                 </svg>
                 <span class="ml-3">Opportunities</span>
-            </a>
+            </router-link>
         </li>
         <li>
-            <a href="/crm/tasks"
+            <router-link to="/crm/tasks"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
 
                 <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -48,11 +48,11 @@
                 </svg>
 
                 <span class="ml-3">Tasks & Activities</span>
-            </a>
+            </router-link>
         </li>
 
         <li>
-            <a href="/crm/companies"
+            <router-link to="/crm/companies"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -62,10 +62,10 @@
                 </svg>
 
                 <span class="ml-3">Companies</span>
-            </a>
+            </router-link>
         </li>
         <li>
-            <a href="/crm/contacts"
+            <router-link to="/crm/contacts"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
                 </svg>
 
                 <span class="ml-3">Contacts</span>
-            </a>
+            </router-link>
         </li>
 
         <!-- <li>

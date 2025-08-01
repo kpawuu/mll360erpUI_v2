@@ -1,4 +1,4 @@
-import type { AppRouteModule } from '../types';
+import type { RouteRecordRaw } from "vue-router";
 import MainLayout from "../../layouts/CSLayout.vue";
 import Dashboard from "../../pages/cs/Dashboard.vue";
 import ETACalendar from '../../pages/cs/ETACalendar.vue';
@@ -7,14 +7,14 @@ import Reports from '../../pages/cs/Reports.vue';
 import TruckRequests from '../../pages/cs/TruckRequests.vue';
 import Contacts from '../../pages/crm/Contacts.vue';
 
-export const csRoutes: AppRouteModule = [
+export const csRoutes: RouteRecordRaw[] = [
   {
     path: "/cs",
     component: MainLayout,
     children: [
       {
         path: "",
-        name: "dashboard",
+        name: "cs-dashboard",
         component: Dashboard,
         meta: { 
           requiresAuth: true,
@@ -23,7 +23,7 @@ export const csRoutes: AppRouteModule = [
       },
       {
         path: "eta-calendar",
-        name: "eta-calendar",
+        name: "cs-eta-calendar",
         component: ETACalendar,
         meta: { 
           requiresAuth: true,
@@ -32,7 +32,7 @@ export const csRoutes: AppRouteModule = [
       },
       {
         path: "files",
-        name: "files",
+        name: "cs-files",
         component: Files,
         meta: { 
           requiresAuth: true,
@@ -41,7 +41,7 @@ export const csRoutes: AppRouteModule = [
       },
       {
         path: "reports",
-        name: "reports",
+        name: "cs-reports",
         component: Reports,
         meta: { 
           requiresAuth: true,
@@ -50,7 +50,7 @@ export const csRoutes: AppRouteModule = [
       },
       {
         path: "truck-requests",
-        name: "truck-requests",
+        name: "cs-truck-requests",
         component: TruckRequests,
         meta: { 
           requiresAuth: true,
@@ -59,7 +59,7 @@ export const csRoutes: AppRouteModule = [
       },
       {
         path: "contacts",
-        name: "contacts",
+        name: "cs-contacts",
         component: Contacts,
         meta: { 
           requiresAuth: true,

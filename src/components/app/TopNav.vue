@@ -375,8 +375,8 @@
                 <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown">
                     <div class="py-3 px-4">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ authStore.user?.first_name }} {{ authStore.user?.last_name }}</span>
-                        <span class="block text-sm text-gray-900 truncate dark:text-white">{{ authStore.user?.email }}</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">User Name</span>
+                        <span class="block text-sm text-gray-900 truncate dark:text-white">user@example.com</span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
@@ -407,16 +407,16 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '../../store/auth.store';
+// Temporarily comment out auth store for testing
+// import { useAuthStore } from '../../store/auth.store';
 import { useRouter } from 'vue-router';
 
-
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 const router = useRouter();
 
 const handleLogout = async () => {
     try {
-        await authStore.logout();
+        // await authStore.logout();
         router.push('/auth/login');
     } catch (error) {
         console.error('Logout failed:', error);
