@@ -1,6 +1,7 @@
 import { companyDepartmentsService } from '../services/company-departments.service'
 import type { CompanyDepartment, CreateCompanyDepartment, UpdateCompanyDepartment } from '../models/company-departments.model'
 import { useAuthStore } from '../../store/auth.store'
+import { authenticateFeathersClient } from '../feathers'
 
 export const companyDepartmentsControllers = {
   // Get all company departments with optional query parameters
@@ -13,6 +14,8 @@ export const companyDepartmentsControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyDepartmentsService.find(params);
     } catch (error) {
       console.error('Error fetching company departments:', error);
@@ -30,6 +33,8 @@ export const companyDepartmentsControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyDepartmentsService.get(id);
     } catch (error) {
       console.error('Error fetching company department:', error);
@@ -47,6 +52,8 @@ export const companyDepartmentsControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyDepartmentsService.create(departmentData);
     } catch (error) {
       console.error('Error creating company department:', error);
@@ -64,6 +71,8 @@ export const companyDepartmentsControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyDepartmentsService.patch(id, departmentData);
     } catch (error) {
       console.error('Error updating company department:', error);
@@ -81,6 +90,8 @@ export const companyDepartmentsControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyDepartmentsService.remove(id);
     } catch (error) {
       console.error('Error deleting company department:', error);

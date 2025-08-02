@@ -21,9 +21,9 @@
                 </div>
             </form>
             
-            <CRM/>
-            <CSandOPS/>
-            <Settings/>
+            <CRM v-if="authStore.user?.usertype !== 1"/>
+            <CSandOPS v-if="authStore.user?.usertype !== 1"/>
+            <Settings v-if="authStore.user?.usertype === 1"/>
             <!-- {{ authStore }} -->
             <!-- Remove the authStore display as it's causing a lint error -->
             
@@ -227,11 +227,9 @@
 import CRM from './navigations/CRM.vue';
 import CSandOPS from './navigations/CSandOPS.vue';
 import Settings from './navigations/Settings.vue';
+import { useAuthStore } from '../../store/auth.store';
 
-// Temporarily comment out auth store for testing
-// import { useAuthStore } from '../../store/auth.store';
-// const authStore = useAuthStore();
-
+const authStore = useAuthStore();
 </script>
 
 <style scoped>

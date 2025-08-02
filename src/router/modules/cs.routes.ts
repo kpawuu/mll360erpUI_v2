@@ -5,6 +5,7 @@ import ETACalendar from '../../pages/cs/ETACalendar.vue';
 import Files from '../../pages/cs/Files.vue';
 import Reports from '../../pages/cs/Reports.vue';
 import TruckRequests from '../../pages/cs/TruckRequests.vue';
+import Shipments from '../../pages/cs/Shipments.vue';
 import Contacts from '../../pages/crm/Contacts.vue';
 
 export const csRoutes: RouteRecordRaw[] = [
@@ -55,6 +56,15 @@ export const csRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'Truck Requests'
+        },
+      },
+      {
+        path: "shipments",
+        name: "cs-shipments",
+        component: Shipments,
+        meta: { 
+          requiresAuth: true,
+          title: 'Shipments'
         },
       },
       {

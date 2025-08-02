@@ -5,6 +5,12 @@ import EntityGroups from "../../pages/settings/EntityGroups.vue";
 import Users from "../../pages/settings/Users.vue";
 import Dashboard from "../../pages/settings/Dashboard.vue";
 import CompanyDetails from "../../pages/settings/CompanyDetails.vue";
+import ShipmentTypes from "../../pages/settings/ShipmentTypes.vue";
+import Commodities from "../../pages/settings/Commodities.vue";
+import PackageTypes from "../../pages/settings/PackageTypes.vue";
+import PackageUnits from "../../pages/settings/PackageUnits.vue";
+import PackageSizes from "../../pages/settings/PackageSizes.vue";
+import Statuses from "../../pages/settings/Statuses.vue";
 
 export const settingsRoutes: RouteRecordRaw[] = [
   {
@@ -58,6 +64,60 @@ export const settingsRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'Company Details'
+        },
+      },
+      {
+        path: "shipment-types",
+        name: "settings-shipment-types",
+        component: ShipmentTypes,
+        meta: { 
+          requiresAuth: true,
+          title: 'Shipment Types'
+        },
+      },
+      {
+        path: "commodities",
+        name: "settings-commodities",
+        component: Commodities,
+        meta: { 
+          requiresAuth: true,
+          title: 'Commodities Management'
+        },
+      },
+      {
+        path: "package-types",
+        name: "settings-package-types",
+        component: PackageTypes,
+        meta: { 
+          requiresAuth: true,
+          title: 'Package Types'
+        },
+      },
+      {
+        path: "package-units",
+        name: "settings-package-units",
+        component: PackageUnits,
+        meta: { 
+          requiresAuth: true,
+          title: 'Package Units'
+        },
+      },
+      {
+        path: "package-sizes",
+        name: "settings-package-sizes",
+        component: PackageSizes,
+        meta: { 
+          requiresAuth: true,
+          title: 'Package Sizes'
+        },
+      },
+      {
+        path: "statuses",
+        name: "settings-statuses",
+        component: Statuses,
+        meta: { 
+          requiresAuth: true,
+          title: 'Status Management'
         },
       },
     ],

@@ -1,12 +1,13 @@
 <template>
-    <div class="p-4">
+    <div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <!-- Header Section -->
         <div class="mb-8">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Entities Management</h1>
-                    <p class="text-gray-600 dark:text-gray-400">Manage all entities (clients, suppliers, partners, etc.)</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Entities Management</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">Manage all entities (clients, suppliers, partners, etc.)</p>
                 </div>
-                <button @click="showCreateModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <button @click="showCreateModal = true" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -15,77 +16,160 @@
             </div>
         </div>
 
-        <!-- Search and Filters -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
-                    <input 
-                        v-model="searchQuery" 
-                        @input="onSearchChange"
-                        type="text" 
-                        placeholder="Search entities..."
-                        :disabled="entityStore.loading"
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Group Filter</label>
-                    <select 
-                        v-model="selectedGroupId" 
-                        @change="onGroupFilterChange"
-                        :disabled="entityStore.loading"
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <option value="">All Groups</option>
-                        <option v-for="group in entityGroups" :key="group.id" :value="group.id">
-                            {{ group.group_name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="flex items-end">
-                    <button 
-                        @click="loadEntities" 
-                        :disabled="entityStore.loading"
-                        class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    >
-                        <div v-if="entityStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        Refresh
-                    </button>
-                </div>
-                <div class="flex items-end justify-end">
-                    <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                        <button 
-                            @click="viewMode = 'grid'"
-                            :class="[
-                                'px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                                viewMode === 'grid'
-                                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                            ]"
-                            :disabled="entityStore.loading"
-                        >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+        <!-- Search and Filters Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+            <!-- Card Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                        </button>
-                        <button 
-                            @click="viewMode = 'list'"
-                            :class="[
-                                'px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                                viewMode === 'list'
-                                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                            ]"
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Search & Filter Entities</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Find and manage your business contacts</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                            {{ filteredEntities.length }} entities
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card Body -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <!-- Search Input -->
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Search Entities</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input 
+                                v-model="searchQuery" 
+                                @input="onSearchChange"
+                                type="text" 
+                                placeholder="Search entities..."
+                                :disabled="entityStore.loading"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            >
+                            <div v-if="entityStore.loading" class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                <div class="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
+                            </div>
+                            <div v-else-if="searchQuery" class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                <button 
+                                    @click="clearFilters"
+                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600"
+                                    title="Clear search"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div v-if="searchQuery" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            Searching for: "{{ searchQuery }}"
+                        </div>
+                    </div>
+                    
+                    <!-- Group Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Group Filter</label>
+                        <select 
+                            v-model="selectedGroupId" 
+                            @change="onGroupFilterChange"
                             :disabled="entityStore.loading"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pr-8 pl-3 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                            <option value="">All Groups</option>
+                            <option v-for="group in entityGroups" :key="group.id" :value="group.id">
+                                {{ group.group_name }}
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <!-- Refresh Button and View Mode Toggle -->
+                    <div class="flex items-end space-x-3">
+                        <button 
+                            @click="loadEntities" 
+                            :disabled="entityStore.loading"
+                            class="flex-1 text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-xl text-sm px-5 py-3 text-center inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                            <div v-if="entityStore.loading" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                            <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
+                            Refresh
                         </button>
+                        
+                        <div class="inline-flex rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden" role="group">
+                            <button 
+                                @click="viewMode = 'grid'"
+                                :class="[
+                                    'px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center',
+                                    viewMode === 'grid'
+                                        ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
+                                        : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20'
+                                ]"
+                                :disabled="entityStore.loading"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                </svg>
+                                Grid
+                            </button>
+                            <button 
+                                @click="viewMode = 'list'"
+                                :class="[
+                                    'px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center',
+                                    viewMode === 'list'
+                                        ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
+                                        : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20'
+                                ]"
+                                :disabled="entityStore.loading"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                </svg>
+                                List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div v-if="searchQuery || selectedGroupId" class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">
+                                Found {{ filteredEntities.length }} result{{ filteredEntities.length !== 1 ? 's' : '' }}
+                            </span>
+                            <button 
+                                @click="clearFilters"
+                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200"
+                            >
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Clear Filters
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Search powered by</span>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                                <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,19 +177,19 @@
 
         <!-- Loading State with Skeleton Loaders -->
         <div v-if="entityStore.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="n in 6" :key="n" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
+            <div v-for="n in 6" :key="n" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 animate-pulse">
                 <!-- Header skeleton -->
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-3"></div>
+                        <div class="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 mr-3"></div>
                         <div>
                             <div class="h-5 bg-gray-300 dark:bg-gray-600 rounded w-32 mb-2"></div>
                             <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-24"></div>
                         </div>
                     </div>
                     <div class="flex space-x-2">
-                        <div class="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                        <div class="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div class="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div class="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
                     </div>
                 </div>
                 
@@ -113,11 +197,11 @@
                 <div class="space-y-3 mb-4">
                     <div class="flex justify-between">
                         <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
-                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-20"></div>
+                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-32"></div>
                     </div>
                     <div class="flex justify-between">
                         <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
-                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-20"></div>
+                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-24"></div>
                     </div>
                     <div class="flex justify-between">
                         <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
@@ -135,55 +219,48 @@
                 
                 <!-- Buttons skeleton -->
                 <div class="flex space-x-2">
-                    <div class="flex-1 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                    <div class="flex-1 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                    <div class="flex-1 h-9 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
+                    <div class="flex-1 h-9 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
                 </div>
             </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="!entityStore.loading && filteredEntities.length === 0" class="flex flex-col items-center justify-center py-12 px-4">
-            <div class="text-center">
-                <!-- Empty State Icon -->
-                <div class="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
-                    <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        <div v-else-if="!entityStore.loading && filteredEntities.length === 0" class="flex flex-col items-center justify-center py-20">
+            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                {{ searchQuery || selectedGroupId ? 'No entities found' : 'No entities yet' }}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 text-center max-w-md mb-8 text-lg">
+                {{ searchQuery || selectedGroupId 
+                    ? 'Try adjusting your search criteria or clear the filters.' 
+                    : 'Get started by adding your first entity to the company.' 
+                }}
+            </p>
+            <div class="flex space-x-4">
+                <button 
+                    v-if="searchQuery || selectedGroupId"
+                    @click="clearFilters"
+                    class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm transition-colors"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
-                </div>
-                
-                <!-- Empty State Text -->
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    {{ searchQuery || selectedGroupId ? 'No entities found' : 'No entities yet' }}
-                </h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                    {{ searchQuery || selectedGroupId 
-                        ? 'Try adjusting your search terms or filters to find what you\'re looking for.' 
-                        : 'Get started by creating your first entity. Entities can be clients, suppliers, partners, or any other business contacts.' 
-                    }}
-                </p>
-                
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                    <button 
-                        v-if="searchQuery || selectedGroupId"
-                        @click="clearFilters"
-                        class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        Clear Filters
-                    </button>
-                    <button 
-                        @click="showCreateModal = true"
-                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        {{ searchQuery || selectedGroupId ? 'Create New Entity' : 'Create First Entity' }}
-                    </button>
-                </div>
+                    Clear Filters
+                </button>
+                <button 
+                    @click="showCreateModal = true"
+                    class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add Entity
+                </button>
             </div>
         </div>
 
@@ -191,24 +268,30 @@
         <div v-else>
             <!-- Grid View -->
             <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div v-for="entity in filteredEntities" :key="entity.id" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div v-for="entity in filteredEntities" :key="entity.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-3">
-                                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ entity.name.charAt(0).toUpperCase() }}</span>
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-3">
+                                <span class="text-sm font-bold text-white">{{ entity.name.charAt(0).toUpperCase() }}</span>
                             </div>
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ entity.name }}</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ entity.group?.group_name || 'No Group' }}</p>
                             </div>
                         </div>
-                        <div class="flex space-x-2">
-                            <button @click="editEntity(entity)" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                        <div class="flex space-x-1">
+                            <button @click="viewDetails(entity)" class="p-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                            <button @click="editEntity(entity)" class="p-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </button>
-                            <button @click="deleteEntity(entity.id)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                            <button @click="deleteEntity(entity.id)" class="p-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
@@ -216,32 +299,32 @@
                         </div>
                     </div>
                     
-                    <div class="space-y-3">
+                    <div class="space-y-3 mb-4">
                         <div v-if="entity.email" class="flex justify-between text-sm">
                             <span class="text-gray-500 dark:text-gray-400">Email:</span>
-                            <span class="text-gray-900 dark:text-white">{{ entity.email }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ entity.email }}</span>
                         </div>
                         <div v-if="entity.phonenumber" class="flex justify-between text-sm">
                             <span class="text-gray-500 dark:text-gray-400">Phone:</span>
-                            <span class="text-gray-900 dark:text-white">{{ entity.phonenumber }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ entity.phonenumber }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-500 dark:text-gray-400">Created:</span>
-                            <span class="text-gray-900 dark:text-white">{{ formatDate(entity.date_created) }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ formatDate(entity.date_created) }}</span>
                         </div>
                     </div>
 
                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between text-sm mb-2">
                             <span class="text-gray-500 dark:text-gray-400">Company:</span>
-                            <span class="text-gray-900 dark:text-white">{{ entity.company?.name || 'N/A' }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ entity.company?.name || 'N/A' }}</span>
                         </div>
                         <div v-if="entity.address" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                             {{ entity.address }}
                         </div>
                     </div>
 
-                    <div class="mt-4 flex space-x-2">
+                    <div class="flex space-x-2">
                         <button @click="viewDetails(entity)" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -261,11 +344,11 @@
             
             <!-- List View -->
             <div v-else class="space-y-4">
-                <div v-for="entity in filteredEntities" :key="entity.id" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div v-for="entity in filteredEntities" :key="entity.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                                <span class="text-lg font-medium text-blue-600 dark:text-blue-400">{{ entity.name.charAt(0).toUpperCase() }}</span>
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                                <span class="text-lg font-bold text-white">{{ entity.name.charAt(0).toUpperCase() }}</span>
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ entity.name }}</h3>
@@ -306,14 +389,14 @@
             </div>
             
             <!-- Pagination Controls -->
-            <div class="mt-8 flex justify-between items-center">
+            <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-4">
-                    <label class="text-sm text-gray-600 dark:text-gray-400">Show:</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Show:</label>
                     <select 
                         v-model="entityStore.pagination.limit" 
                         @change="onLimitChange"
                         :disabled="entityStore.loading"
-                        class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pr-8 pl-3 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <option value="5">5</option>
                         <option value="10">10</option>
@@ -329,9 +412,9 @@
                     <button 
                         @click="previousPage" 
                         :disabled="entityStore.pagination.currentPage <= 1 || entityStore.loading"
-                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
                         Previous
@@ -344,10 +427,10 @@
                             @click="goToPage(page)"
                             :disabled="entityStore.loading"
                             :class="[
-                                'px-3 py-1 text-sm border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed',
+                                'inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed',
                                 page === entityStore.pagination.currentPage
-                                    ? 'bg-blue-600 text-white border-blue-600'
-                                    : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                    ? 'text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700'
+                                    : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
                             ]"
                         >
                             {{ page }}
@@ -357,10 +440,10 @@
                     <button 
                         @click="nextPage" 
                         :disabled="entityStore.pagination.currentPage >= totalPages || entityStore.loading"
-                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
@@ -369,41 +452,37 @@
         </div>
 
         <!-- Create/Edit Modal -->
-        <div v-if="showCreateModal || showEditModal" id="defaultModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-55 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
-            <div class="relative w-full max-w-2xl max-h-full">
-                <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+        <div v-if="showCreateModal || showEditModal" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+            <div class="relative w-full max-w-4xl max-h-full">
+                <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-700 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-700 dark:to-violet-700">
-                        <h3 class="text-xl font-semibold text-white">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                                {{ showEditModal ? 'Edit Entity' : 'Create New Entity' }}
-                            </div>
-                        </h3>
-                        <button type="button" class="text-white bg-transparent hover:bg-violet-700 hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" @click="closeModal">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+                        <h3 class="text-xl font-semibold text-white flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span class="sr-only">Close modal</span>
+                            {{ showEditModal ? 'Edit Entity' : 'Create New Entity' }}
+                        </h3>
+                        <button @click="closeModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
                         </button>
                     </div>
                     
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+                    <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                         <form @submit.prevent="saveEntity">
                             <!-- Entity Information Section -->
                             <div class="space-y-6">
                                 <div>
-                                    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white flex items-center">
-                                        <svg class="w-5 h-5 me-2 text-violet-600 dark:text-violet-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                        <svg class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                         </svg>
                                         Entity Information
                                     </h3>
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Basic information about the entity.</p>
+                                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Basic information about the entity.</p>
                                 </div>
                                 
                                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -415,7 +494,7 @@
                                             v-model="entityForm.name" 
                                             type="text" 
                                             required
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                             placeholder="e.g. John Doe"
                                         >
                                     </div>
@@ -427,7 +506,7 @@
                                             id="entity-group"
                                             v-model="entityForm.group_id" 
                                             required
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                         >
                                             <option value="">Select Group</option>
                                             <option v-for="group in entityGroups" :key="group.id" :value="group.id">
@@ -443,7 +522,7 @@
                                             id="entity-email"
                                             v-model="entityForm.email" 
                                             type="email" 
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                             placeholder="e.g. john.doe@example.com"
                                         >
                                     </div>
@@ -455,7 +534,7 @@
                                             id="entity-phone"
                                             v-model="entityForm.phonenumber" 
                                             type="tel" 
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                             placeholder="e.g. (555) 123-4567"
                                         >
                                     </div>
@@ -467,7 +546,7 @@
                                             id="entity-username"
                                             v-model="entityForm.username" 
                                             type="text" 
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                             placeholder="e.g. johndoe"
                                         >
                                     </div>
@@ -479,7 +558,7 @@
                                             id="entity-password"
                                             v-model="entityForm.password" 
                                             type="password" 
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                             placeholder="Enter password"
                                         >
                                     </div>
@@ -489,13 +568,13 @@
                             <!-- Address Section -->
                             <div class="mt-8 space-y-6 border-t border-gray-200 dark:border-gray-700 pt-8">
                                 <div>
-                                    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white flex items-center">
-                                        <svg class="w-5 h-5 me-2 text-violet-600 dark:text-violet-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                        <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                                         </svg>
                                         Address Information
                                     </h3>
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Physical address details for this entity.</p>
+                                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Physical address details for this entity.</p>
                                 </div>
                                 
                                 <div>
@@ -504,7 +583,7 @@
                                         id="entity-address"
                                         v-model="entityForm.address" 
                                         rows="3"
-                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-violet-500 dark:focus:border-violet-500"
+                                        class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                                         placeholder="Enter full address..."
                                     ></textarea>
                                 </div>
@@ -513,28 +592,19 @@
                     </div>
                     
                     <!-- Modal footer -->
-                    <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-700">
+                    <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
                         <button 
-                            type="button" 
                             @click="closeModal" 
-                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-violet-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+                            class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
                         >
-                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                            </svg>
                             Cancel
                         </button>
-                        &nbsp;
                         <button 
-                            type="button" 
                             @click="saveEntity" 
                             :disabled="entityStore.loading"
-                            class="text-white bg-gradient-to-br from-purple-600 to-violet-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <div v-if="entityStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            <svg v-else class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Zm11-3h-2V5a1 1 0 0 0-2 0v2h-2a1 1 0 1 0 0 2h2v2a1 1 0 0 0 2 0V9h2a1 1 0 1 0 0-2Z" />
-                            </svg>
                             {{ showEditModal ? 'Update Entity' : 'Create Entity' }}
                         </button>
                     </div>
@@ -544,34 +614,31 @@
     </div>
 
     <!-- View Details Modal -->
-    <div v-if="showDetailsModal && selectedEntity" id="detailsModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div v-if="showDetailsModal && selectedEntity" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
         <div class="relative w-full max-w-4xl max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
                 <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-700 bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-700 dark:to-cyan-700">
-                    <h3 class="text-xl font-semibold text-white">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            Entity Details
-                        </div>
-                    </h3>
-                    <button type="button" class="text-white bg-transparent hover:bg-blue-700 hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" @click="showDetailsModal = false">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                        <span class="sr-only">Close modal</span>
+                        Entity Details
+                    </h3>
+                    <button @click="showDetailsModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
                     </button>
                 </div>
                 
                 <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                     <!-- Entity Header -->
-                    <div class="flex items-center space-x-4 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg">
-                        <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                            <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ selectedEntity.name.charAt(0).toUpperCase() }}</span>
+                    <div class="flex items-center space-x-4 p-6 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-xl">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">{{ selectedEntity.name.charAt(0).toUpperCase() }}</span>
                         </div>
                         <div class="flex-1">
                             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ selectedEntity.name }}</h2>
@@ -607,7 +674,7 @@
                     <!-- Entity Information Grid -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Contact Information -->
-                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6">
                             <div class="flex items-center mb-4">
                                 <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3">
                                     <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -661,7 +728,7 @@
                         </div>
 
                         <!-- Group & Company Information -->
-                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6">
                             <div class="flex items-center mb-4">
                                 <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-3">
                                     <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -706,7 +773,7 @@
                     </div>
 
                     <!-- Address Information -->
-                    <div v-if="selectedEntity.address" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <div v-if="selectedEntity.address" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6">
                         <div class="flex items-center mb-4">
                             <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mr-3">
                                 <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -722,7 +789,7 @@
                     </div>
 
                     <!-- System Information -->
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6">
                         <div class="flex items-center mb-4">
                             <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mr-3">
                                 <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -757,24 +824,19 @@
                 </div>
                 
                 <!-- Modal footer -->
-                <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-700">
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
                     <button 
-                        type="button" 
                         @click="showDetailsModal = false" 
-                        class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
                     >
-                        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
                         Close
                     </button>
                     <button 
-                        type="button" 
                         @click="editEntity(selectedEntity)"
-                        class="text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ms-3 inline-flex items-center"
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200"
                     >
-                        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z" />
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                         Edit Entity
                     </button>
@@ -824,81 +886,64 @@
     </div>
 
     <!-- Success Modal -->
-    <div v-if="showSuccessModal" id="successModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-60 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center">
-        <div class="relative w-full max-w-md max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center dark:bg-green-900">
-                            <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <h3 class="ml-3 text-lg font-semibold text-gray-900 dark:text-white">
-                            Success
-                        </h3>
-                    </div>
-                    <button @click="showSuccessModal = false" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+    <div v-if="showSuccessModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-md">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
+                    </div>
                 </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-4">
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {{ successMessage }}
-                    </p>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Success!</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ successMessage }}</p>
                 </div>
-                <!-- Modal footer -->
-                <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button @click="showSuccessModal = false" type="button" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                        Close
+                <div class="flex justify-center p-6 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        @click="showSuccessModal = false" 
+                        class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Continue
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div v-if="showConfirmModal" id="confirmModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-60 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center">
-        <div class="relative w-full max-w-md max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center dark:bg-yellow-900">
-                            <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <h3 class="ml-3 text-lg font-semibold text-gray-900 dark:text-white">
-                            Confirm Action
-                        </h3>
-                    </div>
-                    <button @click="showConfirmModal = false" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+    <!-- Confirm Delete Modal -->
+    <div v-if="showConfirmModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-md">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                         </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
+                    </div>
                 </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-4">
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {{ confirmMessage }}
-                    </p>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Confirm Action</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ confirmMessage }}</p>
                 </div>
-                <!-- Modal footer -->
-                <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 space-x-2">
-                    <button @click="showConfirmModal = false" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 border border-gray-200 text-sm font-medium rounded-lg px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                <div class="flex justify-center space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        @click="showConfirmModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
                         Cancel
                     </button>
-                    <button @click="confirmAction" type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    <button 
+                        @click="confirmAction()" 
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
                         Confirm
                     </button>
                 </div>

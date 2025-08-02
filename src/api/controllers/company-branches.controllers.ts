@@ -1,6 +1,7 @@
 import { companyBranchesService } from '../services/company-branches.service'
 import type { CompanyBranch, CreateCompanyBranch, UpdateCompanyBranch } from '../models/company-branches.model'
 import { useAuthStore } from '../../store/auth.store'
+import { authenticateFeathersClient } from '../feathers'
 
 export const companyBranchesControllers = {
   // Get all company branches with optional query parameters
@@ -13,6 +14,8 @@ export const companyBranchesControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyBranchesService.find(params);
     } catch (error) {
       console.error('Error fetching company branches:', error);
@@ -30,6 +33,8 @@ export const companyBranchesControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyBranchesService.get(id);
     } catch (error) {
       console.error('Error fetching company branch:', error);
@@ -47,6 +52,8 @@ export const companyBranchesControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyBranchesService.create(branchData);
     } catch (error) {
       console.error('Error creating company branch:', error);
@@ -64,6 +71,8 @@ export const companyBranchesControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyBranchesService.patch(id, branchData);
     } catch (error) {
       console.error('Error updating company branch:', error);
@@ -81,6 +90,8 @@ export const companyBranchesControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyBranchesService.remove(id);
     } catch (error) {
       console.error('Error deleting company branch:', error);

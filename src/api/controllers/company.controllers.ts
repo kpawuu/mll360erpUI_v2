@@ -1,6 +1,7 @@
 import { companyService } from '../services/company.service'
 import type { Company, CreateCompany, UpdateCompany } from '../models/company.model'
 import { useAuthStore } from '../../store/auth.store'
+import { authenticateFeathersClient } from '../feathers'
 
 export const companyControllers = {
   // Get all companies with optional query parameters
@@ -13,6 +14,8 @@ export const companyControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyService.find(params);
     } catch (error) {
       console.error('Error fetching companies:', error);
@@ -30,6 +33,8 @@ export const companyControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyService.get(id);
     } catch (error) {
       console.error('Error fetching company:', error);
@@ -47,6 +52,8 @@ export const companyControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyService.create(companyData);
     } catch (error) {
       console.error('Error creating company:', error);
@@ -64,6 +71,8 @@ export const companyControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyService.patch(id, companyData);
     } catch (error) {
       console.error('Error updating company:', error);
@@ -81,6 +90,8 @@ export const companyControllers = {
         throw new Error('Authentication required. Please login again.');
       }
       
+      // Ensure Feathers client is authenticated
+      await authenticateFeathersClient()
       return await companyService.remove(id);
     } catch (error) {
       console.error('Error deleting company:', error);

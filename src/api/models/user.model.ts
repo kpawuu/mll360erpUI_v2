@@ -91,6 +91,7 @@ export interface CreateUser {
   fcmtoken?: string
   privelege?: number
   company_id?: number
+  department_id?: number
   branch_id?: number
   dob?: string
 }
@@ -113,6 +114,7 @@ export interface UpdateUser {
   fcmtoken?: string
   privelege?: number
   company_id?: number
+  department_id?: number
   branch_id?: number
   dob?: string
 } 

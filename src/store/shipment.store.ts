@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { companyControllers } from '../api/controllers/company.controllers'
-import type { Company, CreateCompany, UpdateCompany } from '../api/models/company.model'
-import { useAuthStore } from './auth.store'
+import { shipmentControllers } from '../api/controllers/shipment.controllers'
+import type { Shipment, CreateShipment, UpdateShipment } from '../api/models/shipment.model'
 
-export const useCompanyStore = defineStore('company', () => {
+export const useShipmentStore = defineStore('shipment', () => {
   // State
-  const companies = ref<Company[]>([])
+  const shipments = ref<Shipment[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
   const pagination = ref({
@@ -17,21 +16,21 @@ export const useCompanyStore = defineStore('company', () => {
   })
 
   // Getters
-  const getCompanies = computed(() => companies.value)
+  const getShipments = computed(() => shipments.value)
   const getLoading = computed(() => loading.value)
   const getError = computed(() => error.value)
   const getPagination = computed(() => pagination.value)
 
   // Actions
-  const fetchCompanies = async (params?: { query?: any }) => {
+  const fetchShipments = async (params?: { query?: any }) => {
     loading.value = true
     error.value = null
     
     try {
-      const response = await companyControllers.getCompanies(params)
+      const response = await shipmentControllers.getShipments(params)
       
       if (response && response.data) {
-        companies.value = response.data
+        shipments.value = response.data
         pagination.value = {
           total: response.total || 0,
           limit: response.limit || 10,
@@ -39,7 +38,7 @@ export const useCompanyStore = defineStore('company', () => {
           currentPage: Math.floor((response.skip || 0) / (response.limit || 10)) + 1
         }
       } else if (Array.isArray(response)) {
-        companies.value = response
+        shipments.value = response
         pagination.value = {
           total: response.length,
           limit: response.length,
@@ -47,7 +46,7 @@ export const useCompanyStore = defineStore('company', () => {
           currentPage: 1
         }
       } else {
-        companies.value = []
+        shipments.value = []
         pagination.value = {
           total: 0,
           limit: 10,
@@ -56,71 +55,75 @@ export const useCompanyStore = defineStore('company', () => {
         }
       }
     } catch (err: any) {
-      error.value = err.message || 'Failed to fetch companies'
+      error.value = err.message || 'Failed to fetch shipments'
       handleAuthError(err)
     } finally {
       loading.value = false
     }
   }
 
-  const fetchCompany = async (id: number) => {
+  const fetchShipment = async (id: number) => {
     loading.value = true
     error.value = null
     
     try {
-      const response = await companyControllers.getCompany(id)
+      const response = await shipmentControllers.getShipment(id)
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to fetch company'
-      await handleAuthError(err)
+      error.value = err.message || 'Failed to fetch shipment'
+      handleAuthError(err)
+      throw err
     } finally {
       loading.value = false
     }
   }
 
-  const createCompany = async (companyData: CreateCompany) => {
+  const createShipment = async (shipmentData: CreateShipment) => {
     loading.value = true
     error.value = null
     
     try {
-      const response = await companyControllers.createCompany(companyData)
-      await fetchCompanies() // Refresh the list
+      const response = await shipmentControllers.createShipment(shipmentData)
+      await fetchShipments() // Refresh the list
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to create company'
-      await handleAuthError(err)
+      error.value = err.message || 'Failed to create shipment'
+      handleAuthError(err)
+      throw err
     } finally {
       loading.value = false
     }
   }
 
-  const updateCompany = async (id: number, companyData: UpdateCompany) => {
+  const updateShipment = async (id: number, shipmentData: UpdateShipment) => {
     loading.value = true
     error.value = null
     
     try {
-      const response = await companyControllers.updateCompany(id, companyData)
-      await fetchCompanies() // Refresh the list
+      const response = await shipmentControllers.updateShipment(id, shipmentData)
+      await fetchShipments() // Refresh the list
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to update company'
-      await handleAuthError(err)
+      error.value = err.message || 'Failed to update shipment'
+      handleAuthError(err)
+      throw err
     } finally {
       loading.value = false
     }
   }
 
-  const deleteCompany = async (id: number) => {
+  const deleteShipment = async (id: number) => {
     loading.value = true
     error.value = null
     
     try {
-      const response = await companyControllers.deleteCompany(id)
-      await fetchCompanies() // Refresh the list
+      const response = await shipmentControllers.deleteShipment(id)
+      await fetchShipments() // Refresh the list
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to delete company'
-      await handleAuthError(err)
+      error.value = err.message || 'Failed to delete shipment'
+      handleAuthError(err)
+      throw err
     } finally {
       loading.value = false
     }
@@ -144,35 +147,30 @@ export const useCompanyStore = defineStore('company', () => {
   }
 
   const handleAuthError = (err: any) => {
-    if (err.message?.includes('Authentication required')) {
-      error.value = 'Session expired. Please login again.';
-      const authStore = useAuthStore();
-      // Optionally redirect to login or clear auth state
-      (authStore as any).logout();
-    } else {
-      error.value = err.message || 'An error occurred';
+    if (err.message?.includes('Authentication') || err.message?.includes('401')) {
+      console.error('Authentication error:', err)
     }
   }
 
   return {
     // State
-    companies,
+    shipments,
     loading,
     error,
     pagination,
     
     // Getters
-    getCompanies,
+    getShipments,
     getLoading,
     getError,
     getPagination,
     
     // Actions
-    fetchCompanies,
-    fetchCompany,
-    createCompany,
-    updateCompany,
-    deleteCompany,
+    fetchShipments,
+    fetchShipment,
+    createShipment,
+    updateShipment,
+    deleteShipment,
     setPage,
     setLimit,
     clearError
