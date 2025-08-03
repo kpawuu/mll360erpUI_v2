@@ -11,6 +11,9 @@ import PackageTypes from "../../pages/settings/PackageTypes.vue";
 import PackageUnits from "../../pages/settings/PackageUnits.vue";
 import PackageSizes from "../../pages/settings/PackageSizes.vue";
 import Statuses from "../../pages/settings/Statuses.vue";
+import Locations from "../../pages/settings/Locations.vue";
+import Roles from "../../pages/settings/Roles.vue";
+import UserRoleAssignment from "../../pages/settings/UserRoleAssignment.vue";
 
 export const settingsRoutes: RouteRecordRaw[] = [
   {
@@ -118,6 +121,33 @@ export const settingsRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'Status Management'
+        },
+      },
+      {
+        path: "locations",
+        name: "settings-locations",
+        component: Locations,
+        meta: { 
+          requiresAuth: true,
+          title: 'Locations Management'
+        },
+      },
+      {
+        path: "roles",
+        name: "settings-roles",
+        component: Roles,
+        meta: { 
+          requiresAuth: true,
+          title: 'Roles Management'
+        },
+      },
+      {
+        path: "user-role-assignment",
+        name: "settings-user-role-assignment",
+        component: UserRoleAssignment,
+        meta: { 
+          requiresAuth: true,
+          title: 'User Role Assignment'
         },
       },
     ],

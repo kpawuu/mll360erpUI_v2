@@ -8,6 +8,9 @@ import { setupApiInterceptors } from './api/interceptors'
 import { useAuthStore } from './store/auth.store'
 import 'flowbite'
 
+// Import Flowbite JavaScript
+import { initFlowbite } from 'flowbite'
+
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const pinia = createPinia()
@@ -27,7 +30,21 @@ setupApiInterceptors()
 const authStore = useAuthStore()
 authStore.initializeAuth().then(() => {
     app.mount('#app')
+    
+    // Initialize Flowbite after app is mounted
+    setTimeout(async () => {
+        const { initializeFlowbite, setupFlowbiteObserver } = await import('./utils/flowbite');
+        await initializeFlowbite();
+        setupFlowbiteObserver();
+    }, 100);
 }).catch((error) => {
     console.error('Failed to initialize authentication:', error)
     app.mount('#app')
+    
+    // Initialize Flowbite after app is mounted
+    setTimeout(async () => {
+        const { initializeFlowbite, setupFlowbiteObserver } = await import('./utils/flowbite');
+        await initializeFlowbite();
+        setupFlowbiteObserver();
+    }, 100);
 })

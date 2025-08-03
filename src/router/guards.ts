@@ -1,5 +1,6 @@
 import type { Router } from 'vue-router';
 import { useAuthStore } from "../store/auth.store";
+import { initFlowbite } from 'flowbite';
 
 export function setupNavigationGuards(router: Router) {
   router.beforeEach(async (to, from, next) => {
@@ -39,5 +40,17 @@ export function setupNavigationGuards(router: Router) {
     }
 
     next();
+  });
+
+  // Reinitialize Flowbite after route changes
+  router.afterEach(() => {
+    setTimeout(() => {
+      try {
+        initFlowbite();
+        console.log('Flowbite reinitialized after route change');
+      } catch (error) {
+        console.warn('Failed to reinitialize Flowbite after route change:', error);
+      }
+    }, 100);
   });
 } 

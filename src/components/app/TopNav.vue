@@ -375,8 +375,8 @@
                 <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown">
                     <div class="py-3 px-4">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">User Name</span>
-                        <span class="block text-sm text-gray-900 truncate dark:text-white">user@example.com</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ userFullName }}</span>
+                        <span class="block text-sm text-gray-900 truncate dark:text-white">{{ userEmail }}</span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
@@ -407,21 +407,44 @@
 </template>
 
 <script setup lang="ts">
-// Temporarily comment out auth store for testing
-// import { useAuthStore } from '../../store/auth.store';
+import { computed, onMounted } from 'vue';
+import { useAuthStore } from '../../store/auth.store';
 import { useRouter } from 'vue-router';
+import type { User } from '../../api/models/user.model';
+import { initializeFlowbite } from '../../utils/flowbite';
 
-// const authStore = useAuthStore();
+const authStore = useAuthStore();
 const router = useRouter();
+
+const userFullName = computed(() => {
+    const user = authStore.user as User | null;
+    if (user) {
+        return `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User';
+    }
+    return 'User';
+});
+
+const userEmail = computed(() => {
+    const user = authStore.user as User | null;
+    return user?.email || 'user@example.com';
+});
 
 const handleLogout = async () => {
     try {
-        // await authStore.logout();
+        await (authStore as any).logout();
         router.push('/auth/login');
     } catch (error) {
         console.error('Logout failed:', error);
     }
 };
+
+// Initialize Flowbite components when component mounts
+onMounted(() => {
+    // Wait for next tick to ensure DOM is ready
+    setTimeout(() => {
+        initializeFlowbite();
+    }, 100);
+});
 </script>
 
 <style scoped>

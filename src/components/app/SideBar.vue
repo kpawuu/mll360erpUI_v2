@@ -224,12 +224,22 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import CRM from './navigations/CRM.vue';
 import CSandOPS from './navigations/CSandOPS.vue';
 import Settings from './navigations/Settings.vue';
 import { useAuthStore } from '../../store/auth.store';
+import { initializeFlowbite } from '../../utils/flowbite';
 
 const authStore = useAuthStore();
+
+// Initialize Flowbite components when component mounts
+onMounted(() => {
+    // Wait for next tick to ensure DOM is ready
+    setTimeout(() => {
+        initializeFlowbite();
+    }, 100);
+});
 </script>
 
 <style scoped>

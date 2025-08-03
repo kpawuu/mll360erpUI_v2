@@ -439,7 +439,7 @@
                         </svg>
                         {{ showEditModal ? 'Edit User' : 'Create New User' }}
                     </h3>
-                    <button @click="closeEditModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                    <button @click="closeModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>
@@ -752,7 +752,7 @@
                 <!-- Modal footer -->
                 <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
                     <button 
-                        @click="closeEditModal" 
+                        @click="closeModal" 
                         class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
                     >
                         Cancel
@@ -793,8 +793,15 @@
                 <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                     <!-- User Profile Header -->
                     <div class="flex items-center space-x-6 p-6 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-blue-900 rounded-xl">
-                        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
-                            {{ selectedUser.first_name.charAt(0).toUpperCase() }}{{ selectedUser.last_name.charAt(0).toUpperCase() }}
+                        <div class="relative">
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
+                                {{ selectedUser.first_name.charAt(0).toUpperCase() }}{{ selectedUser.last_name.charAt(0).toUpperCase() }}
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 border-2 border-white rounded-full flex items-center justify-center">
+                                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
                         </div>
                         <div class="flex-1">
                             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ selectedUser.first_name }} {{ selectedUser.last_name }}</h2>
@@ -809,7 +816,17 @@
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                                     Staff ID: {{ selectedUser.staffid }}
                                 </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                                    {{ selectedUser.type?.type || 'N/A' }}
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300">
+                                    {{ selectedUser.status === 1 ? 'Active' : 'Inactive' }}
+                                </span>
                             </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Employee since</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(selectedUser.date_created) }}</p>
                         </div>
                     </div>
 
@@ -870,33 +887,53 @@
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">User Type</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.type?.type_name || 'N/A' }}</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.type?.type || 'N/A' }}</span>
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.branch?.branch_name || 'N/A' }}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Company</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.company?.company_name || 'N/A' }}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">
-                                        {{ selectedUser.department_id ? 
-                                            (departmentsStore.departments.find(d => d.id === selectedUser.department_id)?.name || `ID: ${selectedUser.department_id}`) 
-                                            : 'Not Assigned' 
-                                        }}
-                                    </span>
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Date Engaged</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.date_engaged ? formatDate(selectedUser.date_engaged) : 'N/A' }}</span>
                                 </div>
                                 <div class="flex justify-between items-center py-2">
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">
-                                        {{ selectedUser.branch_id ? 
-                                            (branchesStore.branches.find(b => b.id === selectedUser.branch_id)?.name || `ID: ${selectedUser.branch_id}`) 
-                                            : 'Not Assigned' 
-                                        }}
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" :class="selectedUser.status === 1 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'">
+                                        {{ selectedUser.status === 1 ? 'Active' : 'Inactive' }}
                                     </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company & Branch Information -->
+                        <div class="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                Company & Branch
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Company</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.company?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Company Email</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.company?.email || 'N/A' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Company Phone</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.company?.phone_number || 'N/A' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.branch?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch Location</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.branch?.location || 'N/A' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2">
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Branch Type</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.branch?.location_type || 'N/A' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -916,7 +953,7 @@
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">ID Type</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">N/A</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.government_issued_id_type || 'N/A' }}</span>
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Issue Date</span>
@@ -940,9 +977,9 @@
                             </h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</span>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                        Active
+                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Verification Status</span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" :class="selectedUser.isVerified ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'">
+                                        {{ selectedUser.isVerified ? 'Verified' : 'Not Verified' }}
                                     </span>
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
@@ -955,7 +992,7 @@
                                 </div>
                                 <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-600">
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Location</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">N/A</span>
+                                    <span class="text-sm text-gray-900 dark:text-white font-medium">{{ selectedUser.location_name || 'N/A' }}</span>
                                 </div>
                                 <div class="flex justify-between items-center py-2">
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Current IP</span>
@@ -971,12 +1008,67 @@
                             <svg class="w-5 h-5 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            User Roles
+                            User Roles & Permissions
                         </h3>
-                        <div class="flex flex-wrap gap-2">
-                            <span v-for="role in selectedUser.user_roles" :key="role.id" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300">
-                                Role ID: {{ role.role_id }}
-                            </span>
+                        <div class="space-y-4">
+                            <div v-for="userRole in selectedUser.user_roles" :key="userRole.id" class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-4 border border-indigo-200 dark:border-indigo-700">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.61-2.016a1 1 0 00-1.414 0L9 14.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 000-1.414z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ userRole.role?.name }}</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">Access Level: {{ userRole.role?.access_level }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Active
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</p>
+                                        <p class="text-sm text-gray-900 dark:text-white">{{ userRole.department?.name || 'N/A' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned Date</p>
+                                        <p class="text-sm text-gray-900 dark:text-white">{{ formatDateTime(userRole.date_created) }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div v-if="userRole.role?.description" class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role Description</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ userRole.role.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Details Section -->
+                    <div v-if="selectedUser.company?.country" class="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Company Location
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Country</p>
+                                <p class="text-sm text-gray-900 dark:text-white">{{ selectedUser.company.country.name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ISO Code</p>
+                                <p class="text-sm text-gray-900 dark:text-white">{{ selectedUser.company.country.iso }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Code</p>
+                                <p class="text-sm text-gray-900 dark:text-white">+{{ selectedUser.company.country.phonecode }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1481,6 +1573,7 @@ const closeModal = () => {
 }
 
 const closeEditModal = () => {
+    showCreateModal.value = false
     showEditModal.value = false
     editingUser.value = null
     userForm.value = {
