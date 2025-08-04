@@ -1,7 +1,7 @@
 <template>
 
     <aside
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidenav" id="drawer-navigation">
         <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
             <form action="#" method="GET" class="md:hidden mb-2">
@@ -21,9 +21,15 @@
                 </div>
             </form>
             
-            <CRM v-if="authStore.user?.usertype !== 1"/>
-            <CSandOPS v-if="authStore.user?.usertype !== 1"/>
-            <Settings v-if="authStore.user?.usertype === 1"/>
+            <!-- Show only CRM for users who are not staff_admin and have department_id 11 -->
+            <CRM v-if="shouldShowOnlyCRM"/>
+            
+            <!-- Show all menus for other users -->
+            <template v-else>
+                <CRM v-if="authStore.user?.usertype !== 1"/>
+                <CSandOPS v-if="authStore.user?.usertype !== 1"/>
+                <Settings v-if="authStore.user?.usertype === 1"/>
+            </template>
             <!-- {{ authStore }} -->
             <!-- Remove the authStore display as it's causing a lint error -->
             
@@ -224,7 +230,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import CRM from './navigations/CRM.vue';
 import CSandOPS from './navigations/CSandOPS.vue';
 import Settings from './navigations/Settings.vue';
@@ -232,6 +238,23 @@ import { useAuthStore } from '../../store/auth.store';
 import { initializeFlowbite } from '../../utils/flowbite';
 
 const authStore = useAuthStore();
+
+// Computed property to determine if user should only see CRM menus
+const shouldShowOnlyCRM = computed(() => {
+    const user = authStore.user;
+    if (!user) return false;
+    
+    // Check if user is not staff_admin (usertype !== 1) and has department_id 11
+    const shouldShow = user.usertype !== 1 && user.department_id === 11;
+    
+    console.log('SideBar - User check:', {
+        usertype: user.usertype,
+        department_id: user.department_id,
+        shouldShowOnlyCRM: shouldShow
+    });
+    
+    return shouldShow;
+});
 
 // Initialize Flowbite components when component mounts
 onMounted(() => {

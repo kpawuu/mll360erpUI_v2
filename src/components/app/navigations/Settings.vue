@@ -66,10 +66,7 @@
           ></path>
         </svg>
       </button>
-      <ul
-        id="dropdown-company-settings"
-        class="hidden py-2 space-y-2"
-      >
+      <ul id="dropdown-company-settings" class="hidden py-2 space-y-2">
         <li>
           <router-link
             to="/settings/company"
@@ -146,7 +143,9 @@
             d="M8 7H5a2 2 0 0 0-2 2v4m5-6h8M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m0 0h3a2 2 0 0 1 2 2v4m0 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6m18 0s-4 2-9 2-9-2-9-2m9-2h.01"
           />
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">Entity Management</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap"
+          >Entity Management</span
+        >
         <svg
           aria-hidden="true"
           class="w-6 h-6"
@@ -161,10 +160,7 @@
           ></path>
         </svg>
       </button>
-      <ul
-        id="dropdown-entity-settings"
-        class="hidden py-2 space-y-2"
-      >
+      <ul id="dropdown-entity-settings" class="hidden py-2 space-y-2">
         <li>
           <router-link
             to="/settings/entities"
@@ -233,7 +229,9 @@
             d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
           />
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">User Management</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap"
+          >User Management</span
+        >
         <svg
           aria-hidden="true"
           class="w-6 h-6"
@@ -248,10 +246,7 @@
           ></path>
         </svg>
       </button>
-      <ul
-        id="dropdown-user-settings"
-        class="hidden py-2 space-y-2"
-      >
+      <ul id="dropdown-user-settings" class="hidden py-2 space-y-2">
         <li>
           <router-link
             to="/settings/users"
@@ -342,7 +337,9 @@
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
           />
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">Shipment Settings</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap"
+          >Shipment Settings</span
+        >
         <svg
           aria-hidden="true"
           class="w-6 h-6"
@@ -357,10 +354,7 @@
           ></path>
         </svg>
       </button>
-      <ul
-        id="dropdown-shipment-settings"
-        class="hidden py-2 space-y-2"
-      >
+      <ul id="dropdown-shipment-settings" class="hidden py-2 space-y-2">
         <li>
           <router-link
             to="/settings/shipment-types"
@@ -501,7 +495,9 @@
             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">System Settings</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap"
+          >System Settings</span
+        >
         <svg
           aria-hidden="true"
           class="w-6 h-6"
@@ -516,10 +512,7 @@
           ></path>
         </svg>
       </button>
-      <ul
-        id="dropdown-system-settings"
-        class="hidden py-2 space-y-2"
-      >
+      <ul id="dropdown-system-settings" class="hidden py-2 space-y-2">
         <li>
           <router-link
             to="/settings/statuses"
@@ -539,6 +532,32 @@
               ></path>
             </svg>
             Statuses
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            to="/settings/currencies"
+            class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          >
+            <svg
+              class="w-6 h-6 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"
+              />
+            </svg>
+
+            Currencies
           </router-link>
         </li>
       </ul>

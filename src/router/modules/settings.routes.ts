@@ -14,6 +14,7 @@ import Statuses from "../../pages/settings/Statuses.vue";
 import Locations from "../../pages/settings/Locations.vue";
 import Roles from "../../pages/settings/Roles.vue";
 import UserRoleAssignment from "../../pages/settings/UserRoleAssignment.vue";
+import Currencies from "../../pages/settings/Currencies.vue";
 
 export const settingsRoutes: RouteRecordRaw[] = [
   {
@@ -148,6 +149,15 @@ export const settingsRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'User Role Assignment'
+        },
+      },
+      {
+        path: "currencies",
+        name: "settings-currencies",
+        component: Currencies,
+        meta: { 
+          requiresAuth: true,
+          title: 'Currencies Management'
         },
       },
     ],

@@ -17,11 +17,14 @@ export function setupNavigationGuards(router: Router) {
     if (isAuthenticated && (to.path === '/auth/login' || to.path === '/auth/register' || to.path === '/auth/verifyotp' || to.path === '/auth/forgotten-password-otp')) {
       console.log('Router guard - redirecting authenticated user from auth page')
       
-      // Check user type and redirect accordingly
-      const usertypeId = authStore.user?.usertype_id || authStore.user?.usertype || authStore.user?.type_id || authStore.user?.type
-      console.log('Router guard - usertype ID:', usertypeId)
+      // Check if user should only see CRM menus
+      const shouldShowOnlyCRM = authStore.user && authStore.user.usertype !== 1 && authStore.user.department_id === 11;
       
-      if (authStore.user && usertypeId === 1) {
+      if (shouldShowOnlyCRM) {
+        // User should only see CRM - redirect to CRM dashboard
+        console.log('Router guard - CRM-only user, redirecting to CRM dashboard')
+        next('/crm/dashboard');
+      } else if (authStore.user && authStore.user.usertype === 1) {
         // User type 1 (admin) - redirect to settings dashboard
         console.log('Router guard - admin user, redirecting to settings dashboard')
         next('/settings/dashboard');
@@ -37,6 +40,34 @@ export function setupNavigationGuards(router: Router) {
     if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
       next('/auth/login');
       return;
+    }
+
+    // Check if authenticated user should only see CRM menus
+    if (isAuthenticated && authStore.user) {
+      const shouldShowOnlyCRM = authStore.user.usertype !== 1 && authStore.user.department_id === 11;
+      
+      // If user should only see CRM, redirect them away from non-CRM routes
+      if (shouldShowOnlyCRM) {
+        // Allow access to CRM routes
+        if (to.path.startsWith('/crm')) {
+          next();
+          return;
+        }
+        
+        // Redirect from settings routes to CRM dashboard
+        if (to.path.startsWith('/settings')) {
+          console.log('Router guard - CRM-only user trying to access settings, redirecting to CRM dashboard')
+          next('/crm/dashboard');
+          return;
+        }
+        
+        // Redirect from CS routes to CRM dashboard
+        if (to.path.startsWith('/cs')) {
+          console.log('Router guard - CRM-only user trying to access CS, redirecting to CRM dashboard')
+          next('/crm/dashboard');
+          return;
+        }
+      }
     }
 
     next();
