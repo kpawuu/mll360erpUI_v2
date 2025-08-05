@@ -15,6 +15,8 @@ import Locations from "../../pages/settings/Locations.vue";
 import Roles from "../../pages/settings/Roles.vue";
 import UserRoleAssignment from "../../pages/settings/UserRoleAssignment.vue";
 import Currencies from "../../pages/settings/Currencies.vue";
+import Pipelines from "../../pages/settings/Pipelines.vue";
+import Stages from "../../pages/settings/Stages.vue";
 
 export const settingsRoutes: RouteRecordRaw[] = [
   {
@@ -68,6 +70,24 @@ export const settingsRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'Company Details'
+        },
+      },
+      {
+        path: "pipelines",
+        name: "settings-pipelines",
+        component: Pipelines,
+        meta: { 
+          requiresAuth: true,
+          title: 'Pipelines Management'
+        },
+      },
+      {
+        path: "stages",
+        name: "settings-stages",
+        component: Stages,
+        meta: { 
+          requiresAuth: true,
+          title: 'Stages Management'
         },
       },
       {
