@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { feathers } from '../api/feathers'
+import feathersClient from '../api/feathers'
 import type { Leads, CreateLeads, UpdateLeads } from '../api/models/leads.model'
 
 export const useLeadsStore = defineStore('leads', () => {
@@ -27,7 +27,7 @@ export const useLeadsStore = defineStore('leads', () => {
     error.value = null
     
     try {
-      const response = await feathers.service('crm-leads').find(params)
+      const response = await feathersClient.service('crm/leads').find(params)
       leads.value = response.data || []
       pagination.value = {
         total: response.total || 0,
@@ -48,7 +48,7 @@ export const useLeadsStore = defineStore('leads', () => {
     error.value = null
     
     try {
-      const lead = await feathers.service('crm-leads').get(id)
+      const lead = await feathersClient.service('crm/leads').get(id)
       return lead
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch lead'
@@ -64,7 +64,7 @@ export const useLeadsStore = defineStore('leads', () => {
     error.value = null
     
     try {
-      const newLead = await feathers.service('crm-leads').create(leadData)
+      const newLead = await feathersClient.service('crm/leads').create(leadData)
       leads.value.unshift(newLead)
       pagination.value.total += 1
       return newLead
@@ -82,7 +82,7 @@ export const useLeadsStore = defineStore('leads', () => {
     error.value = null
     
     try {
-      const updatedLead = await feathers.service('crm-leads').patch(id, leadData)
+      const updatedLead = await feathersClient.service('crm/leads').patch(id, leadData)
       const index = leads.value.findIndex(lead => lead.id === id)
       if (index !== -1) {
         leads.value[index] = updatedLead
@@ -102,7 +102,7 @@ export const useLeadsStore = defineStore('leads', () => {
     error.value = null
     
     try {
-      await feathers.service('crm-leads').remove(id)
+      await feathersClient.service('crm/leads').remove(id)
       const index = leads.value.findIndex(lead => lead.id === id)
       if (index !== -1) {
         leads.value.splice(index, 1)
