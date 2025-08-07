@@ -19,6 +19,42 @@
       </div>
     </div>
 
+    <!-- Debug Section (temporary) -->
+    <div v-if="true" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+      <h4 class="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">Debug Info:</h4>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div>
+          <strong>Pipelines:</strong>
+          <div>Loading: {{ pipelinesStore.loading }}</div>
+          <div>Error: {{ pipelinesStore.error || 'None' }}</div>
+          <div>Count: {{ pipelines.length }}</div>
+          <div v-if="pipelines.length > 0">Names: {{ pipelines.map(p => p.name).join(', ') }}</div>
+          <button @click="pipelinesStore.fetchPipelines()" class="mt-1 px-2 py-1 bg-blue-500 text-white rounded text-xs">
+            Refresh Pipelines
+          </button>
+        </div>
+        <div>
+          <strong>Stages:</strong>
+          <div>Loading: {{ stagesStore.loading }}</div>
+          <div>Error: {{ stagesStore.error || 'None' }}</div>
+          <div>Count: {{ stages.length }}</div>
+          <div v-if="stages.length > 0">Names: {{ stages.map(s => s.name).join(', ') }}</div>
+          <button @click="stagesStore.fetchStages()" class="mt-1 px-2 py-1 bg-green-500 text-white rounded text-xs">
+            Refresh Stages
+          </button>
+        </div>
+        <div>
+          <strong>Leads:</strong>
+          <div>Loading: {{ leadsStore.loading }}</div>
+          <div>Error: {{ leadsStore.error || 'None' }}</div>
+          <div>Count: {{ leadsStore.leads.length }}</div>
+          <button @click="loadLeads()" class="mt-1 px-2 py-1 bg-purple-500 text-white rounded text-xs">
+            Refresh Leads
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Search and Filters Card -->
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
       <!-- Card Header -->
@@ -124,14 +160,20 @@
             <select
               v-model="selectedPipeline" 
               @change="onPipelineFilterChange"
-              :disabled="leadsStore.loading"
-                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pr-8 pl-3 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              :disabled="leadsStore.loading || pipelinesStore.loading"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pr-8 pl-3 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               <option value="">All Pipelines</option>
-              <option v-for="pipeline in pipelines" :key="pipeline.id" :value="pipeline.id">
+              <option v-if="pipelinesStore.loading" value="" disabled>Loading pipelines...</option>
+              <option v-else-if="pipelinesStore.error" value="" disabled>Error loading pipelines</option>
+              <option v-else-if="pipelines.length === 0" value="" disabled>No pipelines available - Run migrations first</option>
+              <option v-else v-for="pipeline in pipelines" :key="pipeline.id" :value="pipeline.id">
                 {{ pipeline.name }}
               </option>
             </select>
+            <div v-if="pipelinesStore.error" class="mt-1 text-xs text-red-600 dark:text-red-400">
+              {{ pipelinesStore.error }}
+            </div>
           </div>
 
           <!-- Refresh Button -->
@@ -448,17 +490,30 @@
                   <!-- Actions Column -->
                   <td class="px-6 py-4">
                     <div class="flex items-center space-x-2">
-                    <button @click="editLead(lead)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-800 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-blue-800 transition-all duration-200 shadow-sm">
-                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      <button @click="viewLeadDetails(lead)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg hover:bg-gray-200 hover:border-gray-300 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all duration-200 shadow-sm">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                      Edit
+                        View
                       </button>
-                    <button @click="deleteLead(lead.id)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-100 border border-red-200 rounded-lg hover:bg-red-200 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-all duration-200 shadow-sm">
-                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      <button @click="editLead(lead)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-800 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-blue-800 transition-all duration-200 shadow-sm">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
-                      Delete
+                        Edit
+                      </button>
+                      <button v-if="lead.is_active" @click="convertToOpportunity(lead)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 border border-green-200 rounded-lg hover:bg-green-200 hover:border-green-300 focus:ring-4 focus:ring-green-100 dark:focus:ring-green-800 dark:bg-green-900 dark:text-green-300 dark:border-green-700 dark:hover:bg-green-800 transition-all duration-200 shadow-sm">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                        Convert
+                      </button>
+                      <button @click="deleteLead(lead.id)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-100 border border-red-200 rounded-lg hover:bg-red-200 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-all duration-200 shadow-sm">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Delete
                       </button>
                     </div>
                   </td>
@@ -530,7 +585,861 @@
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Add Lead Modal -->
+    <div v-if="showAddModal" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add New Lead
+                    </h3>
+                    <button @click="showAddModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                    <!-- Modal body -->
+                    <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                        <form @submit.prevent="createLead">
+              <!-- Lead Information -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lead Title *</label>
+                  <input
+                    v-model="leadForm.title"
+                    type="text"
+                    required
+                    placeholder="Enter lead title"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Type *</label>
+                  <select
+                    v-model="leadForm.service_type"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="Freight">Freight</option>
+                    <option value="Warehouse">Warehouse</option>
+                    <option value="Transport">Transport</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Contact Information -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Contact Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Name *</label>
+                    <input
+                      v-model="leadForm.contact_name"
+                      type="text"
+                      required
+                      placeholder="Enter contact name"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Email</label>
+                    <input
+                      v-model="leadForm.contact_email"
+                      type="email"
+                      placeholder="Enter contact email"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Phone</label>
+                    <input
+                      v-model="leadForm.contact_phone"
+                      type="tel"
+                      placeholder="Enter contact phone"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Position</label>
+                    <input
+                      v-model="leadForm.contact_position"
+                      type="text"
+                      placeholder="Enter contact position"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Company Information -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Company Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Name *</label>
+                    <input
+                      v-model="leadForm.company_name"
+                      type="text"
+                      required
+                      placeholder="Enter company name"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Website</label>
+                    <input
+                      v-model="leadForm.company_website"
+                      type="url"
+                      placeholder="Enter company website"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Address</label>
+                    <textarea
+                      v-model="leadForm.company_address"
+                      rows="3"
+                      placeholder="Enter company address"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Service Details -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Service Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Origin *</label>
+                    <input
+                      v-model="leadForm.origin"
+                      type="text"
+                      required
+                      placeholder="Enter origin location"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Destination *</label>
+                    <input
+                      v-model="leadForm.destination"
+                      type="text"
+                      required
+                      placeholder="Enter destination location"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cargo Description *</label>
+                    <textarea
+                      v-model="leadForm.cargo_description"
+                      rows="3"
+                      required
+                      placeholder="Describe the cargo or service requirements"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    ></textarea>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estimated Value *</label>
+                    <input
+                      v-model.number="leadForm.estimated_value"
+                      type="number"
+                      required
+                      min="0"
+                      step="0.01"
+                      placeholder="Enter estimated value"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Expected Service Date *</label>
+                    <input
+                      v-model="leadForm.expected_service_date"
+                      type="date"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pipeline and Stage -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Pipeline & Stage</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pipeline *</label>
+                    <select
+                      v-model="leadForm.pipeline_id"
+                      required
+                      @change="onPipelineChange"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select a pipeline</option>
+                      <option v-for="pipeline in pipelines" :key="pipeline.id" :value="pipeline.id">
+                        {{ pipeline.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stage *</label>
+                    <select
+                      v-model="leadForm.stage_id"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select a stage</option>
+                      <option v-for="stage in availableStages" :key="stage.id" :value="stage.id">
+                        {{ stage.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex items-center">
+                  <input
+                    v-model="leadForm.is_active"
+                    type="checkbox"
+                    id="is_active"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  >
+                  <label for="is_active" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                    Active Lead
+                  </label>
+                </div>
+              </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Modal footer -->
+                    <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                        <button 
+                            @click="showAddModal = false" 
+                            class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            @click="createLead" 
+                            :disabled="leadsStore.loading"
+                            class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <div v-if="leadsStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Create Lead
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Lead Modal -->
+    <div v-if="showEditModal" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Edit Lead
+                    </h3>
+                    <button @click="showEditModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <form @submit.prevent="updateLead">
+              <!-- Lead Information -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lead Title *</label>
+                  <input
+                    v-model="leadForm.title"
+                    type="text"
+                    required
+                    placeholder="Enter lead title"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Type *</label>
+                  <select
+                    v-model="leadForm.service_type"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="Freight">Freight</option>
+                    <option value="Warehouse">Warehouse</option>
+                    <option value="Transport">Transport</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Contact Information -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Contact Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Name *</label>
+                    <input
+                      v-model="leadForm.contact_name"
+                      type="text"
+                      required
+                      placeholder="Enter contact name"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Email</label>
+                    <input
+                      v-model="leadForm.contact_email"
+                      type="email"
+                      placeholder="Enter contact email"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Phone</label>
+                    <input
+                      v-model="leadForm.contact_phone"
+                      type="tel"
+                      placeholder="Enter contact phone"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contact Position</label>
+                    <input
+                      v-model="leadForm.contact_position"
+                      type="text"
+                      placeholder="Enter contact position"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Company Information -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Company Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Name *</label>
+                    <input
+                      v-model="leadForm.company_name"
+                      type="text"
+                      required
+                      placeholder="Enter company name"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Website</label>
+                    <input
+                      v-model="leadForm.company_website"
+                      type="url"
+                      placeholder="Enter company website"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Address</label>
+                    <textarea
+                      v-model="leadForm.company_address"
+                      rows="3"
+                      placeholder="Enter company address"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Service Details -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Service Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Origin *</label>
+                    <input
+                      v-model="leadForm.origin"
+                      type="text"
+                      required
+                      placeholder="Enter origin location"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Destination *</label>
+                    <input
+                      v-model="leadForm.destination"
+                      type="text"
+                      required
+                      placeholder="Enter destination location"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cargo Description *</label>
+                    <textarea
+                      v-model="leadForm.cargo_description"
+                      rows="3"
+                      required
+                      placeholder="Describe the cargo or service requirements"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    ></textarea>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estimated Value *</label>
+                    <input
+                      v-model.number="leadForm.estimated_value"
+                      type="number"
+                      required
+                      min="0"
+                      step="0.01"
+                      placeholder="Enter estimated value"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Expected Service Date *</label>
+                    <input
+                      v-model="leadForm.expected_service_date"
+                      type="date"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pipeline and Stage -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Pipeline & Stage</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pipeline *</label>
+                    <select
+                      v-model="leadForm.pipeline_id"
+                      required
+                      @change="onPipelineChange"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select a pipeline</option>
+                      <option v-for="pipeline in pipelines" :key="pipeline.id" :value="pipeline.id">
+                        {{ pipeline.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stage *</label>
+                    <select
+                      v-model="leadForm.stage_id"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select a stage</option>
+                      <option v-for="stage in availableStages" :key="stage.id" :value="stage.id">
+                        {{ stage.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex items-center">
+                  <input
+                    v-model="leadForm.is_active"
+                    type="checkbox"
+                    id="edit_is_active"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  >
+                  <label for="edit_is_active" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                    Active Lead
+                  </label>
+                </div>
+              </div>
+                    </form>
+                </div>
+                
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showEditModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="updateLead" 
+                        :disabled="leadsStore.loading"
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <div v-if="leadsStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Update Lead
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-md">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Success!</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ successMessage }}</p>
+                </div>
+                <div class="flex justify-center p-6 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        @click="showSuccessModal = false" 
+                        class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div v-if="showConfirmModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-md">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Confirm Action</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ confirmMessage }}</p>
+                </div>
+                <div class="flex justify-center space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        @click="showConfirmModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="confirmAction && confirmAction()" 
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Lead Modal -->
+    <div v-if="showViewModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        View Lead Details
+                    </h3>
+                    <button @click="showViewModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                                 <!-- Modal body -->
+                 <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto" v-if="viewingLead">
+                     <!-- Lead Information -->
+                     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                             <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                             </svg>
+                             Lead Information
+                         </h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lead Title</label>
+                                 <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">{{ viewingLead.title }}</p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Service Type</label>
+                                 <p class="mt-1">
+                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                         {{ viewingLead.service_type }}
+                                     </span>
+                                 </p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estimated Value</label>
+                                 <p class="mt-1 text-lg font-semibold text-green-600 dark:text-green-400">${{ formatCurrency(viewingLead.estimated_value) }}</p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                                 <p class="mt-1">
+                                     <span :class="[
+                                         'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium',
+                                         viewingLead.is_active 
+                                             ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                             : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                                     ]">
+                                         {{ viewingLead.is_active ? 'Active' : 'Inactive' }}
+                                     </span>
+                                 </p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Contact Information -->
+                     <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                             <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                             </svg>
+                             Contact Information
+                         </h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Name</label>
+                                 <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">{{ viewingLead.contact_name }}</p>
+                             </div>
+                             <div v-if="viewingLead.contact_email">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.contact_email }}</p>
+                             </div>
+                             <div v-if="viewingLead.contact_phone">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.contact_phone }}</p>
+                             </div>
+                             <div v-if="viewingLead.contact_position">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Position</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.contact_position }}</p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Company Information -->
+                     <div class="bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                             <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                             </svg>
+                             Company Information
+                         </h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Company Name</label>
+                                 <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">{{ viewingLead.company_name }}</p>
+                             </div>
+                             <div v-if="viewingLead.company_website">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Website</label>
+                                 <p class="mt-1 text-blue-600 dark:text-blue-400">
+                                     <a :href="viewingLead.company_website" target="_blank" class="hover:underline">{{ viewingLead.company_website }}</a>
+                                 </p>
+                             </div>
+                             <div v-if="viewingLead.company_address" class="md:col-span-2">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.company_address }}</p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Service Details -->
+                     <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                             <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                             </svg>
+                             Service Details
+                         </h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Origin</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.origin }}</p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Destination</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.destination }}</p>
+                             </div>
+                             <div class="md:col-span-2">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cargo Description</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ viewingLead.cargo_description }}</p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Expected Service Date</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(viewingLead.expected_service_date) }}</p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Pipeline & Stage -->
+                     <div class="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                             <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                             </svg>
+                             Pipeline & Stage
+                         </h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pipeline</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">
+                                     {{ pipelines.find(p => p.id === viewingLead.pipeline_id)?.name || 'Unknown Pipeline' }}
+                                 </p>
+                             </div>
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Stage</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">
+                                     {{ stages.find(s => s.id === viewingLead.stage_id)?.name || 'Unknown Stage' }}
+                                 </p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Timestamps -->
+                     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Timestamps</h4>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Created</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(viewingLead.date_created) }}</p>
+                             </div>
+                             <div v-if="viewingLead.date_updated">
+                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Last Updated</label>
+                                 <p class="mt-1 text-gray-900 dark:text-white">{{ formatDate(viewingLead.date_updated) }}</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showViewModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="showViewModal = false" 
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convert to Opportunity Modal -->
+    <div v-if="showConvertModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Convert to Opportunity
+                    </h3>
+                    <button @click="showConvertModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <!-- Add your convert to opportunity content here -->
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showConvertModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="showConvertModal = false" 
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -540,17 +1449,20 @@ import { usePipelinesStore } from '../../store/pipelines.store'
 import { useStagesStore } from '../../store/stages.store'
 import { useEntityStore } from '../../store/entity.store'
 import { useEntityContactPersonStore } from '../../store/entity-contact-person.store'
+import { useOpportunitiesStore } from '../../store/opportunities.store'
 import type { Leads } from '../../api/models/leads.model'
 import type { Pipelines } from '../../api/models/pipelines.model'
 import type { Stages } from '../../api/models/stages.model'
 import type { Entity } from '../../api/models/entity.model'
 import type { EntityContactPerson } from '../../api/models/entity-contact-person.model'
+import type { CreateOpportunities } from '../../api/models/opportunities.model'
 
 const leadsStore = useLeadsStore()
 const pipelinesStore = usePipelinesStore()
 const stagesStore = useStagesStore()
 const entityStore = useEntityStore()
 const entityContactPersonStore = useEntityContactPersonStore()
+const opportunitiesStore = useOpportunitiesStore()
 
 // Reactive data
 const searchQuery = ref('')
@@ -560,7 +1472,11 @@ const showAddModal = ref(false)
 const showEditModal = ref(false)
 const showSuccessModal = ref(false)
 const showConfirmModal = ref(false)
+const showViewModal = ref(false)
+const showConvertModal = ref(false)
 const editingLead = ref<Leads | null>(null)
+const viewingLead = ref<Leads | null>(null)
+const convertingLead = ref<Leads | null>(null)
 const successMessage = ref('')
 const confirmMessage = ref('')
 const confirmAction = ref<(() => Promise<void>) | null>(null)
@@ -640,6 +1556,12 @@ const visiblePages = computed(() => {
   }
   
   return pages
+})
+
+const availableStages = computed(() => {
+  // Note: In the current schema, stages are global and not pipeline-specific
+  // All stages are available for any pipeline selection
+  return stages.value || []
 })
 
 // Methods
@@ -738,6 +1660,16 @@ const editLead = (lead: Leads) => {
   showEditModal.value = true
 }
 
+const viewLeadDetails = (lead: Leads) => {
+  viewingLead.value = lead
+  showViewModal.value = true
+}
+
+const convertToOpportunity = (lead: Leads) => {
+  convertingLead.value = lead
+  showConvertModal.value = true
+}
+
 const deleteLead = async (id: number) => {
   confirmMessage.value = 'Are you sure you want to delete this lead? This action cannot be undone.'
   confirmAction.value = async () => {
@@ -784,6 +1716,93 @@ const goToPage = (page: number | string) => {
   }
 }
 
+const createLead = async () => {
+  try {
+    // Prepare the data by removing null values for optional fields
+    const leadData = {
+      ...leadForm.value,
+      contact_id: leadForm.value.contact_id || undefined,
+      entity_id: leadForm.value.entity_id || undefined,
+      contact_email: leadForm.value.contact_email || undefined,
+      contact_phone: leadForm.value.contact_phone || undefined,
+      contact_position: leadForm.value.contact_position || undefined,
+      company_website: leadForm.value.company_website || undefined,
+      company_address: leadForm.value.company_address || undefined
+    }
+    
+    await leadsStore.createLead(leadData)
+    showAddModal.value = false
+    showSuccessModal.value = true
+    successMessage.value = 'Lead created successfully!'
+    resetLeadForm()
+    await loadLeads()
+  } catch (error) {
+    console.error('Failed to create lead:', error)
+    showSuccessModal.value = true
+    successMessage.value = 'Failed to create lead. Please try again.'
+  }
+}
+
+const updateLead = async () => {
+  if (!editingLead.value) return
+  
+  try {
+    // Prepare the data by removing null values for optional fields
+    const leadData = {
+      ...leadForm.value,
+      contact_id: leadForm.value.contact_id || undefined,
+      entity_id: leadForm.value.entity_id || undefined,
+      contact_email: leadForm.value.contact_email || undefined,
+      contact_phone: leadForm.value.contact_phone || undefined,
+      contact_position: leadForm.value.contact_position || undefined,
+      company_website: leadForm.value.company_website || undefined,
+      company_address: leadForm.value.company_address || undefined
+    }
+    
+    await leadsStore.updateLead(editingLead.value.id, leadData)
+    showEditModal.value = false
+    showSuccessModal.value = true
+    successMessage.value = 'Lead updated successfully!'
+    editingLead.value = null
+    resetLeadForm()
+    await loadLeads()
+  } catch (error) {
+    console.error('Failed to update lead:', error)
+    showSuccessModal.value = true
+    successMessage.value = 'Failed to update lead. Please try again.'
+  }
+}
+
+const onPipelineChange = () => {
+  // Note: In the current schema, stages are global and not pipeline-specific
+  // We could optionally reset stage selection when pipeline changes
+  // leadForm.value.stage_id = 0
+}
+
+const resetLeadForm = () => {
+  leadForm.value = {
+    title: '',
+    contact_id: null,
+    contact_name: '',
+    contact_email: '',
+    contact_phone: '',
+    contact_position: '',
+    entity_id: null,
+    company_name: '',
+    company_website: '',
+    company_address: '',
+    service_type: 'Freight',
+    origin: '',
+    destination: '',
+    cargo_description: '',
+    estimated_value: 0,
+    pipeline_id: 0,
+    stage_id: 0,
+    expected_service_date: '',
+    is_active: true
+  }
+}
+
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
 }
@@ -796,10 +1815,90 @@ const formatCurrency = (value: number) => {
 }
 
 onMounted(async () => {
-  await Promise.all([
-    loadLeads(),
-    pipelinesStore.fetchPipelines(),
-    stagesStore.fetchStages()
-  ])
+  try {
+    console.log('Loading leads, pipelines, and stages...')
+    
+    // Load data in parallel
+    const [leadsResult, pipelinesResult, stagesResult] = await Promise.allSettled([
+      loadLeads(),
+      pipelinesStore.fetchPipelines(),
+      stagesStore.fetchStages()
+    ])
+    
+    // Log results for debugging
+    console.log('Leads loading result:', leadsResult.status)
+    console.log('Pipelines loading result:', pipelinesResult.status)
+    console.log('Stages loading result:', stagesResult.status)
+    
+    if (pipelinesResult.status === 'rejected') {
+      console.error('Failed to load pipelines:', pipelinesResult.reason)
+    }
+    
+    if (stagesResult.status === 'rejected') {
+      console.error('Failed to load stages:', stagesResult.reason)
+    }
+    
+    // Log the actual data
+    console.log('Pipelines data:', pipelines.value)
+    console.log('Stages data:', stages.value)
+    
+  } catch (error) {
+    console.error('Error in onMounted:', error)
+  }
 })
+
+const performConversion = async () => {
+  if (!convertingLead.value) return
+  
+  try {
+    // Create opportunity data from lead
+    const opportunityData: CreateOpportunities = {
+      title: convertingLead.value.title,
+      pipeline_id: convertingLead.value.pipeline_id,
+      stage_id: convertingLead.value.stage_id,
+      company_id: 1, // Default company ID - should be dynamic
+      owner_id: 1, // Default owner ID - should be current user
+      contact_id: convertingLead.value.contact_id || undefined,
+      contact_name: convertingLead.value.contact_name,
+      contact_email: convertingLead.value.contact_email || undefined,
+      contact_phone: convertingLead.value.contact_phone || undefined,
+      contact_position: convertingLead.value.contact_position || undefined,
+      entity_id: convertingLead.value.entity_id || undefined,
+      company_name: convertingLead.value.company_name,
+      company_website: convertingLead.value.company_website || undefined,
+      company_address: convertingLead.value.company_address || undefined,
+      origin: convertingLead.value.origin,
+      destination: convertingLead.value.destination,
+      cargo_description: convertingLead.value.cargo_description,
+      amount: convertingLead.value.estimated_value,
+      probability: 50, // Default probability
+      expected_close_date: convertingLead.value.expected_service_date,
+      lead_id: convertingLead.value.id,
+      is_active: true
+    }
+    
+    // Create the opportunity
+    await opportunitiesStore.createOpportunity(opportunityData)
+    
+    // Update the lead to mark it as converted
+    await leadsStore.updateLead(convertingLead.value.id, {
+      is_active: false,
+      converted_at: new Date().toISOString(),
+      converted_by: 1 // Default user ID - should be current user
+    })
+    
+    showConvertModal.value = false
+    showSuccessModal.value = true
+    successMessage.value = 'Lead successfully converted to opportunity!'
+    convertingLead.value = null
+    
+    // Refresh the leads list
+    await loadLeads()
+    
+  } catch (error) {
+    console.error('Failed to convert lead to opportunity:', error)
+    showSuccessModal.value = true
+    successMessage.value = 'Failed to convert lead to opportunity. Please try again.'
+  }
+}
 </script>
