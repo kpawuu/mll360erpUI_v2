@@ -4,8 +4,8 @@ export interface Activity {
   subject: string;
   description?: string;
   user_id: number;
-  entity_type: 'entity';
-  entity_id: number;
+  entity_type: 'entity' | 'crm/leads' | 'crm/opportunities';
+  entity_id?: number;
   company_id: number;
   status: 'pending' | 'completed' | 'cancelled' | 'in_progress';
   date_start: string;
@@ -20,6 +20,8 @@ export interface Activity {
   user?: User;
   entity?: Entity;
   company?: Company;
+  lead?: Lead;
+  opportunity?: Opportunity;
 }
 
 export interface CreateActivity {
@@ -27,8 +29,8 @@ export interface CreateActivity {
   subject: string;
   description?: string;
   user_id: number;
-  entity_type: 'entity';
-  entity_id: number;
+  entity_type: 'entity' | 'crm/leads' | 'crm/opportunities';
+  entity_id?: number;
   company_id: number;
   status: 'pending' | 'completed' | 'cancelled' | 'in_progress';
   date_start: string;
@@ -44,7 +46,7 @@ export interface UpdateActivity {
   subject?: string;
   description?: string;
   user_id?: number;
-  entity_type?: 'entity';
+  entity_type?: 'entity' | 'crm/leads' | 'crm/opportunities';
   entity_id?: number;
   company_id?: number;
   status?: 'pending' | 'completed' | 'cancelled' | 'in_progress';
@@ -75,4 +77,20 @@ export interface Company {
   id: number;
   name: string;
   // Add other company fields as needed
+}
+
+export interface Lead {
+  id: number;
+  title: string;
+  contact_name: string;
+  company_name: string;
+  // Add other lead fields as needed
+}
+
+export interface Opportunity {
+  id: number;
+  title: string;
+  contact_name: string;
+  company_name: string;
+  // Add other opportunity fields as needed
 } 
