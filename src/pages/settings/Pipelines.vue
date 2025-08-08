@@ -502,6 +502,12 @@
                 <!-- Actions Column -->
                 <td class="px-6 py-4">
                   <div class="flex items-center space-x-2">
+                    <button @click="openActivitiesModal(pipeline)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-700 bg-purple-100 border border-purple-200 rounded-lg hover:bg-purple-200 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900 dark:text-purple-300 dark:border-purple-700 dark:hover:bg-purple-800 transition-all duration-200 shadow-sm">
+                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      Activities
+                    </button>
                     <button @click="editPipeline(pipeline)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-800 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-blue-800 transition-all duration-200 shadow-sm">
                       <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -765,15 +771,484 @@
         </div>
       </div>
     </div>
+
+    <!-- Activities Modal -->
+    <div v-if="showActivitiesModal" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-6xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Activities - {{ selectedPipelineForActivities?.name }}
+                    </h3>
+                    <button @click="showActivitiesModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <!-- Header with Add Activity Button -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Activity Timeline</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Manage all activities related to this pipeline</p>
+                        </div>
+                        <button @click="openAddActivityModal" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Activity
+                        </button>
+                    </div>
+
+                    <!-- Activities List -->
+                    <div v-if="activitiesStore.loading" class="space-y-4">
+                        <div v-for="i in 3" :key="i" class="animate-pulse">
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-lg p-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                                        <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-else-if="activities.length === 0" class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No Activities Yet</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Start tracking your pipeline interactions by adding your first activity.</p>
+                        <button @click="openAddActivityModal" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add First Activity
+                        </button>
+                    </div>
+
+                    <div v-else class="space-y-4">
+                        <div v-for="activity in activities" :key="activity.id" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <div class="p-6">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <!-- Activity Type Icon -->
+                                        <div class="flex-shrink-0">
+                                            <div class="w-12 h-12 rounded-full flex items-center justify-center" :class="getActivityTypeColor(activity.type)">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getActivityTypeIcon(activity.type)"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- Activity Content -->
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center space-x-2 mb-2">
+                                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ activity.subject }}</h4>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="getStatusColor(activity.status)">
+                                                    {{ activity.status.replace('_', ' ').toUpperCase() }}
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                                <div class="flex items-center space-x-4">
+                                                    <span class="flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                        {{ formatDate(activity.date_start) }} - {{ formatDate(activity.date_end) }}
+                                                    </span>
+                                                    <span class="flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        {{ activity.date_start_time }} - {{ activity.date_end_time }}
+                                                    </span>
+                                                    <span v-if="activity.location" class="flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        </svg>
+                                                        {{ activity.location }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div v-if="activity.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                                                {{ activity.description }}
+                                            </div>
+
+                                            <div v-if="activity.notes" class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                                <strong>Notes:</strong> {{ activity.notes }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="openEditActivityModal(activity)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-800 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-blue-800 transition-all duration-200">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button @click="deleteActivity(activity.id)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-100 border border-red-200 rounded-lg hover:bg-red-200 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-all duration-200">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div v-if="showAddActivityModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-2xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add New Activity
+                    </h3>
+                    <button @click="showAddActivityModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <form @submit.prevent="createActivity" class="space-y-6">
+                        <!-- Activity Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Activity Type *</label>
+                            <select
+                                v-model="activityForm.type"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                <option value="call">Phone Call</option>
+                                <option value="email">Email</option>
+                                <option value="online_meeting">Online Meeting</option>
+                                <option value="physical_visit">Physical Visit</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Subject -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
+                            <input
+                                v-model="activityForm.subject"
+                                type="text"
+                                required
+                                placeholder="Enter activity subject"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                            <textarea
+                                v-model="activityForm.description"
+                                rows="3"
+                                placeholder="Enter activity description"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            ></textarea>
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status *</label>
+                            <select
+                                v-model="activityForm.status"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <!-- Date and Time -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date *</label>
+                                <input
+                                    v-model="activityForm.date_start"
+                                    type="date"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date *</label>
+                                <input
+                                    v-model="activityForm.date_end"
+                                    type="date"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Time *</label>
+                                <input
+                                    v-model="activityForm.date_start_time"
+                                    type="time"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Time *</label>
+                                <input
+                                    v-model="activityForm.date_end_time"
+                                    type="time"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                            <input
+                                v-model="activityForm.location"
+                                type="text"
+                                placeholder="Enter location (optional)"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                        </div>
+
+                        <!-- Notes -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
+                            <textarea
+                                v-model="activityForm.notes"
+                                rows="3"
+                                placeholder="Enter additional notes (optional)"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            ></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showAddActivityModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="createActivity" 
+                        :disabled="activitiesStore.loading"
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <div v-if="activitiesStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Create Activity
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Activity Modal -->
+    <div v-if="showEditActivityModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-2xl max-h-full">
+            <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Edit Activity
+                    </h3>
+                    <button @click="showEditActivityModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <form @submit.prevent="updateActivity" class="space-y-6">
+                        <!-- Activity Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Activity Type *</label>
+                            <select
+                                v-model="activityForm.type"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                <option value="call">Phone Call</option>
+                                <option value="email">Email</option>
+                                <option value="online_meeting">Online Meeting</option>
+                                <option value="physical_visit">Physical Visit</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Subject -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
+                            <input
+                                v-model="activityForm.subject"
+                                type="text"
+                                required
+                                placeholder="Enter activity subject"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                            <textarea
+                                v-model="activityForm.description"
+                                rows="3"
+                                placeholder="Enter activity description"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            ></textarea>
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status *</label>
+                            <select
+                                v-model="activityForm.status"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <!-- Date and Time -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date *</label>
+                                <input
+                                    v-model="activityForm.date_start"
+                                    type="date"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date *</label>
+                                <input
+                                    v-model="activityForm.date_end"
+                                    type="date"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Time *</label>
+                                <input
+                                    v-model="activityForm.date_start_time"
+                                    type="time"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Time *</label>
+                                <input
+                                    v-model="activityForm.date_end_time"
+                                    type="time"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                            <input
+                                v-model="activityForm.location"
+                                type="text"
+                                placeholder="Enter location (optional)"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                        </div>
+
+                        <!-- Notes -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
+                            <textarea
+                                v-model="activityForm.notes"
+                                rows="3"
+                                placeholder="Enter additional notes (optional)"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            ></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showEditActivityModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        @click="updateActivity" 
+                        :disabled="activitiesStore.loading"
+                        class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <div v-if="activitiesStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Update Activity
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { usePipelinesStore } from '../../store/pipelines.store'
+import { useActivitiesStore } from '../../store/activities.store'
 import type { Pipelines } from '../../api/models/pipelines.model'
+import type { Activity, CreateActivity } from '../../api/models/activities.model'
 
 const pipelinesStore = usePipelinesStore()
+const activitiesStore = useActivitiesStore()
 
 // Reactive data
 const searchQuery = ref('')
@@ -789,6 +1264,27 @@ const confirmAction = ref<(() => Promise<void>) | null>(null)
 const searchDebounceTimer: NodeJS.Timeout | null = null
 const isSearchDebouncing = ref(false)
 
+// Activities modal state
+const showActivitiesModal = ref(false)
+const showAddActivityModal = ref(false)
+const showEditActivityModal = ref(false)
+const selectedPipelineForActivities = ref<Pipelines | null>(null)
+const editingActivity = ref<Activity | null>(null)
+const viewingActivity = ref<Activity | null>(null)
+
+const activityForm = ref({
+  type: 'call' as 'call' | 'email' | 'online_meeting' | 'physical_visit' | 'other',
+  subject: '',
+  description: '',
+  status: 'pending' as 'pending' | 'completed' | 'cancelled' | 'in_progress',
+  date_start: '',
+  date_end: '',
+  date_start_time: '',
+  date_end_time: '',
+  location: '',
+  notes: ''
+})
+
 const pipelineForm = ref({
   name: '',
   description: '',
@@ -798,6 +1294,10 @@ const pipelineForm = ref({
 // Computed properties
 const activePipelineCount = computed(() => {
   return pipelinesStore.pipelines.filter(p => p.is_active).length
+})
+
+const activities = computed(() => {
+  return activitiesStore.activities || []
 })
 
 const loadPipelines = async () => {
@@ -1010,6 +1510,141 @@ const goToPage = (page: number | string) => {
     pipelinesStore.setPage(page)
     loadPipelines()
   }
+}
+
+// Activities functions
+const openActivitiesModal = async (pipeline: Pipelines) => {
+  selectedPipelineForActivities.value = pipeline
+  showActivitiesModal.value = true
+  await loadActivitiesForPipeline(pipeline.id)
+}
+
+const loadActivitiesForPipeline = async (pipelineId: number) => {
+  try {
+    await activitiesStore.fetchActivities({
+      query: {
+        entity_type: 'pipeline',
+        entity_id: pipelineId,
+        $sort: { date_created: -1 }
+      }
+    })
+  } catch (error) {
+    console.error('Failed to load activities for pipeline:', error)
+  }
+}
+
+const openAddActivityModal = () => {
+  showAddActivityModal.value = true
+  resetActivityForm()
+}
+
+const openEditActivityModal = (activity: Activity) => {
+  editingActivity.value = activity
+  activityForm.value = {
+    type: activity.type,
+    subject: activity.subject,
+    description: activity.description || '',
+    status: activity.status,
+    date_start: activity.date_start,
+    date_end: activity.date_end,
+    date_start_time: activity.date_start_time,
+    date_end_time: activity.date_end_time,
+    location: activity.location || '',
+    notes: activity.notes || ''
+  }
+  showEditActivityModal.value = true
+}
+
+const resetActivityForm = () => {
+  activityForm.value = {
+    type: 'call',
+    subject: '',
+    description: '',
+    status: 'pending',
+    date_start: '',
+    date_end: '',
+    date_start_time: '',
+    date_end_time: '',
+    location: '',
+    notes: ''
+  }
+}
+
+const createActivity = async () => {
+  if (!selectedPipelineForActivities.value) return
+
+  try {
+    const activityData: CreateActivity = {
+      ...activityForm.value,
+      entity_type: 'pipeline',
+      entity_id: selectedPipelineForActivities.value.id,
+      user_id: 1, // TODO: Get from auth store
+      company_id: 1 // TODO: Get from auth store
+    }
+
+    await activitiesStore.createNewActivity(activityData)
+    showAddActivityModal.value = false
+    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
+  } catch (error) {
+    console.error('Failed to create activity:', error)
+  }
+}
+
+const updateActivity = async () => {
+  if (!editingActivity.value || !selectedPipelineForActivities.value) return
+
+  try {
+    await activitiesStore.updateExistingActivity(editingActivity.value.id, activityForm.value)
+    showEditActivityModal.value = false
+    editingActivity.value = null
+    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
+  } catch (error) {
+    console.error('Failed to update activity:', error)
+  }
+}
+
+const deleteActivity = async (activityId: number) => {
+  if (!selectedPipelineForActivities.value) return
+
+  try {
+    await activitiesStore.deleteExistingActivity(activityId)
+    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
+  } catch (error) {
+    console.error('Failed to delete activity:', error)
+  }
+}
+
+// Activity helper functions
+const getActivityTypeColor = (type: string) => {
+  const colors = {
+    call: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400',
+    email: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400',
+    online_meeting: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400',
+    physical_visit: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400',
+    other: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
+  }
+  return colors[type as keyof typeof colors] || colors.other
+}
+
+const getActivityTypeIcon = (type: string) => {
+  const icons = {
+    call: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
+    email: 'M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+    online_meeting: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
+    physical_visit: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z',
+    other: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4'
+  }
+  return icons[type as keyof typeof icons] || icons.other
+}
+
+const getStatusColor = (status: string) => {
+  const colors = {
+    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    in_progress: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+  }
+  return colors[status as keyof typeof colors] || colors.pending
 }
 
 onMounted(async () => {

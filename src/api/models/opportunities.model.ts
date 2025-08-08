@@ -14,13 +14,18 @@ export interface Opportunities {
   company_name: string
   company_website?: string
   company_address?: string
+  currency_id: number
+  amount: number
+  probability: number
+  type: 'one-time' | 'contract'
+  service_type: 'Freight' | 'Warehouse' | 'Transport'
   origin: string
   destination: string
   cargo_description: string
-  amount: number
-  probability: number
+  expected_service_date: string
   expected_close_date: string
   lead_id?: number
+  description: string
   date_created: string
   date_updated?: string
   date_deleted?: string
@@ -45,13 +50,18 @@ export interface CreateOpportunities {
   company_name: string
   company_website?: string
   company_address?: string
+  currency_id: number
+  amount: number
+  probability: number
+  type: 'one-time' | 'contract'
+  service_type: 'Freight' | 'Warehouse' | 'Transport'
   origin: string
   destination: string
   cargo_description: string
-  amount: number
-  probability: number
+  expected_service_date: string
   expected_close_date: string
   lead_id?: number
+  description: string
   is_active?: boolean
 }
 
@@ -70,12 +80,17 @@ export interface UpdateOpportunities {
   company_name?: string
   company_website?: string
   company_address?: string
+  currency_id?: number
+  amount?: number
+  probability?: number
+  type?: 'one-time' | 'contract'
+  service_type?: 'Freight' | 'Warehouse' | 'Transport'
   origin?: string
   destination?: string
   cargo_description?: string
-  amount?: number
-  probability?: number
+  expected_service_date?: string
   expected_close_date?: string
   lead_id?: number
+  description?: string
   is_active?: boolean
 } 

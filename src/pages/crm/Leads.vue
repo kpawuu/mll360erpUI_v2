@@ -2490,13 +2490,13 @@ const loadLeads = async () => {
       $limit: leadsStore.pagination.limit
     }
 
-    // Add search filter
+    // Add search filter (case-insensitive)
     if (searchQuery.value && searchQuery.value.trim()) {
       const searchTerm = searchQuery.value.trim()
       query.$or = [
-        { title: { $like: `%${searchTerm}%` } },
-        { contact_name: { $like: `%${searchTerm}%` } },
-        { company_name: { $like: `%${searchTerm}%` } }
+        { title: { $regex: searchTerm, $options: 'i' } },
+        { contact_name: { $regex: searchTerm, $options: 'i' } },
+        { company_name: { $regex: searchTerm, $options: 'i' } }
       ]
     }
     

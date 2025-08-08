@@ -553,10 +553,10 @@
                 </tr>
               </tbody>
             </table>
-          </div>
         </div>
       </div>
-      
+    </div>
+
       <!-- Pagination Controls -->
       <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="flex items-center space-x-4">
@@ -574,18 +574,18 @@
           </select>
           <span class="text-sm text-gray-600 dark:text-gray-400">
             of {{ stagesStore.pagination.total || 0 }} entries
-          </span>
-        </div>
-        
+            </span>
+      </div>
+      
         <div class="flex items-center space-x-2">
           <button 
             @click="previousPage" 
             :disabled="stagesStore.pagination.currentPage <= 1 || stagesStore.loading"
             class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
+                    </svg>
             Previous
           </button>
           
@@ -603,8 +603,8 @@
               ]"
             >
               {{ page }}
-            </button>
-          </div>
+                  </button>
+                </div>
           
           <button 
             @click="nextPage" 
@@ -614,11 +614,11 @@
             Next
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+                      </svg>
           </button>
-        </div>
-      </div>
-    </div>
+                    </div>
+                  </div>
+                  </div>
 
 
 
@@ -631,16 +631,16 @@
             <h3 class="text-xl font-semibold text-white flex items-center">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-              </svg>
+                    </svg>
               {{ showEditModal ? 'Edit Stage' : 'Add Stage' }}
             </h3>
             <button @click="closeModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-              </svg>
-            </button>
-          </div>
-          
+                    </svg>
+                  </button>
+    </div>
+
           <!-- Modal body -->
           <div class="p-6 space-y-6">
             <form @submit.prevent="saveStage">
@@ -650,45 +650,45 @@
                   <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <svg class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
+              </svg>
                     Stage Details
                   </h3>
                   <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Enter the stage information and configuration.</p>
-                </div>
-                
+          </div>
+          
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <!-- Stage Name -->
-                  <div>
+            <div>
                     <label for="stage-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stage Name</label>
-                    <input 
+              <input 
                       id="stage-name"
-                      v-model="stageForm.name" 
-                      type="text" 
-                      required
+                v-model="stageForm.name"
+                type="text" 
+                required
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                       placeholder="e.g. Lead Qualification"
-                    >
-                  </div>
-                  
+              >
+            </div>
+            
                   <!-- Stage Type -->
-                  <div>
+            <div>
                     <label for="stage-type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stage Type</label>
-                    <select 
+              <select 
                       id="stage-type"
-                      v-model="stageForm.type"
-                      required
+                v-model="stageForm.type"
+                required
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
-                    >
-                      <option value="">Select stage type</option>
+              >
+                <option value="">Select stage type</option>
                       <option value="open">Open</option>
                       <option value="won">Won</option>
-                      <option value="lost">Lost</option>
-                    </select>
+                <option value="lost">Lost</option>
+              </select>
                   </div>
-                </div>
-                
+            </div>
+            
                 <!-- Description -->
-                <div>
+            <div>
                   <label for="stage-description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
                   <textarea 
                     id="stage-description"
@@ -702,53 +702,53 @@
                 <!-- Position -->
                 <div>
                   <label for="stage-position" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Position</label>
-                  <input 
+              <input 
                     id="stage-position"
-                    v-model.number="stageForm.position"
-                    type="number" 
-                    required
-                    min="1"
+                v-model.number="stageForm.position"
+                type="number" 
+                required
+                min="1"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
                     placeholder="e.g. 1, 2, 3..."
-                  >
-                </div>
-                
+              >
+            </div>
+            
                 <!-- Default Stage -->
                 <div class="flex items-center">
-                  <input 
+                <input 
                     id="stage-default"
-                    v-model="stageForm.is_default" 
-                    type="checkbox" 
+                  v-model="stageForm.is_default"
+                  type="checkbox" 
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  >
+                >
                   <label for="stage-default" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
                     Set as Default Stage
-                  </label>
+              </label>
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
                   Only one stage can be default. Setting this stage as default will remove the default status from other stages.
                 </p>
               </div>
             </form>
-          </div>
-          
+            </div>
+            
           <!-- Modal footer -->
           <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
-            <button 
-              @click="closeModal" 
+              <button 
+                @click="closeModal"
               class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
-            >
-              Cancel
-            </button>
-            <button 
+              >
+                Cancel
+              </button>
+              <button 
               @click="saveStage" 
-              :disabled="stagesStore.loading"
+                :disabled="stagesStore.loading"
               class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+              >
               <div v-if="stagesStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               {{ showEditModal ? 'Update Stage' : 'Add Stage' }}
-            </button>
-          </div>
+              </button>
+            </div>
         </div>
       </div>
     </div>
@@ -760,9 +760,9 @@
           <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
             <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
               <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
           </div>
           <div class="p-6 text-center">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Success!</h3>
@@ -790,9 +790,9 @@
           <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
             <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
               <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-              </svg>
-            </div>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
           </div>
           <div class="p-6 text-center">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Confirm Action</h3>
@@ -908,8 +908,8 @@ const onSearchChange = () => {
   
   // Set new timer for 1 second (reduced for testing)
   searchDebounceTimer = setTimeout(() => {
-    stagesStore.setPage(1)
-    loadStages()
+  stagesStore.setPage(1)
+  loadStages()
     isSearchDebouncing.value = false
   }, 1000)
 }
