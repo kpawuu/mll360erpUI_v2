@@ -1,5 +1,5 @@
 import { statusService } from '../services/status.service'
-import type { Status, CreateStatus, UpdateStatus } from '../models/status.model'
+import type { CreateStatus, UpdateStatus } from '../models/status.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { Auditlogs, CreateAuditlogs, UpdateAuditlogs } from '../models/auditlogs.model'
+import type { CreateAuditlogs, UpdateAuditlogs } from '../models/auditlogs.model'
 
 export const auditlogsControllers = {
   // Get all audit logs with optional query parameters

@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { Activity, CreateActivity, UpdateActivity } from '../models/activities.model'
+import type { CreateActivity, UpdateActivity } from '../models/activities.model'
 
 export const getActivities = async (params?: any) => {
   return await feathersClient.service('crm/activities').find(params)

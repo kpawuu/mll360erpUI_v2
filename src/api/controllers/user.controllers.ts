@@ -1,5 +1,5 @@
 import { userService } from '../services/user.service'
-import type { User, CreateUser, UpdateUser } from '../models/user.model'
+import type { CreateUser, UpdateUser } from '../models/user.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

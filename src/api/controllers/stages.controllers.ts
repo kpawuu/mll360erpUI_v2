@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { Stages, CreateStages, UpdateStages } from '../models/stages.model'
+import type { CreateStages, UpdateStages } from '../models/stages.model'
 
 export const stagesControllers = {
   // Get all stages with optional query parameters

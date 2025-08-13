@@ -1,5 +1,5 @@
 import { companyBranchesService } from '../services/company-branches.service'
-import type { CompanyBranch, CreateCompanyBranch, UpdateCompanyBranch } from '../models/company-branches.model'
+import type { CreateCompanyBranch, UpdateCompanyBranch } from '../models/company-branches.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

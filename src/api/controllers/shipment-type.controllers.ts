@@ -1,5 +1,5 @@
 import { shipmentTypeService } from '../services/shipment-type.service'
-import type { ShipmentType, CreateShipmentType, UpdateShipmentType } from '../models/shipment-type.model'
+import type { CreateShipmentType, UpdateShipmentType } from '../models/shipment-type.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

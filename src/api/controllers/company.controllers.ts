@@ -1,5 +1,5 @@
 import { companyService } from '../services/company.service'
-import type { Company, CreateCompany, UpdateCompany } from '../models/company.model'
+import type { CreateCompany, UpdateCompany } from '../models/company.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

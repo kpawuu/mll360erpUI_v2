@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { Pipelines, CreatePipelines, UpdatePipelines } from '../models/pipelines.model'
+import type { CreatePipelines, UpdatePipelines } from '../models/pipelines.model'
 
 export const pipelinesControllers = {
   // Get all pipelines with optional query parameters

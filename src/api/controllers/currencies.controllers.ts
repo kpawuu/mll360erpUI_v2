@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { Currencies, CreateCurrencies, UpdateCurrencies } from '../models/currencies.model'
+import type { CreateCurrencies, UpdateCurrencies } from '../models/currencies.model'
 
 export const currenciesControllers = {
   // Get all currencies with optional query parameters

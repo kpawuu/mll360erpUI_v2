@@ -1,5 +1,5 @@
 import { rolesService } from '../services/roles.service'
-import type { Roles, CreateRolesData, UpdateRolesData } from '../models/roles.model'
+import type { CreateRolesData, UpdateRolesData } from '../models/roles.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

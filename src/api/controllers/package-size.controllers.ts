@@ -1,5 +1,5 @@
 import { packageSizeService } from '../services/package-size.service'
-import type { PackageSize, CreatePackageSize, UpdatePackageSize } from '../models/package-size.model'
+import type { CreatePackageSize, UpdatePackageSize } from '../models/package-size.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

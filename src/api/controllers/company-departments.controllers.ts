@@ -1,5 +1,5 @@
 import { companyDepartmentsService } from '../services/company-departments.service'
-import type { CompanyDepartment, CreateCompanyDepartment, UpdateCompanyDepartment } from '../models/company-departments.model'
+import type { CreateCompanyDepartment, UpdateCompanyDepartment } from '../models/company-departments.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

@@ -1,5 +1,5 @@
 import feathersClient from '../feathers'
-import type { EntityContactPerson, CreateEntityContactPerson, UpdateEntityContactPerson } from '../models/entity-contact-person.model'
+import type { CreateEntityContactPerson, UpdateEntityContactPerson } from '../models/entity-contact-person.model'
 
 export const entityContactPersonControllers = {
   // Get all contact persons with optional query parameters

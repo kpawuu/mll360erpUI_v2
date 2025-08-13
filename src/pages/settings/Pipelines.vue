@@ -1243,12 +1243,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { usePipelinesStore } from '../../store/pipelines.store'
-import { useActivitiesStore } from '../../store/activities.store'
 import type { Pipelines } from '../../api/models/pipelines.model'
-import type { Activity, CreateActivity } from '../../api/models/activities.model'
 
 const pipelinesStore = usePipelinesStore()
-const activitiesStore = useActivitiesStore()
 
 // Reactive data
 const searchQuery = ref('')
@@ -1266,24 +1263,9 @@ const isSearchDebouncing = ref(false)
 
 // Activities modal state
 const showActivitiesModal = ref(false)
-const showAddActivityModal = ref(false)
-const showEditActivityModal = ref(false)
-const selectedPipelineForActivities = ref<Pipelines | null>(null)
-const editingActivity = ref<Activity | null>(null)
-const viewingActivity = ref<Activity | null>(null)
+// Activity-related reactive data - REMOVED: Pipelines are not a valid entity type for activities
 
-const activityForm = ref({
-  type: 'call' as 'call' | 'email' | 'online_meeting' | 'physical_visit' | 'other',
-  subject: '',
-  description: '',
-  status: 'pending' as 'pending' | 'completed' | 'cancelled' | 'in_progress',
-  date_start: '',
-  date_end: '',
-  date_start_time: '',
-  date_end_time: '',
-  location: '',
-  notes: ''
-})
+// Activity form - REMOVED: Pipelines are not a valid entity type for activities
 
 const pipelineForm = ref({
   name: '',
@@ -1296,9 +1278,7 @@ const activePipelineCount = computed(() => {
   return pipelinesStore.pipelines.filter(p => p.is_active).length
 })
 
-const activities = computed(() => {
-  return activitiesStore.activities || []
-})
+// Activities computed - REMOVED: Pipelines are not a valid entity type for activities
 
 const loadPipelines = async () => {
   try {
@@ -1519,133 +1499,7 @@ const openActivitiesModal = async (pipeline: Pipelines) => {
   await loadActivitiesForPipeline(pipeline.id)
 }
 
-const loadActivitiesForPipeline = async (pipelineId: number) => {
-  try {
-    await activitiesStore.fetchActivities({
-      query: {
-        entity_type: 'pipeline',
-        entity_id: pipelineId,
-        $sort: { date_created: -1 }
-      }
-    })
-  } catch (error) {
-    console.error('Failed to load activities for pipeline:', error)
-  }
-}
-
-const openAddActivityModal = () => {
-  showAddActivityModal.value = true
-  resetActivityForm()
-}
-
-const openEditActivityModal = (activity: Activity) => {
-  editingActivity.value = activity
-  activityForm.value = {
-    type: activity.type,
-    subject: activity.subject,
-    description: activity.description || '',
-    status: activity.status,
-    date_start: activity.date_start,
-    date_end: activity.date_end,
-    date_start_time: activity.date_start_time,
-    date_end_time: activity.date_end_time,
-    location: activity.location || '',
-    notes: activity.notes || ''
-  }
-  showEditActivityModal.value = true
-}
-
-const resetActivityForm = () => {
-  activityForm.value = {
-    type: 'call',
-    subject: '',
-    description: '',
-    status: 'pending',
-    date_start: '',
-    date_end: '',
-    date_start_time: '',
-    date_end_time: '',
-    location: '',
-    notes: ''
-  }
-}
-
-const createActivity = async () => {
-  if (!selectedPipelineForActivities.value) return
-
-  try {
-    const activityData: CreateActivity = {
-      ...activityForm.value,
-      entity_type: 'pipeline',
-      entity_id: selectedPipelineForActivities.value.id,
-      user_id: 1, // TODO: Get from auth store
-      company_id: 1 // TODO: Get from auth store
-    }
-
-    await activitiesStore.createNewActivity(activityData)
-    showAddActivityModal.value = false
-    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
-  } catch (error) {
-    console.error('Failed to create activity:', error)
-  }
-}
-
-const updateActivity = async () => {
-  if (!editingActivity.value || !selectedPipelineForActivities.value) return
-
-  try {
-    await activitiesStore.updateExistingActivity(editingActivity.value.id, activityForm.value)
-    showEditActivityModal.value = false
-    editingActivity.value = null
-    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
-  } catch (error) {
-    console.error('Failed to update activity:', error)
-  }
-}
-
-const deleteActivity = async (activityId: number) => {
-  if (!selectedPipelineForActivities.value) return
-
-  try {
-    await activitiesStore.deleteExistingActivity(activityId)
-    await loadActivitiesForPipeline(selectedPipelineForActivities.value.id)
-  } catch (error) {
-    console.error('Failed to delete activity:', error)
-  }
-}
-
-// Activity helper functions
-const getActivityTypeColor = (type: string) => {
-  const colors = {
-    call: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400',
-    email: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400',
-    online_meeting: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400',
-    physical_visit: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400',
-    other: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
-  }
-  return colors[type as keyof typeof colors] || colors.other
-}
-
-const getActivityTypeIcon = (type: string) => {
-  const icons = {
-    call: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
-    email: 'M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-    online_meeting: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
-    physical_visit: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z',
-    other: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4'
-  }
-  return icons[type as keyof typeof icons] || icons.other
-}
-
-const getStatusColor = (status: string) => {
-  const colors = {
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    in_progress: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-  }
-  return colors[status as keyof typeof colors] || colors.pending
-}
+// Activity-related functions - REMOVED: Pipelines are not a valid entity type for activities
 
 onMounted(async () => {
   await loadPipelines()

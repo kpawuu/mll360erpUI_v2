@@ -1,5 +1,5 @@
 import { packageUnitService } from '../services/package-unit.service'
-import type { PackageUnit, CreatePackageUnit, UpdatePackageUnit } from '../models/package-unit.model'
+import type { CreatePackageUnit, UpdatePackageUnit } from '../models/package-unit.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

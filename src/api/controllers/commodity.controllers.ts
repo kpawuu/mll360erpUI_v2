@@ -1,5 +1,5 @@
 import { commodityService } from '../services/commodity.service'
-import type { Commodity, CreateCommodity, UpdateCommodity } from '../models/commodity.model'
+import type { CreateCommodity, UpdateCommodity } from '../models/commodity.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 

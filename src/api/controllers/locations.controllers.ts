@@ -1,5 +1,5 @@
 import { locationsService } from '../services/locations.service'
-import type { Locations, CreateLocationsData, UpdateLocationsData } from '../models/locations.model'
+import type { CreateLocationsData, UpdateLocationsData } from '../models/locations.model'
 import { useAuthStore } from '../../store/auth.store'
 import { authenticateFeathersClient } from '../feathers'
 
