@@ -1,6 +1,6 @@
 <template>
-  <div v-if="show" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
-    <div class="relative w-full max-w-2xl max-h-full">
+  <div v-if="show" class="fixed top-0 left-0 right-0 z-[10000] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div class="relative w-full max-w-4xl max-h-full">
       <div class="relative bg-white rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-2xl">
         <!-- Modal header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-2xl">
@@ -47,40 +47,270 @@
 
             <!-- Win Details Form -->
             <form @submit.prevent="processWin" class="space-y-6">
-              <!-- Win Date -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Win Date *
-                </label>
-                <input
-                  v-model="winData.wonDate"
-                  type="date"
-                  required
-                  :max="today"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                >
-              </div>
-
-              <!-- Actual Amount -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Actual Amount
-                </label>
-                <div class="relative">
-                  <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">
-                    {{ getCurrencySymbol(opportunity.currency_id) }}
-                  </span>
+              <!-- Basic Win Details -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Win Date -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Win Date *
+                  </label>
                   <input
-                    v-model.number="winData.actualAmount"
-                    type="number"
-                    step="0.01"
-                    :placeholder="opportunity.amount?.toString()"
-                    class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    v-model="winData.wonDate"
+                    type="date"
+                    required
+                    :max="today"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                 </div>
+
+                <!-- Actual Amount -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Actual Amount
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">
+                      {{ getCurrencySymbol(opportunity.currency_id) }}
+                    </span>
+                    <input
+                      v-model.number="winData.actualAmount"
+                      type="number"
+                      step="0.01"
+                      :placeholder="opportunity.amount?.toString()"
+                      class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Leave empty to use expected amount: {{ formatCurrency(opportunity.amount, opportunity.currency_id) }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Logistics Service Type -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Logistics Service Type
+                </label>
+                <select
+                  v-model="winData.logisticsServiceType"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  <option value="">Select Service Type</option>
+                  <option value="freight">Freight</option>
+                  <option value="warehousing">Warehousing</option>
+                  <option value="transportation">Transportation</option>
+                  <option value="integrated">Integrated (Full Service)</option>
+                </select>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Leave empty to use expected amount: {{ formatCurrency(opportunity.amount, opportunity.currency_id) }}
+                  Select the primary logistics service for this contract
                 </p>
+              </div>
+
+              <!-- Contract Details -->
+              <div v-if="winData.logisticsServiceType" class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                <h4 class="text-sm font-medium text-blue-800 dark:text-blue-300 mb-3">Contract Details</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <!-- Contract Basis -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Rate Basis
+                    </label>
+                    <select
+                      v-model="winData.contractBasis"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select Rate Basis</option>
+                      <option value="per_kg">Per KG</option>
+                      <option value="per_cbm">Per CBM</option>
+                      <option value="per_shipment">Per Shipment</option>
+                      <option value="per_pallet">Per Pallet</option>
+                      <option value="per_container">Per Container</option>
+                      <option value="per_hour">Per Hour</option>
+                      <option value="per_day">Per Day</option>
+                      <option value="per_month">Per Month</option>
+                      <option value="fixed_rate">Fixed Rate</option>
+                    </select>
+                  </div>
+
+                  <!-- Contract Duration -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Duration (Months)
+                    </label>
+                    <input
+                      v-model.number="winData.contractDurationMonths"
+                      type="number"
+                      min="1"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+
+                  <!-- Currency -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Currency *
+                    </label>
+                    <select
+                      v-model="winData.rateCurrencyId"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select Currency</option>
+                      <option v-for="currency in currencies" :key="currency.id" :value="currency.id">
+                        {{ currency.symbol }} - {{ currency.currency_name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Base Rate with Currency -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Base Rate *
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">
+                        {{ getCurrencySymbol(winData.rateCurrencyId || opportunity.currency_id) }}
+                      </span>
+                      <input
+                        v-model.number="winData.baseRate"
+                        type="number"
+                        step="0.01"
+                        required
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      >
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Rate per {{ getRateTypeLabel(winData.contractBasis) }}
+                    </p>
+                  </div>
+
+                  <!-- Minimum Charge with Currency -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Minimum Charge
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">
+                        {{ getCurrencySymbol(winData.rateCurrencyId || opportunity.currency_id) }}
+                      </span>
+                      <input
+                        v-model.number="winData.minimumCharge"
+                        type="number"
+                        step="0.01"
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      >
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Minimum amount per invoice
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Contract Dates -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Contract Start Date
+                    </label>
+                    <input
+                      v-model="winData.contractStartDate"
+                      type="date"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Contract End Date
+                    </label>
+                    <input
+                      v-model="winData.contractEndDate"
+                      type="date"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+
+                <!-- Additional Charges -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Fuel Surcharge (%)
+                    </label>
+                    <input
+                      v-model.number="winData.fuelSurchargePercentage"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Handling Fee (%)
+                    </label>
+                    <input
+                      v-model.number="winData.handlingFeePercentage"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Minimum Charge
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">
+                        {{ getCurrencySymbol(opportunity.currency_id) }}
+                      </span>
+                      <input
+                        v-model.number="winData.minimumCharge"
+                        type="number"
+                        step="0.01"
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Special Requirements -->
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Special Requirements
+                  </label>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="flex items-center">
+                      <input
+                        v-model="winData.specialHandlingRequired"
+                        type="checkbox"
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      >
+                      <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Special Handling</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input
+                        v-model="winData.temperatureControlled"
+                        type="checkbox"
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      >
+                      <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Temperature Controlled</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input
+                        v-model="winData.hazardousMaterials"
+                        type="checkbox"
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      >
+                      <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Hazardous Materials</span>
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <!-- Notes -->
@@ -91,7 +321,7 @@
                 <textarea
                   v-model="winData.notes"
                   rows="3"
-                  placeholder="Add any notes about how the deal was won, key factors, etc."
+                  placeholder="Add any notes about how the deal was won, key factors, contract terms, etc."
                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 ></textarea>
               </div>
@@ -143,7 +373,7 @@
                       class="rounded border-gray-300 text-green-600 focus:ring-green-500"
                     >
                     <label for="generateInvoice" class="text-sm text-gray-700 dark:text-gray-300">
-                      Generate invoice
+                      Generate logistics invoice
                     </label>
                   </div>
                   <div class="flex items-center space-x-2">
@@ -166,7 +396,7 @@
                   <div class="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent"></div>
                   <div>
                     <h4 class="text-sm font-medium text-blue-800 dark:text-blue-300">Processing Opportunity Win</h4>
-                    <p class="text-xs text-blue-600 dark:text-blue-400">Please wait while we update the system...</p>
+                    <p class="text-xs text-blue-600 dark:text-blue-400">Setting up logistics contract and generating rates...</p>
                   </div>
                 </div>
               </div>
@@ -188,7 +418,9 @@
                   <div v-if="result.data.customerId">Customer ID: {{ result.data.customerId }}</div>
                   <div v-if="result.data.contactId">Contact ID: {{ result.data.contactId }}</div>
                   <div v-if="result.data.projectId">Project ID: {{ result.data.projectId }}</div>
-                  <div v-if="result.data.invoiceId">Invoice ID: {{ result.data.invoiceId }}</div>
+                  <div v-if="result.data.contractId">Contract ID: {{ result.data.contractId }}</div>
+                  <div v-if="result.data.ratesCreated">Rates Created: {{ result.data.ratesCreated }}</div>
+                  <div v-if="result.data.logisticsInvoiceId">Logistics Invoice ID: {{ result.data.logisticsInvoiceId }}</div>
                 </div>
               </div>
 
@@ -334,7 +566,21 @@ const processWin = async () => {
       notes: winData.value.notes,
       nextSteps: Object.entries(nextSteps.value)
         .filter(([_, enabled]) => enabled)
-        .map(([step]) => step)
+        .map(([step]) => step),
+      // Logistics-specific fields
+      logisticsServiceType: winData.value.logisticsServiceType,
+      contractBasis: winData.value.contractBasis,
+      contractDurationMonths: winData.value.contractDurationMonths,
+      contractStartDate: winData.value.contractStartDate,
+      contractEndDate: winData.value.contractEndDate,
+      baseRate: winData.value.baseRate,
+      rateCurrencyId: winData.value.rateCurrencyId || props.opportunity.currency_id,
+      minimumCharge: winData.value.minimumCharge,
+      fuelSurchargePercentage: winData.value.fuelSurchargePercentage,
+      handlingFeePercentage: winData.value.handlingFeePercentage,
+      specialHandlingRequired: winData.value.specialHandlingRequired,
+      temperatureControlled: winData.value.temperatureControlled,
+      hazardousMaterials: winData.value.hazardousMaterials
     }
 
     // Process the win
@@ -372,11 +618,37 @@ const getCurrencySymbol = (currencyId: number) => {
   return currency?.symbol || '$'
 }
 
+const getRateTypeLabel = (basis: string) => {
+  switch (basis) {
+    case 'per_kg':
+      return 'KG'
+    case 'per_cbm':
+      return 'CBM'
+    case 'per_shipment':
+      return 'Shipment'
+    case 'per_pallet':
+      return 'Pallet'
+    case 'per_container':
+      return 'Container'
+    case 'per_hour':
+      return 'Hour'
+    case 'per_day':
+      return 'Day'
+    case 'per_month':
+      return 'Month'
+    case 'fixed_rate':
+      return 'Fixed'
+    default:
+      return 'Rate'
+  }
+}
+
 // Watch for opportunity changes
 watch(() => props.opportunity, (newOpportunity) => {
   if (newOpportunity) {
     winData.value.opportunityId = newOpportunity.id
     winData.value.actualAmount = newOpportunity.amount
+    winData.value.rateCurrencyId = newOpportunity.currency_id
   }
 }, { immediate: true })
 </script>

@@ -215,10 +215,33 @@
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
-                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
+                            <div class="relative group">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                                    <img 
+                                        v-if="companyLogo" 
+                                        :src="companyLogo" 
+                                        :alt="company.name + ' logo'"
+                                        class="w-full h-full object-cover"
+                                    />
+                                    <svg v-else class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                <!-- Upload overlay -->
+                                <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" @click="triggerLogoUpload">
+                                    <div v-if="isUploadingLogo" class="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                                    <svg v-else class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                </div>
+                                <!-- Hidden file input -->
+                                <input 
+                                    ref="logoFileInput" 
+                                    type="file" 
+                                    accept="image/*" 
+                                    class="hidden" 
+                                    @change="handleLogoUpload"
+                                />
                             </div>
                             <div>
                                 <h2 class="text-2xl font-bold text-white">{{ company.name }}</h2>
@@ -309,7 +332,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500 dark:text-gray-400">Country</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ company.country?.name || 'N/A' }}</p>
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ (company as any).country?.name || 'N/A' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -957,6 +980,7 @@ import { useCompanyBranchesStore } from '../../store/company-branches.store'
 import { useCompanyDepartmentsStore } from '../../store/company-departments.store'
 import { useUserStore } from '../../store/user.store'
 import { useAuthStore } from '../../store/auth.store'
+import { useFileStore } from '../../store/file.store'
 import type { Company } from '../../api/models/company.model'
 import type { CompanyBranch } from '../../api/models/company-branches.model'
 import type { CompanyDepartment } from '../../api/models/company-departments.model'
@@ -967,6 +991,7 @@ const branchesStore = useCompanyBranchesStore()
 const departmentsStore = useCompanyDepartmentsStore()
 const userStore = useUserStore()
 const authStore = useAuthStore()
+const fileStore = useFileStore()
 
 const showEditModal = ref(false)
 const showSuccessModal = ref(false)
@@ -977,6 +1002,9 @@ const successMessage = ref('')
 const company = ref<Company | null>(null)
 const editingBranch = ref<CompanyBranch | null>(null)
 const editingDepartment = ref<CompanyDepartment | null>(null)
+const companyLogo = ref<string | null>(null)
+const logoFileInput = ref<HTMLInputElement | null>(null)
+const isUploadingLogo = ref(false)
 
 const companyForm = ref({
     name: '',
@@ -1029,10 +1057,11 @@ const loadCompany = async () => {
                 is_active_license: response.is_active_license || false
             }
             
-            // Load branches, departments, and users for this company
+            // Load branches, departments, users, and logo for this company
             await loadBranches()
             await loadDepartments()
             await loadCompanyUsers()
+            await loadCompanyLogo()
         } else {
             console.error('No company_id found in user data')
         }
@@ -1083,6 +1112,79 @@ const loadCompanyUsers = async () => {
         }
     } catch (error) {
         console.error('Failed to load company users:', error)
+    }
+}
+
+const loadCompanyLogo = async () => {
+    try {
+        if (authStore.user?.company_id) {
+            const logoFile = await fileStore.getCompanyLogo(authStore.user.company_id)
+            if (logoFile) {
+                companyLogo.value = logoFile.file_url
+            }
+        }
+    } catch (error) {
+        console.error('Failed to load company logo:', error)
+    }
+}
+
+const triggerLogoUpload = () => {
+    if (logoFileInput.value) {
+        logoFileInput.value.click()
+    }
+}
+
+const handleLogoUpload = async (event: Event) => {
+    const target = event.target as HTMLInputElement
+    const file = target.files?.[0]
+    
+    if (!file) return
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showSuccessModal.value = true
+        successMessage.value = 'Please select an image file.'
+        return
+    }
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showSuccessModal.value = true
+        successMessage.value = 'File size must be less than 5MB.'
+        return
+    }
+    
+    try {
+        isUploadingLogo.value = true
+        
+        if (authStore.user?.company_id) {
+            const result = await fileStore.uploadFile(
+                file, 
+                'company', 
+                authStore.user.company_id,
+                {
+                    file_description: 'Company logo',
+                    file_tags: 'logo,company'
+                }
+            )
+            
+            // Update the logo display
+            if (result.cloudinary && result.cloudinary.secure_url) {
+                companyLogo.value = result.cloudinary.secure_url
+                showSuccessModal.value = true
+                successMessage.value = 'Company logo uploaded successfully!'
+            }
+        }
+    } catch (error) {
+        console.error('Failed to upload logo:', error)
+        showSuccessModal.value = true
+        successMessage.value = 'Failed to upload logo. Please try again.'
+    } finally {
+        isUploadingLogo.value = false
+        // Reset the file input
+        if (target) {
+            target.value = ''
+        }
     }
 }
 

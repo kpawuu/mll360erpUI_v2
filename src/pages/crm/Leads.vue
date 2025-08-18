@@ -719,13 +719,30 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Name *</label>
+                                            <div class="flex space-x-2">
                                             <input
                                                 v-model="leadForm.company_name"
                                                 type="text"
                                                 required
                                                 placeholder="Enter company name"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                            >
+                                                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                >
+                                                <button
+                                                    @click="detectCustomer"
+                                                    :disabled="isDetectingCustomer || (!leadForm.company_name && !leadForm.contact_email)"
+                                                    type="button"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    <div v-if="isDetectingCustomer" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                                                    <svg v-else class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                    </svg>
+                                                    Detect
+                                                </button>
+                                            </div>
+                                            <div v-if="selectedCustomer" class="mt-2 text-sm text-green-600 dark:text-green-400">
+                                                ✓ Customer detected and selected
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Website</label>
@@ -1035,13 +1052,30 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Name *</label>
+                                        <div class="flex space-x-2">
                                         <input
                                             v-model="leadForm.company_name"
                                             type="text"
                                             required
                                             placeholder="Enter company name"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                        >
+                                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            >
+                                            <button
+                                                @click="detectCustomer"
+                                                :disabled="isDetectingCustomer || (!leadForm.company_name && !leadForm.contact_email)"
+                                                type="button"
+                                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <div v-if="isDetectingCustomer" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                                                <svg v-else class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                                Detect
+                                            </button>
+                                        </div>
+                                        <div v-if="selectedCustomer" class="mt-2 text-sm text-green-600 dark:text-green-400">
+                                            ✓ Customer detected and selected
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company Website</label>
@@ -2295,6 +2329,125 @@
             </div>
         </div>
     </div>
+
+    <!-- Customer Detection Modal -->
+    <div v-if="showCustomerDetectionModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <div class="relative bg-white rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl">
+                    <h3 class="text-xl font-semibold text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Customer Detection Results
+                    </h3>
+                    <button @click="showCustomerDetectionModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <div v-if="customerDetectionResult" class="space-y-6">
+                        <!-- Detection Summary -->
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                            <h4 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Detection Summary</h4>
+                            <div class="text-sm text-blue-800 dark:text-blue-200">
+                                <p>Found {{ customerDetectionResult.existingCustomers.length }} existing customer(s) matching your criteria.</p>
+                                <p class="mt-1">You can select an existing customer or create a new one.</p>
+                            </div>
+                        </div>
+
+                        <!-- Existing Customers -->
+                        <div v-if="customerDetectionResult.existingCustomers.length > 0">
+                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Existing Customers</h4>
+                            <div class="space-y-4">
+                                <div v-for="(customer, index) in customerDetectionResult.existingCustomers" :key="index" 
+                                     class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+                                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h5 class="text-lg font-semibold text-gray-900 dark:text-white">{{ customer.entity?.name || 'Unknown Company' }}</h5>
+                                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ customer.contact?.name || 'No contact person' }}</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <span class="text-gray-500 dark:text-gray-400">Company:</span>
+                                                    <span class="ml-2 text-gray-900 dark:text-white">{{ customer.entity?.name || 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-500 dark:text-gray-400">Contact:</span>
+                                                    <span class="ml-2 text-gray-900 dark:text-white">{{ customer.contact?.name || 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-500 dark:text-gray-400">Email:</span>
+                                                    <span class="ml-2 text-gray-900 dark:text-white">{{ customer.contact?.email_address || 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-500 dark:text-gray-400">Phone:</span>
+                                                    <span class="ml-2 text-gray-900 dark:text-white">{{ customer.contact?.phone_number || 'N/A' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button
+                                            @click="selectCustomer(customer.entity, customer.contact)"
+                                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200"
+                                        >
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Select This Customer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Create New Customer Option -->
+                        <div class="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Create New Customer</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                If none of the existing customers match, you can create a new customer with the information you've entered.
+                            </p>
+                            <button
+                                @click="useNewCustomer"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Create New Customer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+                    <button 
+                        @click="showCustomerDetectionModal = false" 
+                        class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </template>
 
 <script setup lang="ts">
@@ -2307,6 +2460,7 @@ import { useEntityContactPersonStore } from '../../store/entity-contact-person.s
 import { useOpportunitiesStore } from '../../store/opportunities.store'
 import { useCurrenciesStore } from '../../store/currencies.store'
 import { useActivitiesStore } from '../../store/activities.store'
+import { EnhancedLeadService } from '../../services/crm/EnhancedLeadService'
 import type { Leads } from '../../api/models/leads.model'
 import type { Pipelines } from '../../api/models/pipelines.model'
 import type { Stages } from '../../api/models/stages.model'
@@ -2315,6 +2469,8 @@ import type { EntityContactPerson } from '../../api/models/entity-contact-person
 import type { CreateOpportunities } from '../../api/models/opportunities.model'
 import type { Currencies } from '../../api/models/currencies.model'
 import type { Activity, CreateActivity } from '../../api/models/activities.model'
+import type { CustomerDetectionResult } from '../../services/crm/CustomerDetectionService'
+import { useAuthStore } from '../../store/auth.store'
 
 const leadsStore = useLeadsStore()
 const pipelinesStore = usePipelinesStore()
@@ -2324,6 +2480,15 @@ const entityContactPersonStore = useEntityContactPersonStore()
 const opportunitiesStore = useOpportunitiesStore()
 const currenciesStore = useCurrenciesStore()
 const activitiesStore = useActivitiesStore()
+
+// Enhanced Lead Service for customer detection
+const enhancedLeadService = new EnhancedLeadService()
+
+// Customer detection state
+const customerDetectionResult = ref<CustomerDetectionResult | null>(null)
+const isDetectingCustomer = ref(false)
+const showCustomerDetectionModal = ref(false)
+const selectedCustomer = ref<{ entity: any; contact: any } | null>(null)
 
 // Reactive data
 const searchQuery = ref('')
@@ -2675,10 +2840,12 @@ const createLead = async () => {
       company_address: leadForm.value.company_address || undefined
     }
     
-    await leadsStore.createLead(leadData)
+    // Use enhanced service for customer detection and lead creation
+    const result = await enhancedLeadService.createLeadWithCustomerDetection(leadData)
+    
     showAddModal.value = false
     showSuccessModal.value = true
-    successMessage.value = 'Lead created successfully!'
+    successMessage.value = `Lead created successfully! ${result.message || ''}`
     resetLeadForm()
     await loadLeads()
   } catch (error) {
@@ -2705,10 +2872,12 @@ const updateLead = async () => {
       company_address: leadForm.value.company_address || undefined
     }
     
-    await leadsStore.updateLead(editingLead.value.id, leadData)
+    // Use enhanced service for customer detection and lead update
+    const result = await enhancedLeadService.updateLeadWithCustomerDetection(editingLead.value.id, leadData)
+    
     showEditModal.value = false
     showSuccessModal.value = true
-    successMessage.value = 'Lead updated successfully!'
+    successMessage.value = `Lead updated successfully! ${result.message || ''}`
     editingLead.value = null
     resetLeadForm()
     await loadLeads()
@@ -2753,6 +2922,69 @@ const resetLeadForm = () => {
     expected_service_date: '',
     is_active: true
   }
+  // Reset customer detection state
+  customerDetectionResult.value = null
+  selectedCustomer.value = null
+}
+
+// Customer detection functions
+const detectCustomer = async () => {
+  if (!leadForm.value.company_name && !leadForm.value.contact_email) {
+    showSuccessModal.value = true
+    successMessage.value = 'Please enter company name or contact email to detect customer.'
+    return
+  }
+
+  isDetectingCustomer.value = true
+  try {
+    const result = await enhancedLeadService.detectCustomer({
+      company_name: leadForm.value.company_name,
+      contact_email: leadForm.value.contact_email,
+      contact_phone: leadForm.value.contact_phone
+    })
+    
+    customerDetectionResult.value = result
+    
+    if (result.existingCustomers && result.existingCustomers.length > 0) {
+      showCustomerDetectionModal.value = true
+    } else {
+      showSuccessModal.value = true
+      successMessage.value = 'No existing customers found. You can proceed with creating a new customer.'
+    }
+  } catch (error) {
+    console.error('Customer detection failed:', error)
+    showSuccessModal.value = true
+    successMessage.value = 'Customer detection failed. Please try again.'
+  } finally {
+    isDetectingCustomer.value = false
+  }
+}
+
+const selectCustomer = (entity: any, contact: any) => {
+  selectedCustomer.value = { entity, contact }
+  
+  // Populate form with detected customer data
+  if (entity) {
+    leadForm.value.entity_id = entity.id
+    leadForm.value.company_name = entity.name
+    leadForm.value.company_website = entity.website || ''
+    leadForm.value.company_address = entity.address || ''
+  }
+  
+  if (contact) {
+    leadForm.value.contact_id = contact.id
+    leadForm.value.contact_name = contact.name
+    leadForm.value.contact_email = contact.email_address || ''
+    leadForm.value.contact_phone = contact.phone_number || ''
+    leadForm.value.contact_position = contact.job_title || ''
+  }
+  
+  showCustomerDetectionModal.value = false
+}
+
+const useNewCustomer = () => {
+  selectedCustomer.value = null
+  showCustomerDetectionModal.value = false
 }
 
 const resetOpportunityForm = () => {
@@ -2793,13 +3025,63 @@ const openActivitiesModal = async (lead: Leads) => {
 
 const loadActivitiesForLead = async (leadId: number) => {
   try {
-    await activitiesStore.fetchActivities({
+    // Clear existing activities first
+    activitiesStore.activities = []
+    
+    // Create a precise query to fetch only activities for this specific lead
+    const query = {
       entity_type: 'crm/leads',
       entity_id: leadId,
+      company_id: useAuthStore().user?.company_id, // Ensure we only get activities for the user's company
       $sort: { date_created: -1 }
+    }
+    
+    console.log('🔍 Fetching activities for lead with query:', query)
+    console.log('🔍 Lead ID:', leadId)
+    console.log('🔍 User company ID:', useAuthStore().user?.company_id)
+    
+    // Fetch activities with the specific query
+    await activitiesStore.fetchActivities(query)
+    
+    console.log('📋 Activities after fetch:', activitiesStore.activities)
+    console.log('📋 Activities count:', activitiesStore.activities.length)
+    
+    // Verify that all returned activities are actually for this lead
+    const filteredActivities = activitiesStore.activities.filter(activity => 
+      activity.entity_type === 'crm/leads' && 
+      activity.entity_id === leadId
+    )
+    
+    if (filteredActivities.length !== activitiesStore.activities.length) {
+      console.warn('⚠️ Some activities returned do not match the lead filter:', {
+        expected: filteredActivities.length,
+        actual: activitiesStore.activities.length,
+        activities: activitiesStore.activities.map(a => ({
+          id: a.id,
+          entity_type: a.entity_type,
+          entity_id: a.entity_id,
+          subject: a.subject
+        }))
+      })
+      // Update the store with only the correctly filtered activities
+      activitiesStore.activities = filteredActivities
+    }
+    
+    // Log each activity for debugging
+    activitiesStore.activities.forEach((activity, index) => {
+      console.log(`📋 Activity ${index + 1}:`, {
+        id: activity.id,
+        entity_type: activity.entity_type,
+        entity_id: activity.entity_id,
+        subject: activity.subject,
+        description: activity.description,
+        company_id: activity.company_id
+      })
     })
+    
   } catch (error) {
     console.error('Failed to load activities for lead:', error)
+    activitiesStore.error = error instanceof Error ? error.message : 'Failed to fetch activities'
   }
 }
 
@@ -3123,4 +3405,6 @@ const performConversion = async () => {
     successMessage.value = 'Failed to convert lead to opportunity. Please try again.'
   }
 }
+
+
 </script>

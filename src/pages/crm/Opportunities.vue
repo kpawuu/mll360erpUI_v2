@@ -650,12 +650,7 @@
                     </svg>
                     Activities
                   </button>
-                  <button @click="markAsWon(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 hover:border-emerald-300 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-900/30 transition-all duration-200 group/btn">
-                    <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Mark as Won
-                  </button>
+
                   <button @click="deleteOpportunity(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-xl hover:bg-red-100 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30 transition-all duration-200 group/btn">
                     <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -764,7 +759,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
               </svg>
                     </button>
-    </div>
+            </div>
 
                 <!-- Modal body -->
                 <div class="p-6 max-h-[70vh] overflow-y-auto">
@@ -793,7 +788,7 @@
             </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Type *</label>
-                                        <select
+            <select 
                                             v-model="formData.service_type"
                                             required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -801,7 +796,7 @@
                                             <option value="Freight">Freight</option>
                                             <option value="Warehouse">Warehouse</option>
                                             <option value="Transport">Transport</option>
-                                        </select>
+            </select>
             </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pipeline *</label>
@@ -854,30 +849,30 @@
                                     </div>
                                 </div>
         </div>
-      </div>
-
+          </div>
+          
                         <!-- Financial Information -->
                         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
                             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                    </svg>
+              </svg>
                                     Financial Information
           </h3>
-        </div>
+            </div>
                             <div class="p-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount</label>
-                                        <input
+            <input 
                                             v-model.number="formData.amount"
                                             type="number"
                                             step="0.01"
                                             placeholder="Enter amount"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                        >
-            </div>
+            >
+          </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Probability (%)</label>
                                         <input
@@ -899,7 +894,7 @@
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
+            </svg>
                                     Contact Information
           </h3>
         </div>
@@ -944,8 +939,8 @@
                                         >
                                     </div>
           </div>
-        </div>
       </div>
+    </div>
 
                         <!-- Cargo Information -->
                         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
@@ -992,7 +987,7 @@
           </div>
         </div>
       </div>
-
+      
                         <!-- Dates -->
                         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
                             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -1002,7 +997,7 @@
                                     </svg>
                                     Important Dates
           </h3>
-        </div>
+                </div>
                             <div class="p-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -1033,7 +1028,7 @@
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
+                    </svg>
                                     Additional Information
           </h3>
         </div>
@@ -1054,27 +1049,27 @@
 
                 <!-- Modal footer -->
                 <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
-                    <button 
+                  <button 
                         @click="closeModal" 
                         class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
                     >
                         Cancel
-                    </button>
-                    <button 
+                  </button>
+                  <button 
                         @click="saveOpportunity" 
                         :disabled="saving"
                         class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <div v-if="saving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         {{ saving ? 'Saving...' : (showEditModal ? 'Update' : 'Create') }}
-                    </button>
-        </div>
+                  </button>
+                </div>
       </div>
     </div>
   </div>
   
         <!-- View Opportunity Modal -->
-    <div v-if="showViewModal" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div v-if="showViewModal" class="fixed top-0 left-0 right-0 z-[9999] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
         <div class="relative w-full max-w-4xl max-h-full">
             <div class="relative bg-white rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-2xl">
         <!-- Modal header -->
@@ -1085,21 +1080,21 @@
                             <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
                                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-            </div>
+                  </svg>
+                </div>
                             <div>
                                 <h3 class="text-2xl font-bold text-white">Opportunity Details</h3>
                                 <p class="text-blue-100 text-sm mt-1">Comprehensive view of opportunity information</p>
                             </div>
                         </div>
-                        <button @click="closeModal" class="text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-xl text-sm w-10 h-10 inline-flex justify-center items-center transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <button @click="closeModal" class="relative z-10 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-xl text-sm w-10 h-10 inline-flex justify-center items-center transition-all duration-200 shadow-lg hover:shadow-xl">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
+                            </svg>
+                        </button>
                     </div>
-        </div>
-        
+      </div>
+      
         <!-- Modal body -->
                 <div class="p-8 max-h-[70vh] overflow-y-auto">
                     <div v-if="selectedOpportunity" class="space-y-8">
@@ -1112,11 +1107,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                     </svg>
                                     {{ selectedOpportunity.service_type || 'N/A' }}
-                                </span>
+        </span>
                                 <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                    </svg>
+              </svg>
                                     {{ selectedOpportunity.probability }}% Probability
                                 </span>
                             </div>
@@ -1129,21 +1124,21 @@
                                     <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
                                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                        </svg>
+              </svg>
                                     </div>
                                     <span class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Amount</span>
                                 </div>
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ formatCurrency(selectedOpportunity.amount, selectedOpportunity.currency_id) }}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Total opportunity value</p>
-                </div>
-                
+    </div>
+
                             <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-200 dark:border-green-800">
-                                <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4">
                                     <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
                                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
-                                    </div>
+        </div>
                                     <span class="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide">Stage</span>
                                 </div>
                                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ getStageName(selectedOpportunity.stage_id) }}</h3>
@@ -1155,14 +1150,14 @@
                                     <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center">
                                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                        </svg>
-                                    </div>
+                </svg>
+            </div>
                                     <span class="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">Pipeline</span>
-                                </div>
+            </div>
                                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ getPipelineName(selectedOpportunity.pipeline_id) }}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Sales pipeline</p>
-                            </div>
-                        </div>
+          </div>
+          </div>
 
                         <!-- Basic Information -->
                         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
@@ -1200,9 +1195,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                </div>
-                
+        </div>
+      </div>
+
                         <!-- Financial Information -->
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                             <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -1215,7 +1210,7 @@
                 <div>
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Amount</span>
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ formatCurrency(selectedOpportunity.amount, selectedOpportunity.currency_id) }}</p>
-                    </div>
+        </div>
                                 <div>
                                     <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Probability</span>
                                     <p class="text-sm text-gray-900 dark:text-white">{{ selectedOpportunity.probability }}%</p>
@@ -1230,11 +1225,11 @@
                                     <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mr-3">
                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
-                                    </div>
+                </svg>
+            </div>
                                     Contact Information
                                 </h4>
-                            </div>
+            </div>
                             <div class="p-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div class="space-y-6">
@@ -1243,7 +1238,7 @@
                                                 <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
-                                            </div>
+          </div>
                 <div>
                                                 <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Contact Name</span>
                                                 <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ selectedOpportunity.contact_name }}</p>
@@ -1285,10 +1280,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                  </div>
-                </div>
-                
+          </div>
+        </div>
+      </div>
+
                                                 <!-- Cargo Information -->
                         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -1297,7 +1292,7 @@
                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                         </svg>
-                                    </div>
+        </div>
                                     Cargo Information
                                 </h4>
                             </div>
@@ -1308,14 +1303,14 @@
                                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m5-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                                </svg>
-                                            </div>
+                </svg>
+            </div>
                 <div>
                                                 <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Origin</span>
                                                 <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ selectedOpportunity.origin }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+            </div>
+          </div>
+          </div>
                                     <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl p-4 border border-green-200 dark:border-green-800">
                                         <div class="flex items-center space-x-3 mb-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -1344,9 +1339,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                </div>
-                
+        </div>
+      </div>
+
                                                 <!-- Dates -->
                         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -1355,7 +1350,7 @@
                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
-                                    </div>
+        </div>
                                     Important Dates
                                 </h4>
                             </div>
@@ -1366,14 +1361,14 @@
                                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                            </div>
+                </svg>
+            </div>
                 <div>
                                                 <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Service Date</span>
                                                 <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ formatDate(selectedOpportunity.expected_service_date) }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+            </div>
+          </div>
+          </div>
                                     <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl p-4 border border-green-200 dark:border-green-800">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -1388,9 +1383,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                </div>
-                
+        </div>
+      </div>
+
                         <!-- Description -->
                         <div v-if="selectedOpportunity.description" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -1422,36 +1417,38 @@
         </div>
         
         <!-- Modal footer -->
-                <div class="flex items-center justify-between p-8 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 rounded-b-2xl">
+                <div class="flex items-center justify-end p-8 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 rounded-b-2xl">
                     <div class="flex items-center space-x-4">
-                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Last updated: {{ formatDate(selectedOpportunity.date_updated || selectedOpportunity.date_created) }}</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-4">
-          <button 
+                        <!-- Secondary Actions -->
+                        <button 
                             @click="closeModal" 
                             class="px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
+                        >
                             Close
-          </button>
-          <button 
+                        </button>
+                        
+                        <!-- Primary Actions -->
+                        <button 
+                            @click="markAsWon(selectedOpportunity)" 
+                            class="inline-flex items-center px-6 py-3 text-sm font-semibold text-emerald-700 bg-emerald-50 border-2 border-emerald-200 rounded-xl hover:bg-emerald-100 hover:border-emerald-300 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-900/30 transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Mark as Won
+                        </button>
+                        
+                        <button 
                             @click="editOpportunity(selectedOpportunity)" 
                             class="inline-flex items-center px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          >
+                        >
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
                             Edit Opportunity
-          </button>
+                        </button>
                     </div>
-        </div>
+                </div>
       </div>
     </div>
   </div>
@@ -1481,15 +1478,15 @@
                         <div class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                        </div>
+                </svg>
+            </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Opportunity</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-4">
                             Are you sure you want to delete the opportunity <strong>"{{ opportunityToDelete?.title }}"</strong>?
                         </p>
                         <p class="text-sm text-red-600 dark:text-red-400 font-medium">This action cannot be undone.</p>
-                    </div>
-              </div>
+            </div>
+          </div>
               
                 <!-- Modal footer -->
                 <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
@@ -1508,10 +1505,10 @@
                         {{ deleting ? 'Deleting...' : 'Delete' }}
                     </button>
                 </div>
-            </div>
+          </div>
         </div>
-              </div>
-              
+      </div>
+
     <!-- Activities Modal -->
     <div v-if="showActivitiesModalFlag" class="fixed top-0 left-0 right-0 z-60 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
         <div class="relative w-full max-w-6xl max-h-full">
@@ -1523,7 +1520,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                         Activities - {{ selectedOpportunity?.title }}
-                    </h3>
+          </h3>
                     <button @click="closeModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
@@ -1596,15 +1593,15 @@
                                                 <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ activity.subject }}</h4>
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="getStatusColor(activity.status)">
                                                     {{ activity.status.replace('_', ' ').toUpperCase() }}
-                                                </span>
-                                            </div>
+          </span>
+        </div>
                                             
                                             <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                                                 <div class="flex items-center space-x-4">
                                                     <span class="flex items-center">
                                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                        </svg>
+                </svg>
                                                         {{ formatDate(activity.date_start) }} - {{ formatDate(activity.date_end) }}
                                                     </span>
                                                     <span class="flex items-center">
@@ -1618,13 +1615,13 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                         </svg>
                                                         {{ activity.location }}
-                                                    </span>
-                                                </div>
-                                            </div>
+              </span>
+            </div>
+            </div>
 
                                             <div v-if="activity.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3">
                                                 {{ activity.description }}
-                                            </div>
+          </div>
 
                                             <div v-if="activity.notes" class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                                                 <strong>Notes:</strong> {{ activity.notes }}
@@ -1650,36 +1647,36 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
-
+  </div>
+  
     <!-- Add Activity Modal -->
     <div v-if="showAddActivityModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
-        <div class="relative w-full max-w-2xl max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
             <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-                <!-- Modal header -->
+        <!-- Modal header -->
                 <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl">
                     <h3 class="text-xl font-semibold text-white flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Add New Activity
-                    </h3>
+          </h3>
                     <button @click="showAddActivityModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Modal body -->
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal body -->
                 <div class="p-6 max-h-[70vh] overflow-y-auto">
                     <form @submit.prevent="createActivity" class="space-y-6">
                         <!-- Activity Type -->
-                        <div>
+              <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Activity Type *</label>
                             <select
                                 v-model="activityForm.type"
@@ -1692,8 +1689,8 @@
                                 <option value="physical_visit">Physical Visit</option>
                                 <option value="other">Other</option>
                             </select>
-                        </div>
-
+              </div>
+              
                         <!-- Subject -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
@@ -1704,10 +1701,10 @@
                                 placeholder="Enter activity subject"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
-                        </div>
-
+                </div>
+                
                         <!-- Description -->
-                        <div>
+                <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                             <textarea
                                 v-model="activityForm.description"
@@ -1715,10 +1712,10 @@
                                 placeholder="Enter activity description"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             ></textarea>
-                        </div>
-
+                </div>
+                
                         <!-- Status -->
-                        <div>
+                <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status *</label>
                             <select
                                 v-model="activityForm.status"
@@ -1729,12 +1726,12 @@
                                 <option value="in_progress">In Progress</option>
                                 <option value="completed">Completed</option>
                                 <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-
+                  </select>
+                </div>
+                
                         <!-- Date and Time -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+                <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date *</label>
                                 <input
                                     v-model="activityForm.date_start"
@@ -1742,7 +1739,7 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 >
-                            </div>
+                  </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date *</label>
                                 <input
@@ -1751,8 +1748,8 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 >
-                            </div>
-                            <div>
+                </div>
+                <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Time *</label>
                                 <input
                                     v-model="activityForm.date_start_time"
@@ -1760,7 +1757,7 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 >
-                            </div>
+                    </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Time *</label>
                                 <input
@@ -1769,11 +1766,11 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 >
-                            </div>
-                        </div>
-
+                  </div>
+                </div>
+                
                         <!-- Location -->
-                        <div>
+                <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
                             <input
                                 v-model="activityForm.location"
@@ -1781,10 +1778,10 @@
                                 placeholder="Enter location (optional)"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
-                        </div>
-
+                </div>
+                
                         <!-- Notes -->
-                        <div>
+                <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
                             <textarea
                                 v-model="activityForm.notes"
@@ -1792,55 +1789,55 @@
                                 placeholder="Enter additional notes (optional)"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             ></textarea>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Modal footer -->
+            </div>
+          </form>
+        </div>
+        
+        <!-- Modal footer -->
                 <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
-                    <button 
+          <button 
                         @click="showAddActivityModal = false" 
                         class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button 
+          >
+            Cancel
+          </button>
+          <button 
                         @click="createActivity" 
                         :disabled="activitiesStore.loading"
                         class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <div v-if="activitiesStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Create Activity
-                    </button>
-                </div>
-            </div>
+          </button>
         </div>
+      </div>
     </div>
-
+  </div>
+  
     <!-- Edit Activity Modal -->
     <div v-if="showEditActivityModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
         <div class="relative w-full max-w-2xl max-h-full">
             <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-                <!-- Modal header -->
+        <!-- Modal header -->
                 <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
                     <h3 class="text-xl font-semibold text-white flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                         Edit Activity
-                    </h3>
+          </h3>
                     <button @click="showEditActivityModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Modal body -->
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal body -->
                 <div class="p-6 max-h-[70vh] overflow-y-auto">
                     <form @submit.prevent="updateActivity" class="space-y-6">
                         <!-- Activity Type -->
-                        <div>
+              <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Activity Type *</label>
                             <select
                                 v-model="activityForm.type"
@@ -1848,15 +1845,15 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
                                 <option value="call">Phone Call</option>
-                                <option value="email">Email</option>
+                  <option value="email">Email</option>
                                 <option value="online_meeting">Online Meeting</option>
                                 <option value="physical_visit">Physical Visit</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              
                         <!-- Subject -->
-                        <div>
+              <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
                             <input
                                 v-model="activityForm.subject"
@@ -1865,7 +1862,7 @@
                                 placeholder="Enter activity subject"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
-                        </div>
+                  </div>
 
                         <!-- Description -->
                         <div>
@@ -1876,10 +1873,10 @@
                                 placeholder="Enter activity description"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             ></textarea>
-                        </div>
-
+              </div>
+              
                         <!-- Status -->
-                        <div>
+              <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status *</label>
                             <select
                                 v-model="activityForm.status"
@@ -1890,12 +1887,12 @@
                                 <option value="in_progress">In Progress</option>
                                 <option value="completed">Completed</option>
                                 <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-
+                </select>
+              </div>
+              
                         <!-- Date and Time -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+              <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date *</label>
                                 <input
                                     v-model="activityForm.date_start"
@@ -1931,10 +1928,10 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 >
                             </div>
-                        </div>
-
+              </div>
+              
                         <!-- Location -->
-                        <div>
+              <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
                             <input
                                 v-model="activityForm.location"
@@ -1942,7 +1939,7 @@
                                 placeholder="Enter location (optional)"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
-                        </div>
+              </div>
 
                         <!-- Notes -->
                         <div>
@@ -1953,31 +1950,41 @@
                                 placeholder="Enter additional notes (optional)"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             ></textarea>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Modal footer -->
+            </div>
+          </form>
+        </div>
+        
+        <!-- Modal footer -->
                 <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
-                    <button 
+          <button 
                         @click="showEditActivityModal = false" 
                         class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button 
+          >
+            Cancel
+          </button>
+          <button 
                         @click="updateActivity" 
                         :disabled="activitiesStore.loading"
                         class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <div v-if="activitiesStore.loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Update Activity
-                    </button>
-                </div>
-            </div>
+          </button>
         </div>
+      </div>
     </div>
   </div>
+  </div>
+
+  <!-- Customer Detection Modal -->
+  <CustomerDetectionModal
+    :show="showCustomerDetectionModal"
+    :customer-data="pendingOpportunityData"
+    :detection-result="customerDetectionResult"
+    @close="showCustomerDetectionModal = false"
+    @use-existing="handleUseExistingCustomer"
+    @create-new="handleCreateNewCustomer"
+  />
 
   <!-- Opportunity Win Modal -->
   <OpportunityWinModal
@@ -1987,6 +1994,8 @@
     @close="showWinModal = false"
     @win-processed="handleWinProcessed"
   />
+
+
 </template>
 
 <script setup lang="ts">
@@ -1997,11 +2006,14 @@ import { useStagesStore } from '../../store/stages.store'
 import { useUserStore } from '../../store/user.store'
 import { useCurrenciesStore } from '../../store/currencies.store'
 import { useActivitiesStore } from '../../store/activities.store'
+import { useAuthStore } from '../../store/auth.store'
 import KanbanBoard from '../../components/crm/KanbanBoard.vue'
 import OpportunityWinModal from '../../components/crm/OpportunityWinModal.vue'
+import CustomerDetectionModal from '../../components/crm/CustomerDetectionModal.vue'
+import { EnhancedLeadService } from '../../services/crm/EnhancedLeadService'
 
 import type { Opportunities, CreateOpportunities, UpdateOpportunities } from '../../api/models/opportunities.model'
-import type { Activity } from '../../api/models/activities.model'
+import type { Activity, CreateActivity, UpdateActivity } from '../../api/models/activities.model'
 
 // Stores
 const opportunitiesStore = useOpportunitiesStore()
@@ -2032,12 +2044,18 @@ const showConfirmModal = ref(false)
 const showActivitiesModalFlag = ref(false)
 const showAddActivityModal = ref(false)
 const showEditActivityModal = ref(false)
+const showCustomerDetectionModal = ref(false)
 
 // Selected items
 const selectedOpportunity = ref<Opportunities | null>(null)
 const opportunityToWin = ref<Opportunities | null>(null)
 const opportunityToDelete = ref<Opportunities | null>(null)
 const selectedActivity = ref<Activity | null>(null)
+
+// Customer detection
+const enhancedLeadService = new EnhancedLeadService()
+const customerDetectionResult = ref<any>(null)
+const pendingOpportunityData = ref<any>(null)
 
 // Filters
 const selectedPipeline = ref('')
@@ -2071,7 +2089,20 @@ const formData = reactive<Partial<CreateOpportunities>>({
 })
 
 // Activity form data
-const activityForm = reactive({
+const activityForm = reactive<{
+  type: 'call' | 'email' | 'online_meeting' | 'physical_visit' | 'other';
+  subject: string;
+  description: string;
+  status: 'pending' | 'completed' | 'cancelled' | 'in_progress';
+  date_start: string;
+  date_end: string;
+  date_start_time: string;
+  date_end_time: string;
+  location: string;
+  notes: string;
+  entity_type: 'entity' | 'crm/leads' | 'crm/opportunities';
+  entity_id: number;
+}>({
   type: 'call',
   subject: '',
   description: '',
@@ -2211,21 +2242,37 @@ const fetchOpportunities = async () => {
       query.pipeline_id = parseInt(selectedPipeline.value)
     }
     
-    // Add stage filter
-    if (selectedStage.value) {
-      query.stage_id = parseInt(selectedStage.value)
-    }
-    
     // Add user filter
     if (selectedUser.value) {
       query.owner_id = parseInt(selectedUser.value)
     }
     
+    // Handle stage filtering and won opportunity exclusion
+    const wonStage = stages.value.find(stage => stage.name === 'Closed Won')
+    
+    if (selectedStage.value) {
+      // If a specific stage is selected, use that stage ID
+      query.stage_id = parseInt(selectedStage.value)
+    } else if (wonStage) {
+      // If no specific stage is selected, exclude won opportunities
+      query.stage_id = { $ne: wonStage.id }
+    }
+    
     console.log('fetchOpportunities called with query:', query)
     console.log('Search term:', searchQuery.value)
     console.log('Search query structure:', query.$or)
+    console.log('Excluding won stage ID:', wonStage?.id)
     
     await opportunitiesStore.fetchOpportunities({ query })
+    
+    // Fallback: If the backend doesn't support complex queries, filter client-side
+    if (wonStage && opportunities.value.some(opp => opp.stage_id === wonStage.id)) {
+      console.log('Backend query didn\'t exclude won opportunities, filtering client-side')
+      opportunitiesStore.opportunities = opportunities.value.filter(opp => {
+        return opp.stage_id !== wonStage.id
+      })
+    }
+    
   } catch (err: any) {
     error.value = err.message || 'Failed to fetch opportunities'
   } finally {
@@ -2280,8 +2327,11 @@ const closeModal = () => {
   showConfirmModal.value = false
   showActivitiesModalFlag.value = false
   showAddActivityModal.value = false
+  showCustomerDetectionModal.value = false
   selectedOpportunity.value = null
   opportunityToDelete.value = null
+  customerDetectionResult.value = null
+  pendingOpportunityData.value = null
   resetForm()
 }
 
@@ -2324,24 +2374,179 @@ const saveOpportunity = async () => {
       stage_id: typeof formData.stage_id === 'string' ? parseInt(formData.stage_id) || 0 : formData.stage_id,
       currency_id: typeof formData.currency_id === 'string' ? parseInt(formData.currency_id) || 0 : formData.currency_id,
       expected_service_date: formData.expected_service_date ? new Date(formData.expected_service_date).toISOString() : '',
-      expected_close_date: formData.expected_close_date ? new Date(formData.expected_close_date).toISOString() : ''
+      expected_close_date: formData.expected_close_date ? new Date(formData.expected_close_date).toISOString() : '',
+      // Handle optional fields - convert empty strings to undefined
+      contact_email: formData.contact_email?.trim() || undefined,
+      contact_phone: formData.contact_phone?.trim() || undefined,
+      contact_position: formData.contact_position?.trim() || undefined,
+      company_website: formData.company_website?.trim() || undefined,
+      company_address: formData.company_address?.trim() || undefined,
+      description: formData.description?.trim() || ''
     }
     
     console.log('Saving opportunity data:', dataToSave)
     
     if (showEditModal.value && selectedOpportunity.value) {
+      // For editing, use the original method
       await opportunitiesStore.updateOpportunity(selectedOpportunity.value.id, dataToSave as UpdateOpportunities)
-  } else {
-      await opportunitiesStore.createOpportunity(dataToSave as CreateOpportunities)
+      closeModal()
+      await fetchOpportunities()
+    } else {
+      // For creating new opportunities, use customer detection
+      await handleOpportunityCreationWithCustomerDetection(dataToSave)
     }
-    
-    closeModal()
-    await fetchOpportunities()
   } catch (err: any) {
     console.error('Error saving opportunity:', err)
     error.value = err.message || 'Failed to save opportunity'
   } finally {
     saving.value = false
+  }
+}
+
+const handleOpportunityCreationWithCustomerDetection = async (opportunityData: any) => {
+  try {
+    // Prepare customer data for detection
+    const customerData = {
+      company_name: opportunityData.company_name,
+      contact_name: opportunityData.contact_name,
+      contact_email: opportunityData.contact_email,
+      contact_phone: opportunityData.contact_phone,
+      company_address: opportunityData.company_address,
+      source: 'opportunity'
+    }
+    
+    // Get customer detection preview
+    const detectionResult = await enhancedLeadService.getCustomerDetectionPreview(customerData)
+    customerDetectionResult.value = detectionResult
+    pendingOpportunityData.value = opportunityData
+    
+    // Show customer detection modal if there are matches or if it's a new customer
+    if (detectionResult.isExisting || detectionResult.suggestions.length > 0) {
+      showCustomerDetectionModal.value = true
+    } else {
+      // No matches found, create new customer directly
+      await createOpportunityWithNewCustomer(opportunityData)
+    }
+  } catch (err: any) {
+    console.error('Error in customer detection:', err)
+    // Fallback to direct creation
+    await createOpportunityDirectly(opportunityData)
+  }
+}
+
+const createOpportunityWithNewCustomer = async (opportunityData: any) => {
+  try {
+    const result = await enhancedLeadService.createOpportunityWithCustomerDetection(opportunityData)
+    if (result.success) {
+      closeModal()
+      await fetchOpportunities()
+      console.log('Opportunity created with new customer:', result.message)
+  } else {
+      error.value = result.error || 'Failed to create opportunity'
+    }
+  } catch (err: any) {
+    console.error('Error creating opportunity with new customer:', err)
+    error.value = err.message || 'Failed to create opportunity'
+  }
+}
+
+const createOpportunityDirectly = async (opportunityData: any) => {
+  try {
+    await opportunitiesStore.createOpportunity(opportunityData as CreateOpportunities)
+    closeModal()
+    await fetchOpportunities()
+  } catch (err: any) {
+    console.error('Error creating opportunity directly:', err)
+    error.value = err.message || 'Failed to create opportunity'
+  }
+}
+
+// Customer detection modal handlers
+const handleUseExistingCustomer = async (entityId: number, contactId?: number) => {
+  console.log('handleUseExistingCustomer called with:', { entityId, contactId })
+  console.log('pendingOpportunityData:', pendingOpportunityData.value)
+  
+  if (!pendingOpportunityData.value) {
+    console.error('No pending opportunity data found')
+    return
+  }
+  
+  try {
+    const opportunityData = {
+      ...pendingOpportunityData.value,
+      entity_id: entityId,
+      contact_id: contactId,
+      // Ensure required fields are set
+      company_id: useAuthStore().user?.company_id || 1,
+      owner_id: useAuthStore().user?.id || 1,
+      // Ensure numeric fields are properly typed
+      amount: typeof pendingOpportunityData.value.amount === 'string' ? parseFloat(pendingOpportunityData.value.amount) || 0 : pendingOpportunityData.value.amount,
+      probability: typeof pendingOpportunityData.value.probability === 'string' ? parseFloat(pendingOpportunityData.value.probability) || 0 : pendingOpportunityData.value.probability,
+      pipeline_id: typeof pendingOpportunityData.value.pipeline_id === 'string' ? parseInt(pendingOpportunityData.value.pipeline_id) || 0 : pendingOpportunityData.value.pipeline_id,
+      stage_id: typeof pendingOpportunityData.value.stage_id === 'string' ? parseInt(pendingOpportunityData.value.stage_id) || 0 : pendingOpportunityData.value.stage_id,
+      currency_id: typeof pendingOpportunityData.value.currency_id === 'string' ? parseInt(pendingOpportunityData.value.currency_id) || 0 : pendingOpportunityData.value.currency_id,
+      // Handle optional fields - convert empty strings to undefined
+      contact_email: pendingOpportunityData.value.contact_email?.trim() || undefined,
+      contact_phone: pendingOpportunityData.value.contact_phone?.trim() || undefined,
+      contact_position: pendingOpportunityData.value.contact_position?.trim() || undefined,
+      company_website: pendingOpportunityData.value.company_website?.trim() || undefined,
+      company_address: pendingOpportunityData.value.company_address?.trim() || undefined,
+      description: pendingOpportunityData.value.description?.trim() || ''
+    }
+    
+    console.log('Creating opportunity with data:', opportunityData)
+    await opportunitiesStore.createOpportunity(opportunityData as CreateOpportunities)
+    showCustomerDetectionModal.value = false
+    closeModal()
+    await fetchOpportunities()
+    console.log('Opportunity created with existing customer')
+  } catch (err: any) {
+    console.error('Error creating opportunity with existing customer:', err)
+    error.value = err.message || 'Failed to create opportunity'
+  }
+}
+
+const handleCreateNewCustomer = async (entityId: number, contactId: number) => {
+  console.log('handleCreateNewCustomer called with:', { entityId, contactId })
+  console.log('pendingOpportunityData:', pendingOpportunityData.value)
+  
+  if (!pendingOpportunityData.value) {
+    console.error('No pending opportunity data found')
+    return
+  }
+  
+  try {
+    const opportunityData = {
+      ...pendingOpportunityData.value,
+      entity_id: entityId,
+      contact_id: contactId,
+      // Ensure required fields are set
+      company_id: useAuthStore().user?.company_id || 1,
+      owner_id: useAuthStore().user?.id || 1,
+      // Ensure numeric fields are properly typed
+      amount: typeof pendingOpportunityData.value.amount === 'string' ? parseFloat(pendingOpportunityData.value.amount) || 0 : pendingOpportunityData.value.amount,
+      probability: typeof pendingOpportunityData.value.probability === 'string' ? parseFloat(pendingOpportunityData.value.probability) || 0 : pendingOpportunityData.value.probability,
+      pipeline_id: typeof pendingOpportunityData.value.pipeline_id === 'string' ? parseInt(pendingOpportunityData.value.pipeline_id) || 0 : pendingOpportunityData.value.pipeline_id,
+      stage_id: typeof pendingOpportunityData.value.stage_id === 'string' ? parseInt(pendingOpportunityData.value.stage_id) || 0 : pendingOpportunityData.value.stage_id,
+      currency_id: typeof pendingOpportunityData.value.currency_id === 'string' ? parseInt(pendingOpportunityData.value.currency_id) || 0 : pendingOpportunityData.value.currency_id,
+      // Handle optional fields - convert empty strings to undefined
+      contact_email: pendingOpportunityData.value.contact_email?.trim() || undefined,
+      contact_phone: pendingOpportunityData.value.contact_phone?.trim() || undefined,
+      contact_position: pendingOpportunityData.value.contact_position?.trim() || undefined,
+      company_website: pendingOpportunityData.value.company_website?.trim() || undefined,
+      company_address: pendingOpportunityData.value.company_address?.trim() || undefined,
+      description: pendingOpportunityData.value.description?.trim() || ''
+    }
+    
+    console.log('Creating opportunity with data:', opportunityData)
+    await opportunitiesStore.createOpportunity(opportunityData as CreateOpportunities)
+    showCustomerDetectionModal.value = false
+    closeModal()
+    await fetchOpportunities()
+    console.log('Opportunity created with new customer')
+  } catch (err: any) {
+    console.error('Error creating opportunity with new customer:', err)
+    error.value = err.message || 'Failed to create opportunity'
   }
 }
 
@@ -2421,9 +2626,63 @@ const fetchActivities = async (opportunityId: number) => {
   activitiesLoading.value = true
   
   try {
-    await activitiesStore.fetchActivities({ opportunity_id: opportunityId })
+    // Clear existing activities first
+    activitiesStore.activities = []
+    
+    // Create a precise query to fetch only activities for this specific opportunity
+    const query = {
+      entity_type: 'crm/opportunities',
+      entity_id: opportunityId,
+      company_id: useAuthStore().user?.company_id, // Ensure we only get activities for the user's company
+      $sort: { date_created: -1 }
+    }
+    
+    console.log('🔍 Fetching activities for opportunity with query:', query)
+    console.log('🔍 Selected opportunity ID:', opportunityId)
+    console.log('�� User company ID:', useAuthStore().user?.company_id)
+    
+    // Fetch activities with the specific query
+    await activitiesStore.fetchActivities(query)
+    
+    console.log('📋 Activities after fetch:', activitiesStore.activities)
+    console.log('📋 Activities count:', activitiesStore.activities.length)
+    
+    // Verify that all returned activities are actually for this opportunity
+    const filteredActivities = activitiesStore.activities.filter(activity => 
+      activity.entity_type === 'crm/opportunities' && 
+      activity.entity_id === opportunityId
+    )
+    
+    if (filteredActivities.length !== activitiesStore.activities.length) {
+      console.warn('⚠️ Some activities returned do not match the opportunity filter:', {
+        expected: filteredActivities.length,
+        actual: activitiesStore.activities.length,
+        activities: activitiesStore.activities.map(a => ({
+          id: a.id,
+          entity_type: a.entity_type,
+          entity_id: a.entity_id,
+          subject: a.subject
+        }))
+      })
+      // Update the store with only the correctly filtered activities
+      activitiesStore.activities = filteredActivities
+    }
+    
+    // Log each activity for debugging
+    activitiesStore.activities.forEach((activity, index) => {
+      console.log(`📋 Activity ${index + 1}:`, {
+        id: activity.id,
+        entity_type: activity.entity_type,
+        entity_id: activity.entity_id,
+        subject: activity.subject,
+        description: activity.description,
+        company_id: activity.company_id
+      })
+    })
+    
   } catch (err: any) {
-    console.error('Failed to fetch activities:', err)
+    console.error('Failed to fetch activities for opportunity:', err)
+    activitiesStore.error = err.message || 'Failed to fetch activities'
   } finally {
     activitiesLoading.value = false
   }
@@ -2624,7 +2883,7 @@ const createActivity = async () => {
     }
     
     // Create clean data object with only allowed fields
-    const formattedData = {
+    const formattedData: CreateActivity = {
       type: activityForm.type,
       subject: activityForm.subject,
       description: activityForm.description,
@@ -2637,8 +2896,8 @@ const createActivity = async () => {
       notes: activityForm.notes,
       entity_type: 'crm/opportunities',
       entity_id: selectedOpportunity.value?.id || 0,
-      user_id: usersStore.currentUser?.id || 1,
-      company_id: usersStore.currentUser?.company_id || 1
+      user_id: useAuthStore().user?.id || 1,
+      company_id: useAuthStore().user?.company_id || 1
     }
     
     console.log('Creating activity with data:', formattedData)
@@ -2650,7 +2909,7 @@ const createActivity = async () => {
     await activitiesStore.createNewActivity(formattedData)
     showAddActivityModal.value = false
     resetActivityForm()
-    await fetchActivities()
+    await fetchActivities(selectedOpportunity.value?.id || 0)
   } catch (err: any) {
     error.value = err.message || 'Failed to create activity'
   }
@@ -2682,7 +2941,7 @@ const updateActivity = async () => {
     }
     
     // Create clean data object with only allowed fields for update
-    const formattedData = {
+    const formattedData: UpdateActivity = {
       type: activityForm.type,
       subject: activityForm.subject,
       description: activityForm.description,
@@ -2695,8 +2954,8 @@ const updateActivity = async () => {
       notes: activityForm.notes,
       entity_type: 'crm/opportunities',
       entity_id: selectedOpportunity.value?.id || 0,
-      user_id: usersStore.currentUser?.id || selectedActivity.value.user_id,
-      company_id: usersStore.currentUser?.company_id || selectedActivity.value.company_id
+      user_id: useAuthStore().user?.id || selectedActivity.value.user_id || 1,
+      company_id: useAuthStore().user?.company_id || selectedActivity.value.company_id || 1
     }
     
     console.log('Updating activity with data:', formattedData)
@@ -2709,7 +2968,7 @@ const updateActivity = async () => {
     showEditActivityModal.value = false
     resetActivityForm()
     selectedActivity.value = null
-    await fetchActivities()
+    await fetchActivities(selectedOpportunity.value?.id || 0)
   } catch (err: any) {
     error.value = err.message || 'Failed to update activity'
   }
@@ -2719,7 +2978,7 @@ const deleteActivity = async (activityId: number) => {
   if (confirm('Are you sure you want to delete this activity?')) {
     try {
       await activitiesStore.deleteExistingActivity(activityId)
-      await fetchActivities()
+      await fetchActivities(selectedOpportunity.value?.id || 0)
     } catch (err: any) {
       error.value = err.message || 'Failed to delete activity'
     }
@@ -2761,6 +3020,8 @@ onMounted(async () => {
 })
 
 // No watchers needed - using direct function calls like in Leads.vue
+
+
 </script>
 
 <style scoped>

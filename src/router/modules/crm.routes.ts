@@ -1,75 +1,76 @@
-import type { RouteRecordRaw } from "vue-router";
-import CRMLayout from "../../layouts/CRMLayout.vue";
-import Leads from "../../pages/crm/Leads.vue";
-import Opportunities from "../../pages/crm/Opportunities.vue";
-import Tasks from "../../pages/crm/Tasks.vue";
-import Companies from "../../pages/crm/Companies.vue";
-import Contacts from "../../pages/crm/Contacts.vue";
-import Dashboard from "../../pages/crm/Dashboard.vue";
+import type { RouteRecordRaw } from 'vue-router'
+import CRMLayout from '../../layouts/CRMLayout.vue'
 
 export const crmRoutes: RouteRecordRaw[] = [
   {
-    path: "/crm",
+    path: '/crm',
     component: CRMLayout,
+    meta: { requiresAuth: true },
     children: [
       {
-        path: "",
-        redirect: "dashboard",
+        path: '',
+        redirect: '/crm/dashboard'
       },
       {
-        path: "dashboard",
-        name: "crm-dashboard",
-        component: Dashboard,
-        meta: { 
-          requiresAuth: true,
-          title: 'Dashboard'
-        },
+        path: 'dashboard',
+        name: 'crm-dashboard',
+        component: () => import('../../pages/crm/Dashboard.vue'),
+        meta: { title: 'CRM Dashboard' }
       },
       {
-        path: "leads",
-        name: "crm-leads",
-        component: Leads,
-        meta: { 
-          requiresAuth: true,
-          title: 'Leads'
-        },
+        path: 'leads',
+        name: 'crm-leads',
+        component: () => import('../../pages/crm/Leads.vue'),
+        meta: { title: 'Leads' }
       },
       {
-        path: "opportunities",
-        name: "crm-opportunities",
-        component: Opportunities,
-        meta: { 
-          requiresAuth: true,
-          title: 'Opportunities'
-        },
+        path: 'opportunities',
+        name: 'crm-opportunities',
+        component: () => import('../../pages/crm/Opportunities.vue'),
+        meta: { title: 'Opportunities' }
       },
       {
-        path: "tasks",
-        name: "crm-tasks",
-        component: Tasks,
-        meta: { 
-          requiresAuth: true,
-          title: 'Tasks'
-        },
+        path: 'won-opportunities',
+        name: 'crm-won-opportunities',
+        component: () => import('../../pages/crm/WonOpportunities.vue'),
+        meta: { title: 'Won Opportunities' }
       },
       {
-        path: "companies",
-        name: "crm-companies",
-        component: Companies,
-        meta: { 
-          requiresAuth: true,
-          title: 'Companies'
-        },
+        path: 'tasks',
+        name: 'crm-tasks',
+        component: () => import('../../pages/crm/Tasks.vue'),
+        meta: { title: 'Tasks & Activities' }
       },
       {
-        path: "contacts",
-        name: "crm-contacts",
-        component: Contacts,
-        meta: { 
-          requiresAuth: true,
-          title: 'Contacts'
-        },
+        path: 'companies',
+        name: 'crm-companies',
+        component: () => import('../../pages/crm/Companies.vue'),
+        meta: { title: 'Companies' }
       },
-    ],
-  },
-]; 
+      {
+        path: 'contacts',
+        name: 'crm-contacts',
+        component: () => import('../../pages/crm/Contacts.vue'),
+        meta: { title: 'Contacts' }
+      },
+      {
+        path: 'test-logistics',
+        name: 'crm-test-logistics',
+        component: () => import('../../pages/crm/TestLogisticsServices.vue'),
+        meta: { title: 'Test Logistics Services' }
+      },
+      {
+        path: 'logistics-rates',
+        name: 'crm-logistics-rates',
+        component: () => import('../../pages/crm/LogisticsContractRates.vue'),
+        meta: { title: 'Logistics Contract Rates' }
+      },
+      {
+        path: 'logistics-invoices',
+        name: 'crm-logistics-invoices',
+        component: () => import('../../pages/crm/LogisticsContractInvoices.vue'),
+        meta: { title: 'Logistics Contract Invoices' }
+      }
+    ]
+  }
+] 

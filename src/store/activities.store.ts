@@ -35,19 +35,44 @@ export const useActivitiesStore = defineStore('activities', () => {
       loading.value = true
       error.value = null
       
+      // Clear existing activities before fetching new ones
+      activities.value = []
+      
+      // Ensure we always filter by company_id for security
       const query = {
         ...params,
         company_id: authStore.user?.company_id
       }
       
+      console.log('🏪 Activities Store - Fetching with query:', query)
+      console.log('🏪 Activities Store - User company_id:', authStore.user?.company_id)
+      
       const result = await getActivities(query)
-      activities.value = result.data || []
+      
+      console.log('🏪 Activities Store - API response:', result)
+      console.log('🏪 Activities Store - Activities data:', result.data)
+      
+      // Ensure we only get activities for the user's company
+      const filteredActivities = (result.data || []).filter((activity: any) => 
+        activity.company_id === authStore.user?.company_id
+      )
+      
+      if (filteredActivities.length !== (result.data || []).length) {
+        console.warn('🏪 Activities Store - Some activities were filtered out due to company mismatch:', {
+          original: (result.data || []).length,
+          filtered: filteredActivities.length
+        })
+      }
+      
+      activities.value = filteredActivities
       pagination.value = {
         total: result.total || 0,
         limit: result.limit || 10,
         skip: result.skip || 0,
         currentPage: Math.floor((result.skip || 0) / (result.limit || 10)) + 1
       }
+      
+      console.log('🏪 Activities Store - Final activities array:', activities.value)
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch activities'
       console.error('Error fetching activities:', err)

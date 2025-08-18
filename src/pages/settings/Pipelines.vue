@@ -1258,7 +1258,7 @@ const editingPipeline = ref<Pipelines | null>(null)
 const successMessage = ref('')
 const confirmMessage = ref('')
 const confirmAction = ref<(() => Promise<void>) | null>(null)
-const searchDebounceTimer: NodeJS.Timeout | null = null
+let searchDebounceTimer: NodeJS.Timeout | null = null
 const isSearchDebouncing = ref(false)
 
 // Activities modal state
