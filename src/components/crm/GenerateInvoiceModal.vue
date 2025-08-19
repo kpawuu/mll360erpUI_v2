@@ -19,10 +19,10 @@
 
         <!-- Modal body -->
         <div class="p-6 max-h-[70vh] overflow-y-auto">
-          <!-- Step 1: Select Opportunity -->
+          <!-- Step 1: Opportunity Selection and Information -->
           <div v-if="step === 1" class="space-y-6">
-            <!-- Opportunity Selection -->
-            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <!-- Opportunity Selection (only shown if no opportunity provided) -->
+            <div v-if="!props.opportunity" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
                   <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Choose an opportunity</label>
                   <select
                     v-model="selectedOpportunity"
-                    @change="loadRatesForOpportunity"
+                    @change="() => loadRatesForOpportunity()"
                     :disabled="opportunitiesStore.getLoading"
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -58,7 +58,29 @@
               </div>
             </div>
 
-            <!-- Company Information -->
+            <!-- Pre-selected Opportunity Display (only shown if opportunity provided) -->
+            <div v-if="props.opportunity" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Selected Opportunity
+                </h3>
+              </div>
+              <div class="p-6">
+                <div class="space-y-2">
+                  <p class="font-medium text-gray-900 dark:text-white">{{ props.opportunity.title }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">{{ props.opportunity.company_name }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">{{ props.opportunity.contact_name }}</p>
+                  <p v-if="props.opportunity.amount" class="text-sm text-gray-600 dark:text-gray-400">
+                    Value: {{ formatCurrency(props.opportunity.amount, props.opportunity.currency_id || 1) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Company Information (always shown) -->
             <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -70,17 +92,17 @@
               </div>
               <div class="p-6">
                 <div class="space-y-2">
-                  <p class="font-medium text-gray-900 dark:text-white">{{ userCompany?.name || 'Company Name' }}</p>
-                  <p v-if="userCompany?.location" class="text-sm text-gray-600 dark:text-gray-400">{{ userCompany.location }}</p>
-                  <p v-if="userCompany?.phone_number" class="text-sm text-gray-600 dark:text-gray-400">Phone: {{ userCompany.phone_number }}</p>
-                  <p v-if="userCompany?.email" class="text-sm text-gray-600 dark:text-gray-400">Email: {{ userCompany.email }}</p>
-                  <p v-if="userCompany?.website" class="text-sm text-gray-600 dark:text-gray-400">Website: {{ userCompany.website }}</p>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ billingCompany?.name || 'Company Name' }}</p>
+                  <p v-if="billingCompany?.location" class="text-sm text-gray-600 dark:text-gray-400">{{ billingCompany.location }}</p>
+                  <p v-if="billingCompany?.phone_number" class="text-sm text-gray-600 dark:text-gray-400">Phone: {{ billingCompany.phone_number }}</p>
+                  <p v-if="billingCompany?.email" class="text-sm text-gray-600 dark:text-gray-400">Email: {{ billingCompany.email }}</p>
+                  <p v-if="billingCompany?.website" class="text-sm text-gray-600 dark:text-gray-400">Website: {{ billingCompany.website }}</p>
                 </div>
               </div>
             </div>
 
-            <!-- Available Rates -->
-            <div v-if="selectedOpportunity && (opportunityRates.length > 0 || loading)" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <!-- Available Rates (always shown when opportunity is selected) -->
+            <div v-if="(selectedOpportunity || props.opportunity) && (opportunityRates.length > 0 || loading)" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +143,7 @@
             </div>
 
             <!-- No Rates Warning -->
-            <div v-else-if="selectedOpportunity && !loading && opportunityRates.length === 0" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+            <div v-else-if="(selectedOpportunity || props.opportunity) && !loading && opportunityRates.length === 0" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
               <div class="flex items-center">
                 <svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -190,7 +212,7 @@
           <button 
             v-if="step === 1"
             @click="nextStep" 
-            :disabled="!selectedOpportunity || opportunityRates.length === 0 || loading"
+            :disabled="(!selectedOpportunity && !props.opportunity) || opportunityRates.length === 0 || loading"
             class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next Step
@@ -222,10 +244,12 @@ import { useLogisticsContractRatesStore } from '../../store/logistics-contract-r
 import { useLogisticsContractInvoicesStore } from '../../store/logistics-contract-invoices.store'
 import { useOpportunitiesStore } from '../../store/opportunities.store'
 import { useAuthStore } from '../../store/auth.store'
+import { useCompanyStore } from '../../store/company.store'
 
 // Props
 interface Props {
   show: boolean
+  opportunity?: any // Pre-selected opportunity
 }
 
 const props = defineProps<Props>()
@@ -241,6 +265,7 @@ const ratesStore = useLogisticsContractRatesStore()
 const invoicesStore = useLogisticsContractInvoicesStore()
 const opportunitiesStore = useOpportunitiesStore()
 const authStore = useAuthStore()
+const companyStore = useCompanyStore()
 
 // Reactive data
 const step = ref(1)
@@ -257,9 +282,21 @@ const invoiceData = reactive({
 // Computed
 const opportunities = computed(() => opportunitiesStore.getOpportunities)
 
-const userCompany = computed(() => {
-  return authStore.user?.company || null
-})
+// Resolve current user's billing company details
+const billingCompany = ref<any | null>(null)
+const deriveBillingCompany = () => {
+  // Prefer embedded company on user
+  if (authStore.user?.company) {
+    billingCompany.value = authStore.user.company
+    return
+  }
+  // Else try to resolve from store by id
+  const companyId = authStore.user?.company_id
+  if (companyId) {
+    const found = (companyStore as any).getCompanies?.find?.((c: any) => c.id === companyId)
+    if (found) billingCompany.value = found
+  }
+}
 
 // Methods
 const closeModal = () => {
@@ -269,12 +306,21 @@ const closeModal = () => {
   emit('close')
 }
 
-const loadRatesForOpportunity = async () => {
-  if (!selectedOpportunity.value) return
+// Initialize with pre-selected opportunity
+const initializeWithOpportunity = async () => {
+  if (props.opportunity) {
+    selectedOpportunity.value = props.opportunity.id.toString()
+    await loadRatesForOpportunity(props.opportunity.id.toString())
+  }
+}
+
+const loadRatesForOpportunity = async (opportunityId?: string) => {
+  const id = opportunityId || selectedOpportunity.value
+  if (!id) return
   
   try {
     loading.value = true
-    const rates = await ratesStore.fetchRatesByOpportunity(parseInt(selectedOpportunity.value))
+    const rates = await ratesStore.fetchRatesByOpportunity(parseInt(id))
     opportunityRates.value = rates || []
   } catch (error) {
     console.error('Error loading rates:', error)
@@ -295,7 +341,8 @@ const calculateTotalAmount = () => {
 }
 
 const generateInvoice = async () => {
-  if (!selectedOpportunity.value) return
+  const opportunityId = selectedOpportunity.value || (props.opportunity?.id?.toString())
+  if (!opportunityId) return
   
   if (!authStore.user?.id) {
     console.error('User not authenticated or missing user ID')
@@ -305,17 +352,12 @@ const generateInvoice = async () => {
   try {
     loading.value = true
     
-    const totalAmount = calculateTotalAmount()
-    const defaultCurrencyId = 1 // Default to first currency
-    
     const invoice = await invoicesStore.generateInvoice({
-      opportunity_id: parseInt(selectedOpportunity.value),
+      opportunity_id: parseInt(opportunityId),
       invoice_date: new Date(invoiceData.invoice_date),
       due_date: new Date(invoiceData.due_date),
       notes: invoiceData.notes,
-      user_id: authStore.user.id,
-      total_amount: totalAmount,
-      currency_id: defaultCurrencyId
+      user_id: authStore.user.id
     })
     
     emit('invoiceGenerated', invoice)
@@ -344,9 +386,26 @@ const loadOpportunities = async () => {
 }
 
 // Watch for modal show
-watch(() => props.show, (newShow) => {
+watch(() => props.show, async (newShow) => {
   if (newShow) {
-    loadOpportunities()
+    // populate billing company from user or store; fetch if needed
+    deriveBillingCompany()
+    if (!billingCompany.value && authStore.user?.company_id) {
+      try {
+        const result = await (companyStore as any).fetchCompany?.(authStore.user.company_id)
+        if (result) billingCompany.value = result
+      } catch (e) {
+        // ignore fetch error; UI will show placeholders
+      }
+    }
+
+    if (props.opportunity) {
+      // If opportunity is provided, skip loading all opportunities and initialize directly
+      await initializeWithOpportunity()
+    } else {
+      // Load all opportunities for selection
+      await loadOpportunities()
+    }
   }
 })
 </script>

@@ -274,7 +274,7 @@
               Clear Filters
             </button>
             <button
-              @click="$router.push('/crm/opportunities')"
+              @click="router.push('/crm/opportunities')"
               class="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg transition-all duration-200 border border-green-500 focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
             >
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,7 +425,7 @@
                       </svg>
                       Edit
                     </button>
-                    <button v-if="opportunity.logistics_service_type" @click="viewContract(opportunity)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-700 bg-purple-100 border border-purple-200 rounded-lg hover:bg-purple-200 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900 dark:text-purple-300 dark:border-purple-700 dark:hover:bg-purple-800 transition-all duration-200">
+                    <button v-if="(opportunity as any).logistics_service_type || opportunity.service_type" @click="viewContract(opportunity)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-700 bg-purple-100 border border-purple-200 rounded-lg hover:bg-purple-200 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900 dark:text-purple-300 dark:border-purple-700 dark:hover:bg-purple-800 transition-all duration-200">
                       <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                       </svg>
@@ -436,6 +436,18 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                       </svg>
                       Invoice
+                    </button>
+                    <button @click="openContractRatesModal(opportunity)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-600 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800 dark:hover:bg-purple-900/30 transition-all duration-200">
+                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                      </svg>
+                      Rates
+                    </button>
+                    <button @click="openContractInvoicesModal(opportunity)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 hover:border-orange-300 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-800 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800 dark:hover:bg-orange-900/30 transition-all duration-200">
+                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      Contract Invoices
                     </button>
                   </div>
                 </td>
@@ -1566,44 +1578,328 @@
         </div>
       </div>
     </div>
+
+    <!-- Contract Rates Modal -->
+    <RateModal
+      v-if="showContractRatesModal"
+      :rate="selectedRate"
+      :opportunities="opportunitiesStore.getOpportunities"
+      :currencies="currencies"
+      @close="closeContractRatesModal"
+      @save="saveContractRate"
+    />
+
+    <!-- Contract Invoices Modal -->
+    <div v-if="showContractInvoicesModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+      <div class="relative w-full max-w-6xl max-h-full">
+        <div class="relative bg-white rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+          <!-- Modal header -->
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-orange-600 to-red-600 rounded-t-xl">
+            <h3 class="text-xl font-semibold text-white flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Contract Invoices - {{ selectedOpportunity?.title }}
+            </h3>
+            <button @click="showContractInvoicesModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="p-6 max-h-[70vh] overflow-y-auto">
+            <!-- Add New Invoice Form -->
+            <div class="mb-8 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add New Invoice</h4>
+              <form @submit.prevent="addContractInvoice" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Invoice Number *</label>
+                    <input
+                      v-model="newInvoice.invoice_number"
+                      type="text"
+                      required
+                      placeholder="Enter invoice number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Invoice Date *</label>
+                    <input
+                      v-model="newInvoice.invoice_date"
+                      type="date"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount *</label>
+                    <input
+                      v-model.number="newInvoice.total_amount"
+                      type="number"
+                      step="0.01"
+                      placeholder="Enter amount"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Currency *</label>
+                    <select
+                      v-model="newInvoice.currency_id"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                      <option value="">Select Currency</option>
+                      <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.currency_name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    @click="resetNewInvoice"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="saving"
+                    class="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-800 disabled:opacity-50"
+                  >
+                    {{ saving ? 'Adding...' : 'Add Invoice' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Invoices List -->
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contract Invoices</h4>
+              <div v-if="contractInvoices.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                No contract invoices found for this opportunity.
+              </div>
+              <div v-else class="space-y-4">
+                <div v-for="invoice in contractInvoices" :key="invoice.id" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-3 mb-2">
+                        <span class="font-semibold text-gray-900 dark:text-white">
+                          {{ invoice.invoice_number }}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300">
+                          {{ invoice.status }}
+                        </span>
+                      </div>
+                      <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        {{ formatDate(invoice.invoice_date) }} - {{ formatCurrency(invoice.total_amount, invoice.currency_id) }}
+                      </div>
+                      <div v-if="invoice.notes" class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ invoice.notes }}
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <button @click="editContractInvoice(invoice)" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus:ring-4 focus:ring-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/30">
+                        Edit
+                      </button>
+                      <button @click="deleteContractInvoice(invoice.id)" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 focus:ring-4 focus:ring-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Invoice Modals with z-index fixes -->
+  <div v-if="showGenerateModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <GenerateInvoiceModal
+      :show="showGenerateModal"
+      :opportunity="selectedOpportunity"
+      @close="showGenerateModal = false"
+      @invoice-generated="handleGenerateInvoice"
+    />
+  </div>
+
+  <div v-if="showDetailModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <InvoiceDetailModal
+      :show="showDetailModal"
+      :invoice="selectedInvoice"
+      @close="showDetailModal = false"
+    />
+  </div>
+
+  <div v-if="showLineItemsModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <InvoiceLineItemsModal
+      :show="showLineItemsModal"
+      :invoice="selectedInvoice"
+      @close="showLineItemsModal = false"
+      @save="handleSaveLineItems"
+    />
+  </div>
+
+  <div v-if="showEditInvoiceModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <EditInvoiceModal
+      :show="showEditInvoiceModal"
+      :invoice="selectedInvoice"
+      @close="showEditInvoiceModal = false"
+      @save="handleSaveEdit"
+    />
+  </div>
+
+  <!-- Contract Rates Modal with z-index fix -->
+  <div v-if="showContractRatesModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <RateModal
+      :rate="selectedRate"
+      :opportunities="opportunitiesStore.getOpportunities"
+      :currencies="currencies"
+      :selected-opportunity="selectedOpportunity"
+      @close="closeContractRatesModal"
+      @save="saveContractRate"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOpportunitiesStore } from '../../store/opportunities.store'
-import { useCurrenciesStore } from '../../store/currencies.store'
+import { usePipelinesStore } from '../../store/pipelines.store'
 import { useStagesStore } from '../../store/stages.store'
-import type { Opportunities } from '../../api/models/opportunities.model'
+import { useUserStore } from '../../store/user.store'
+import { useCurrenciesStore } from '../../store/currencies.store'
+import { useActivitiesStore } from '../../store/activities.store'
+import { useAuthStore } from '../../store/auth.store'
+import { useLogisticsContractRatesStore } from '../../store/logistics-contract-rates.store'
+import { useLogisticsContractInvoicesStore } from '../../store/logistics-contract-invoices.store'
+import KanbanBoard from '../../components/crm/KanbanBoard.vue'
+import RateModal from '../../components/crm/RateModal.vue'
+import OpportunityWinModal from '../../components/crm/OpportunityWinModal.vue'
+import CustomerDetectionModal from '../../components/crm/CustomerDetectionModal.vue'
+import GenerateInvoiceModal from '../../components/crm/GenerateInvoiceModal.vue'
+import InvoiceDetailModal from '../../components/crm/InvoiceDetailModal.vue'
+import InvoiceLineItemsModal from '../../components/crm/InvoiceLineItemsModal.vue'
+import EditInvoiceModal from '../../components/crm/EditInvoiceModal.vue'
+import { EnhancedLeadService } from '../../services/crm/EnhancedLeadService'
 
+import type { Opportunities, CreateOpportunities, UpdateOpportunities } from '../../api/models/opportunities.model'
+import type { Activity, CreateActivity, UpdateActivity } from '../../api/models/activities.model'
+import type { LogisticsContractRate, CreateLogisticsContractRate, UpdateLogisticsContractRate } from '../../api/models/logistics-contract-rates.model'
+import type { LogisticsContractInvoice, CreateLogisticsContractInvoice, UpdateLogisticsContractInvoice } from '../../api/models/logistics-contract-invoices.model'
+
+// Router
 const router = useRouter()
+
+// Stores
 const opportunitiesStore = useOpportunitiesStore()
+const pipelinesStore = usePipelinesStore()
+const stagesStore = useStagesStore()
+const userStore = useUserStore()
 const currenciesStore = useCurrenciesStore()
+const activitiesStore = useActivitiesStore()
+const authStore = useAuthStore()
+const logisticsContractRatesStore = useLogisticsContractRatesStore()
+const logisticsContractInvoicesStore = useLogisticsContractInvoicesStore()
 
 // Reactive data
 const loading = ref(false)
-const error = ref<string | null>(null)
-
-const filters = ref({
-  serviceType: '',
-  contractStatus: '',
-  dateRange: '',
-  search: ''
-})
+const saving = ref(false)
+const error = ref('')
+const searchQuery = ref('')
 
 // Modal states
 const showViewModal = ref(false)
 const showEditModal = ref(false)
 const showContractModal = ref(false)
 const showInvoiceModal = ref(false)
+const showContractRatesModal = ref(false)
+const showContractInvoicesModal = ref(false)
+
+// Selected items
 const viewingOpportunity = ref<Opportunities | null>(null)
 const editingOpportunity = ref<Opportunities | null>(null)
-const viewingContract = ref<any>(null)
-const viewingInvoice = ref<any>(null)
+const viewingContract = ref<Opportunities | null>(null)
+const viewingInvoice = ref<Opportunities | null>(null)
+const selectedOpportunity = ref<Opportunities | null>(null)
+const selectedRate = ref<LogisticsContractRate | null>(null)
+const selectedInvoice = ref<LogisticsContractInvoice | null>(null)
 
-// Edit form data
-const editForm = ref({
+// Contract rates and invoices data
+const newRate = reactive<Partial<CreateLogisticsContractRate>>({
+  opportunity_id: 0,
+  service_category: '',
+  rate_type: '',
+  rate_amount: 0,
+  currency_id: 0,
+  description: '',
+  is_active: true
+})
+
+const newInvoice = reactive<Partial<CreateLogisticsContractInvoice>>({
+  opportunity_id: 0,
+  invoice_number: '',
+  invoice_date: '',
+  total_amount: 0,
+  currency_id: 0,
+  status: 'draft'
+})
+
+const editRate = reactive<Partial<UpdateLogisticsContractRate>>({
+  service_category: '',
+  rate_type: '',
+  rate_amount: 0,
+  currency_id: 0,
+  description: '',
+  is_active: true
+})
+
+const editInvoice = reactive<Partial<UpdateLogisticsContractInvoice>>({
+  invoice_number: '',
+  invoice_date: '',
+  total_amount: 0,
+  currency_id: 0,
+  status: 'draft'
+})
+
+// Computed properties
+const currencies = computed(() => currenciesStore.getCurrencies)
+const contractRates = computed(() => logisticsContractRatesStore.getRates)
+const contractInvoices = computed(() => logisticsContractInvoicesStore.getInvoices)
+
+// Enhanced invoice modal states
+const showGenerateModal = ref(false)
+const showDetailModal = ref(false)
+const showLineItemsModal = ref(false)
+const showAddInvoiceModal = ref(false)
+const showEditInvoiceModal = ref(false)
+const contractInvoicesList = ref<LogisticsContractInvoice[]>([])
+const loadingInvoices = ref(false)
+
+// Filters
+const filters = reactive({
+  search: '',
+  serviceType: '',
+  contractStatus: ''
+})
+
+// Pagination
+const pagination = reactive({
+  currentPage: 1,
+  limit: 10,
+  total: 0
+})
+
+// Edit form
+const editForm = reactive({
   title: '',
   company_name: '',
   contact_name: '',
@@ -1624,72 +1920,48 @@ const editForm = ref({
   notes: ''
 })
 
-// Computed
+// Computed properties for filtered opportunities
 const filteredOpportunities = computed(() => {
-  let opportunities = opportunitiesStore.getOpportunities.filter(opp => 
-    (opp as any).stage?.name === 'Closed Won' || (opp as any).contract_status === 'active'
+  // Filter opportunities to only show won ones (stage_id = 5 for "Closed Won")
+  let filtered = opportunitiesStore.getOpportunities.filter(opp => 
+    opp.stage_id === 5 || (opp as any).stage?.name === 'Closed Won' || (opp as any).contract_status === 'active'
   )
 
-  if (filters.value.serviceType) {
-    opportunities = opportunities.filter(opp => (opp as any).logistics_service_type === filters.value.serviceType)
-  }
-
-  if (filters.value.contractStatus) {
-    opportunities = opportunities.filter(opp => (opp as any).contract_status === filters.value.contractStatus)
-  }
-
-  if (filters.value.search) {
-    const search = filters.value.search.toLowerCase()
-    opportunities = opportunities.filter(opp => 
+  if (filters.search) {
+    const search = filters.search.toLowerCase()
+    filtered = filtered.filter(opp => 
       opp.title.toLowerCase().includes(search) ||
-      opp.company_name.toLowerCase().includes(search) ||
-      opp.contact_name.toLowerCase().includes(search)
+      opp.company_name?.toLowerCase().includes(search) ||
+      opp.contact_name?.toLowerCase().includes(search)
     )
   }
 
-  if (filters.value.dateRange) {
-    const days = parseInt(filters.value.dateRange)
-    const cutoffDate = new Date()
-    cutoffDate.setDate(cutoffDate.getDate() - days)
-    
-    opportunities = opportunities.filter(opp => {
-      if (!(opp as any).won_date) return false
-      return new Date((opp as any).won_date) >= cutoffDate
-    })
+  if (filters.serviceType) {
+    filtered = filtered.filter(opp => 
+      opp.service_type === filters.serviceType || 
+      (opp as any).logistics_service_type === filters.serviceType
+    )
   }
 
-  return opportunities
+  if (filters.contractStatus) {
+    filtered = filtered.filter(opp => 
+      (opp as any).contract_status === filters.contractStatus
+    )
+  }
+
+  return filtered
 })
 
-const pagination = computed(() => opportunitiesStore.getPagination)
-
-// Methods
+// Functions
 const fetchWonOpportunities = async () => {
-  loading.value = true
-  error.value = null
-  
   try {
-    // Fetch stages first to get the "Closed Won" stage ID
-    const stagesStore = useStagesStore()
-    await stagesStore.fetchStages()
-    
-    const wonStage = stagesStore.getStages.find(stage => stage.name === 'Closed Won')
-    
-    if (wonStage) {
-      await opportunitiesStore.fetchOpportunities({
-        query: {
-          stage_id: wonStage.id,
-          $sort: { won_date: -1 }
-        }
-      })
-    } else {
-      // Fallback: fetch all opportunities and filter client-side
-      await opportunitiesStore.fetchOpportunities({
-        query: {
-          $sort: { date_created: -1 }
-        }
-      })
-    }
+    loading.value = true
+    // Fetch all opportunities and filter for won ones
+    await opportunitiesStore.fetchOpportunities({
+      query: {
+        $sort: { date_created: -1 }
+      }
+    })
   } catch (err: any) {
     error.value = err.message || 'Failed to fetch won opportunities'
     console.error('Error fetching won opportunities:', err)
@@ -1698,34 +1970,18 @@ const fetchWonOpportunities = async () => {
   }
 }
 
-const changePage = async (page: number) => {
-  if (page < 1 || page > Math.ceil(pagination.value.total / pagination.value.limit)) return
-  
-  loading.value = true
-  try {
-    await opportunitiesStore.fetchOpportunities({
-      query: {
-        $skip: (page - 1) * pagination.value.limit,
-        $limit: pagination.value.limit,
-        $sort: { won_date: -1 }
-      }
-    })
-  } catch (err: any) {
-    error.value = err.message || 'Failed to fetch opportunities'
-  } finally {
-    loading.value = false
-  }
+const changePage = (page: number) => {
+  pagination.currentPage = page
+  fetchWonOpportunities()
 }
 
 const clearFilters = () => {
-  filters.value = {
-    serviceType: '',
-    contractStatus: '',
-    dateRange: '',
-    search: ''
-  }
+  filters.search = ''
+  filters.serviceType = ''
+  filters.contractStatus = ''
 }
 
+// Opportunity management functions
 const viewOpportunityDetails = (opportunity: Opportunities) => {
   viewingOpportunity.value = opportunity
   showViewModal.value = true
@@ -1733,26 +1989,24 @@ const viewOpportunityDetails = (opportunity: Opportunities) => {
 
 const editOpportunity = (opportunity: Opportunities) => {
   editingOpportunity.value = opportunity
-  editForm.value = {
-    title: opportunity.title,
-    company_name: opportunity.company_name,
-    contact_name: opportunity.contact_name,
-    contact_email: opportunity.contact_email || '',
-    contact_phone: opportunity.contact_phone || '',
-    contact_position: opportunity.contact_position || '',
-    company_website: opportunity.company_website || '',
-    company_address: opportunity.company_address || '',
-    logistics_service_type: (opportunity as any).logistics_service_type || opportunity.service_type || '',
-    origin: opportunity.origin || '',
-    destination: opportunity.destination || '',
-    cargo_description: opportunity.cargo_description || '',
-    amount: opportunity.amount || 0,
-    probability: opportunity.probability || 0,
-    expected_close_date: opportunity.expected_close_date ? new Date(opportunity.expected_close_date).toISOString().split('T')[0] : '',
-    expected_service_date: opportunity.expected_service_date ? new Date(opportunity.expected_service_date).toISOString().split('T')[0] : '',
-    description: opportunity.description || '',
-    notes: (opportunity as any).notes || ''
-  }
+  editForm.title = opportunity.title
+  editForm.company_name = opportunity.company_name
+  editForm.contact_name = opportunity.contact_name
+  editForm.contact_email = opportunity.contact_email || ''
+  editForm.contact_phone = opportunity.contact_phone || ''
+  editForm.contact_position = opportunity.contact_position || ''
+  editForm.company_website = opportunity.company_website || ''
+  editForm.company_address = opportunity.company_address || ''
+  editForm.logistics_service_type = (opportunity as any).logistics_service_type || opportunity.service_type || ''
+  editForm.origin = opportunity.origin || ''
+  editForm.destination = opportunity.destination || ''
+  editForm.cargo_description = opportunity.cargo_description || ''
+  editForm.amount = opportunity.amount || 0
+  editForm.probability = opportunity.probability || 0
+  editForm.expected_close_date = opportunity.expected_close_date ? new Date(opportunity.expected_close_date).toISOString().split('T')[0] : ''
+  editForm.expected_service_date = opportunity.expected_service_date ? new Date(opportunity.expected_service_date).toISOString().split('T')[0] : ''
+  editForm.description = opportunity.description || ''
+  editForm.notes = (opportunity as any).notes || ''
   showEditModal.value = true
 }
 
@@ -1766,6 +2020,20 @@ const viewInvoice = (opportunity: Opportunities) => {
   showInvoiceModal.value = true
 }
 
+const saveEditedOpportunity = async () => {
+  if (!editingOpportunity.value) return
+
+  try {
+    await opportunitiesStore.updateOpportunity(editingOpportunity.value.id, editForm)
+    showEditModal.value = false
+    fetchWonOpportunities() // Refresh the list
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save changes'
+    console.error('Error saving edited opportunity:', err)
+  }
+}
+
+// Utility functions
 const formatCurrency = (amount: number, currencyId: number) => {
   const currency = currenciesStore.getCurrencies.find(c => c.id === currencyId)
   const symbol = currency?.symbol || '$'
@@ -1780,16 +2048,92 @@ const formatRateBasis = (basis: string) => {
   return basis.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
 }
 
-const saveEditedOpportunity = async () => {
-  if (!editingOpportunity.value) return
+// Contract Rates Functions
+const openContractRatesModal = async (opportunity: Opportunities) => {
+  selectedOpportunity.value = opportunity
+  selectedRate.value = null // Reset for new rate
+  showContractRatesModal.value = true
+}
 
+const closeContractRatesModal = () => {
+  showContractRatesModal.value = false
+  selectedRate.value = null
+}
+
+const saveContractRate = async (rateData: any) => {
   try {
-    await opportunitiesStore.updateOpportunity(editingOpportunity.value.id, editForm.value)
-    showEditModal.value = false
-    fetchWonOpportunities() // Refresh the list
+    saving.value = true
+    
+    // Set the opportunity_id from the selected opportunity
+    rateData.opportunity_id = selectedOpportunity.value?.id
+    rateData.company_id = authStore.user?.company_id || 1
+    
+    if (rateData.isEditing) {
+      // Update existing rate (from RateModal edit button)
+      await logisticsContractRatesStore.updateRate(rateData.id, rateData)
+    } else if (selectedRate.value) {
+      // Update existing rate (from form edit)
+      await logisticsContractRatesStore.updateRate(selectedRate.value.id, rateData)
+    } else {
+      // Create new rate
+      await logisticsContractRatesStore.createRate(rateData)
+    }
+    
+    // Refresh the rates list
+    if (selectedOpportunity.value) {
+      await logisticsContractRatesStore.fetchRatesByOpportunity(selectedOpportunity.value.id)
+    }
+    
+    closeContractRatesModal()
   } catch (err: any) {
-    error.value = err.message || 'Failed to save changes'
-    console.error('Error saving edited opportunity:', err)
+    error.value = err.message || 'Failed to save contract rate'
+    console.error('Error saving contract rate:', err)
+  } finally {
+    saving.value = false
+  }
+}
+
+// Contract Invoices Functions
+const openContractInvoicesModal = (opportunity: Opportunities) => {
+  selectedOpportunity.value = opportunity
+  selectedInvoice.value = null // Reset for new invoice
+  showContractInvoicesModal.value = true
+}
+
+const closeContractInvoicesModal = () => {
+  showContractInvoicesModal.value = false
+  selectedInvoice.value = null
+}
+
+const saveContractInvoice = async (invoiceData: any) => {
+  try {
+    saving.value = true
+    
+    // Set the opportunity_id from the selected opportunity
+    invoiceData.opportunity_id = selectedOpportunity.value?.id
+    invoiceData.company_id = authStore.user?.company_id || 1
+    
+    if (selectedInvoice.value) {
+      // Update existing invoice
+      await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, invoiceData)
+    } else {
+      // Create new invoice
+      await logisticsContractInvoicesStore.createInvoice(invoiceData)
+    }
+    
+    // Refresh the invoices list
+    if (selectedOpportunity.value) {
+      await logisticsContractInvoicesStore.fetchInvoices({
+        query: { opportunity_id: selectedOpportunity.value.id }
+      })
+    }
+    
+    closeContractInvoicesModal()
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save contract invoice'
+    console.error('Error saving contract invoice:', err)
+  } finally {
+    saving.value = false
   }
 }
 
@@ -1815,6 +2159,227 @@ const sendInvoice = async (invoice: any) => {
     error.value = err.message || 'Failed to send invoice'
     console.error('Error sending invoice:', err)
   }
+}
+
+// Enhanced Invoice Functions
+const closeContractInvoicesModalEnhanced = () => {
+  showContractInvoicesModal.value = false
+  selectedOpportunity.value = null
+  contractInvoicesList.value = []
+}
+
+const generateInvoice = () => {
+  showGenerateModal.value = true
+}
+
+const addNewInvoice = () => {
+  showAddInvoiceModal.value = true
+}
+
+const viewInvoiceModal = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showDetailModal.value = true
+}
+
+const editInvoiceModal = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showEditInvoiceModal.value = true
+}
+
+const manageLineItems = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showLineItemsModal.value = true
+}
+
+const deleteInvoice = async (invoice: LogisticsContractInvoice) => {
+  if (confirm('Are you sure you want to delete this invoice?')) {
+    try {
+      await logisticsContractInvoicesStore.deleteInvoice(invoice.id)
+      await fetchContractInvoices()
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete invoice'
+    }
+  }
+}
+
+const addContractInvoice = async () => {
+  try {
+    saving.value = true
+    if (!selectedOpportunity.value?.id) {
+      throw new Error('No opportunity selected')
+    }
+    if (!newInvoice.invoice_number || !newInvoice.invoice_date || !newInvoice.total_amount || !newInvoice.currency_id) {
+      throw new Error('Please fill in all required fields')
+    }
+    const invoiceData = {
+      opportunity_id: selectedOpportunity.value.id,
+      invoice_number: newInvoice.invoice_number,
+      invoice_date: newInvoice.invoice_date,
+      total_amount: newInvoice.total_amount,
+      currency_id: newInvoice.currency_id,
+      status: newInvoice.status || 'draft'
+    }
+    const response = await logisticsContractInvoicesStore.createInvoice(invoiceData)
+    if (response) {
+      await fetchContractInvoices()
+      resetNewInvoice()
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Failed to add invoice'
+  } finally {
+    saving.value = false
+  }
+}
+
+const resetNewInvoice = () => {
+  Object.assign(newInvoice, {
+    opportunity_id: 0,
+    invoice_number: '',
+    invoice_date: '',
+    total_amount: 0,
+    currency_id: 0,
+    status: 'draft'
+  })
+}
+
+const editContractInvoice = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  Object.assign(editInvoice, {
+    invoice_number: invoice.invoice_number,
+    invoice_date: invoice.invoice_date,
+    total_amount: invoice.total_amount,
+    currency_id: invoice.currency_id,
+    status: invoice.status
+  })
+}
+
+const deleteContractInvoice = async (invoiceId: number) => {
+  if (confirm('Are you sure you want to delete this invoice?')) {
+    try {
+      await logisticsContractInvoicesStore.deleteInvoice(invoiceId)
+      await fetchContractInvoices()
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete invoice'
+    }
+  }
+}
+
+const handleGenerateInvoice = async (invoiceData: any) => {
+  try {
+    await logisticsContractInvoicesStore.createInvoice(invoiceData)
+    await fetchContractInvoices()
+    showGenerateModal.value = false
+  } catch (err: any) {
+    error.value = err.message || 'Failed to generate invoice'
+  }
+}
+
+const handleSaveLineItems = async (lineItems: any[]) => {
+  try {
+    if (selectedInvoice.value) {
+      await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, {
+        line_items: lineItems
+      })
+      await fetchContractInvoices()
+      showLineItemsModal.value = false
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save line items'
+  }
+}
+
+const handleSaveEdit = async (invoiceData: any) => {
+  try {
+    if (selectedInvoice.value) {
+      await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, invoiceData)
+      await fetchContractInvoices()
+      showEditInvoiceModal.value = false
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save invoice'
+  }
+}
+
+const fetchContractInvoices = async () => {
+  if (!selectedOpportunity.value) return
+  
+  try {
+    loadingInvoices.value = true
+    await logisticsContractInvoicesStore.fetchInvoices({
+      query: { opportunity_id: selectedOpportunity.value.id }
+    })
+    contractInvoicesList.value = logisticsContractInvoicesStore.getInvoices
+  } catch (err: any) {
+    error.value = err.message || 'Failed to fetch invoices'
+  } finally {
+    loadingInvoices.value = false
+  }
+}
+
+// Utility functions for invoice calculations
+const calculateTotalAmount = () => {
+  return contractInvoices.value.reduce((total, invoice) => {
+    return total + (calculateInvoiceTotalFromLineItems(invoice) || 0)
+  }, 0)
+}
+
+const calculatePaidAmount = () => {
+  return contractInvoices.value.reduce((total, invoice) => {
+    return total + (invoice.paid_amount || 0)
+  }, 0)
+}
+
+const calculateOutstandingAmount = () => {
+  return calculateTotalAmount() - calculatePaidAmount()
+}
+
+const calculateInvoiceTotalFromLineItems = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.line_items || invoice.line_items.length === 0) {
+    return invoice.total_amount || 0
+  }
+  
+  return invoice.line_items.reduce((total, item) => {
+    return total + ((item.quantity || 0) * (item.unit_price || 0))
+  }, 0)
+}
+
+const getStatusClasses = (status: string) => {
+  switch (status) {
+    case 'draft':
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+    case 'sent':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+    case 'paid':
+      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+    case 'overdue':
+      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    default:
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+  }
+}
+
+const formatStatus = (status: string) => {
+  return status.charAt(0).toUpperCase() + status.slice(1)
+}
+
+const isOverdue = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.due_date) return false
+  return new Date(invoice.due_date) < new Date()
+}
+
+const getDaysOverdue = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.due_date) return 0
+  const dueDate = new Date(invoice.due_date)
+  const today = new Date()
+  const diffTime = today.getTime() - dueDate.getTime()
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+}
+
+const getPaymentPercentage = (invoice: LogisticsContractInvoice) => {
+  const total = calculateInvoiceTotalFromLineItems(invoice)
+  const paid = invoice.paid_amount || 0
+  if (total === 0) return 0
+  return Math.round((paid / total) * 100)
 }
 
 // Lifecycle

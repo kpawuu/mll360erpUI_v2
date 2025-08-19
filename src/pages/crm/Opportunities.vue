@@ -456,7 +456,7 @@
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-              </div>
+                  </div>
                   Contact & Company
             </div>
               </th>
@@ -466,7 +466,7 @@
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                     </svg>
-          </div>
+                  </div>
                   Pipeline & Stage
         </div>
               </th>
@@ -644,14 +644,26 @@
                     </svg>
                     Edit
                   </button>
-                  <button @click="showActivitiesModal(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 border border-purple-200 rounded-xl hover:bg-purple-100 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800 dark:hover:bg-purple-900/30 transition-all duration-200 group/btn">
+                  <button @click="openContractRatesModal(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 border border-purple-200 rounded-xl hover:bg-purple-100 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800 dark:hover:bg-purple-900/30 transition-all duration-200 group/btn">
+                    <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                    Rates
+                  </button>
+                  <button @click="openContractInvoicesModal(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-xl hover:bg-orange-100 hover:border-orange-300 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-800 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800 dark:hover:bg-orange-900/30 transition-all duration-200 group/btn">
+                    <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Invoices
+                  </button>
+                  <button @click="showActivitiesModal(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-xl hover:bg-indigo-100 hover:border-indigo-300 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-800 dark:hover:bg-indigo-900/30 transition-all duration-200 group/btn">
                     <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                     Activities
                   </button>
 
-                  <button @click="deleteOpportunity(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-xl hover:bg-red-100 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30 transition-all duration-200 group/btn">
+                  <button @click="confirmDelete(opportunity)" class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-xl hover:bg-red-100 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30 transition-all duration-200 group/btn">
                     <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
@@ -1995,6 +2007,590 @@
     @win-processed="handleWinProcessed"
   />
 
+  <!-- Contract Rates Modal -->
+  <div v-if="showContractRatesModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <RateModal
+      :rate="selectedRate"
+      :opportunities="opportunities"
+      :currencies="currencies"
+      :selected-opportunity="selectedOpportunity"
+      @close="closeContractRatesModal"
+      @save="saveContractRate"
+    />
+  </div>
+
+  <!-- Contract Invoices Modal -->
+  <div v-if="showContractInvoicesModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div class="relative w-full max-w-6xl max-h-full">
+      <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+          <h3 class="text-xl font-semibold text-white flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Contract Invoices - {{ selectedOpportunity?.title }}
+          </h3>
+          <button @click="closeContractInvoicesModal" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="p-6 max-h-[80vh] overflow-y-auto">
+          <!-- Statistics Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Total Invoices -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div class="p-4">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center border border-blue-400">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Invoices</p>
+                    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ contractInvoices.length }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div class="p-4">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center border border-green-400">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Amount</p>
+                    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ formatCurrency(calculateTotalAmount(), 1) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paid Amount -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div class="p-4">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center border border-green-400">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Paid Amount</p>
+                    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ formatCurrency(calculatePaidAmount(), 1) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outstanding Amount -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div class="p-4">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center border border-red-400">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Outstanding</p>
+                    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ formatCurrency(calculateOutstandingAmount(), 1) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-between items-center mb-6">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Invoice Management</h4>
+            <div class="flex space-x-3">
+              <button
+                @click="generateInvoice"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-green-500 rounded-lg transition-all duration-200 focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Generate Invoice
+              </button>
+              <button
+                @click="addNewInvoice"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border border-blue-500 rounded-lg transition-all duration-200 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Invoice
+              </button>
+            </div>
+          </div>
+
+          <!-- Invoices List -->
+          <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Invoice Details
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Due Date
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Payment
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="invoice in contractInvoices" :key="invoice.id" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                          <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            {{ invoice.invoice_number }}
+                          </div>
+                          <div class="text-sm text-gray-500">
+                            {{ formatDate(invoice.invoice_date) }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ formatCurrency(calculateInvoiceTotalFromLineItems(invoice), invoice.currency_id) }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        {{ invoice.line_items?.length || 0 }} line items
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        :class="[
+                          'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                          getStatusClasses(invoice.status)
+                        ]"
+                      >
+                        {{ formatStatus(invoice.status) }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div>{{ formatDate(invoice.due_date) }}</div>
+                      <div v-if="isOverdue(invoice)" class="text-red-600 text-xs">
+                        {{ getDaysOverdue(invoice) }} days overdue
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">
+                        {{ formatCurrency(invoice.paid_amount || 0, invoice.currency_id) }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        {{ getPaymentPercentage(invoice) }}% paid
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          @click="viewInvoice(invoice)"
+                          class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg hover:bg-gray-200 hover:border-gray-300 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                          </svg>
+                          View
+                        </button>
+                        <button
+                          @click="editInvoice(invoice)"
+                          class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-800 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-blue-800 transition-all duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                          </svg>
+                          Edit
+                        </button>
+                        <button
+                          @click="manageLineItems(invoice)"
+                          class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-700 bg-purple-100 border border-purple-200 rounded-lg hover:bg-purple-200 hover:border-purple-300 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-800 dark:bg-purple-900 dark:text-purple-300 dark:border-purple-700 dark:hover:bg-purple-800 transition-all duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                          </svg>
+                          Line Items
+                        </button>
+                        <button
+                          v-if="invoice.status === 'draft'"
+                          @click="deleteInvoice(invoice)"
+                          class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-100 border border-red-200 rounded-lg hover:bg-red-200 hover:border-red-300 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-800 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-all duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div v-if="contractInvoices.length === 0" class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No invoices found</h3>
+            <p class="text-gray-500 dark:text-gray-400 mb-6">This opportunity doesn't have any invoices yet.</p>
+            <div class="flex justify-center space-x-3">
+              <button
+                @click="generateInvoice"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border border-green-500 rounded-lg transition-all duration-200"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Generate Invoice
+              </button>
+              <button
+                @click="addNewInvoice"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border border-blue-500 rounded-lg transition-all duration-200"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Invoice Modal -->
+  <GenerateInvoiceModal
+    :show="showGenerateModal"
+    @close="showGenerateModal = false"
+    @invoice-generated="handleGenerateInvoice"
+  />
+
+  <!-- Invoice Detail Modal -->
+  <InvoiceDetailModal
+    :show="showDetailModal"
+    :invoice="selectedInvoice"
+    @close="showDetailModal = false"
+  />
+
+  <!-- Line Items Modal -->
+  <InvoiceLineItemsModal
+    :show="showLineItemsModal"
+    :line-items="selectedInvoice?.line_items || []"
+    :invoice="selectedInvoice"
+    @close="showLineItemsModal = false"
+    @save="handleSaveLineItems"
+  />
+
+  <!-- Edit Invoice Modal -->
+  <EditInvoiceModal
+    :show="showEditModal"
+    :invoice="selectedInvoice"
+    @close="showEditModal = false"
+    @save="handleSaveEdit"
+  />
+
+  <!-- Edit Rate Modal -->
+  <div v-if="showEditRateModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div class="relative w-full max-w-2xl max-h-full">
+      <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+          <h3 class="text-xl font-semibold text-white flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Edit Rate
+          </h3>
+          <button @click="showEditRateModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <form @submit.prevent="updateRate" class="space-y-6">
+            <!-- Rate Details -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+              <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                  </svg>
+                  Rate Details
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Category *</label>
+                     <select
+                       v-model="editRate.service_category"
+                       required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                       <option value="">Select Service Category</option>
+                       <option value="warehousing">Warehousing</option>
+                       <option value="transportation">Transportation</option>
+                       <option value="freight">Freight</option>
+                       <option value="handling">Handling</option>
+                       <option value="storage">Storage</option>
+                       <option value="customs">Customs</option>
+                       <option value="insurance">Insurance</option>
+                     </select>
+                  </div>
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rate Amount *</label>
+                     <input
+                       v-model.number="editRate.rate_amount"
+                       type="number"
+                       step="0.01"
+                       placeholder="Enter rate amount"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rate Description -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+              <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                  </svg>
+                  Rate Description
+                </h3>
+                <textarea
+                  v-model="editRate.description"
+                  rows="3"
+                  placeholder="Enter rate description"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+              <button
+                @click="showEditRateModal = false"
+                class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                @click="updateRate"
+                :disabled="updatingRate"
+                class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div v-if="updatingRate" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {{ updatingRate ? 'Updating...' : 'Update Rate' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Invoice Modal -->
+  <div v-if="showEditInvoiceModal" class="fixed top-0 left-0 right-0 z-70 flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <div class="relative w-full max-w-2xl max-h-full">
+      <div class="relative bg-white rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-xl">
+          <h3 class="text-xl font-semibold text-white flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Edit Invoice
+          </h3>
+          <button @click="showEditInvoiceModal = false" class="text-white bg-transparent hover:bg-white/20 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <form @submit.prevent="updateInvoice" class="space-y-6">
+            <!-- Invoice Details -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+              <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                  </svg>
+                  Invoice Details
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Invoice Number *</label>
+                     <input
+                       v-model="editInvoice.invoice_number"
+                       type="text"
+                       required
+                       placeholder="Enter invoice number"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                  </div>
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Invoice Date *</label>
+                     <input
+                       v-model="editInvoice.invoice_date"
+                       type="date"
+                       required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Invoice Amount -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+              <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                  </svg>
+                  Invoice Amount
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount *</label>
+                     <input
+                       v-model.number="editInvoice.total_amount"
+                       type="number"
+                       step="0.01"
+                       placeholder="Enter amount"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                  </div>
+                  <div>
+                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Currency *</label>
+                     <select
+                       v-model="editInvoice.currency_id"
+                       required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                     >
+                       <option value="">Select Currency</option>
+                       <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.currency_name }}</option>
+                     </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-end p-6 border-t border-gray-200 dark:border-gray-700 space-x-3">
+              <button
+                @click="showEditInvoiceModal = false"
+                class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                @click="updateInvoice"
+                :disabled="updatingInvoice"
+                class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div v-if="updatingInvoice" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {{ updatingInvoice ? 'Updating...' : 'Update Invoice' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Invoice Modal -->
+  <div v-if="showGenerateModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <GenerateInvoiceModal
+      :show="showGenerateModal"
+      :opportunity="selectedOpportunity"
+      @close="showGenerateModal = false"
+      @invoice-generated="handleGenerateInvoice"
+    />
+  </div>
+
+  <!-- Invoice Detail Modal -->
+  <div v-if="showDetailModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <InvoiceDetailModal
+      :show="showDetailModal"
+      :invoice="selectedInvoice"
+      @close="showDetailModal = false"
+    />
+  </div>
+
+  <!-- Line Items Modal -->
+  <div v-if="showLineItemsModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <InvoiceLineItemsModal
+      :show="showLineItemsModal"
+      :line-items="selectedInvoice?.line_items || []"
+      :invoice="selectedInvoice"
+      @close="showLineItemsModal = false"
+      @save="handleSaveLineItems"
+    />
+  </div>
+
+  <!-- Edit Invoice Modal -->
+  <div v-if="showEditInvoiceModal" class="fixed top-0 left-0 right-0 z-[80] flex items-center justify-center w-full h-full p-4 overflow-x-hidden overflow-y-auto backdrop-blur-sm bg-gray-900/70 dark:bg-gray-900/80">
+    <EditInvoiceModal
+      :show="showEditInvoiceModal"
+      :invoice="selectedInvoice"
+      @close="showEditInvoiceModal = false"
+      @save="handleSaveEdit"
+    />
+  </div>
 
 </template>
 
@@ -2007,13 +2603,22 @@ import { useUserStore } from '../../store/user.store'
 import { useCurrenciesStore } from '../../store/currencies.store'
 import { useActivitiesStore } from '../../store/activities.store'
 import { useAuthStore } from '../../store/auth.store'
+import { useLogisticsContractRatesStore } from '../../store/logistics-contract-rates.store'
+import { useLogisticsContractInvoicesStore } from '../../store/logistics-contract-invoices.store'
 import KanbanBoard from '../../components/crm/KanbanBoard.vue'
+import RateModal from '../../components/crm/RateModal.vue'
 import OpportunityWinModal from '../../components/crm/OpportunityWinModal.vue'
 import CustomerDetectionModal from '../../components/crm/CustomerDetectionModal.vue'
+import GenerateInvoiceModal from '../../components/crm/GenerateInvoiceModal.vue'
+import InvoiceDetailModal from '../../components/crm/InvoiceDetailModal.vue'
+import InvoiceLineItemsModal from '../../components/crm/InvoiceLineItemsModal.vue'
+import EditInvoiceModal from '../../components/crm/EditInvoiceModal.vue'
 import { EnhancedLeadService } from '../../services/crm/EnhancedLeadService'
 
 import type { Opportunities, CreateOpportunities, UpdateOpportunities } from '../../api/models/opportunities.model'
 import type { Activity, CreateActivity, UpdateActivity } from '../../api/models/activities.model'
+import type { LogisticsContractRate, CreateLogisticsContractRate, UpdateLogisticsContractRate } from '../../api/models/logistics-contract-rates.model'
+import type { LogisticsContractInvoice, CreateLogisticsContractInvoice, UpdateLogisticsContractInvoice } from '../../api/models/logistics-contract-invoices.model'
 
 // Stores
 const opportunitiesStore = useOpportunitiesStore()
@@ -2022,6 +2627,8 @@ const stagesStore = useStagesStore()
 const usersStore = useUserStore()
 const currenciesStore = useCurrenciesStore()
 const activitiesStore = useActivitiesStore()
+const logisticsContractRatesStore = useLogisticsContractRatesStore()
+const logisticsContractInvoicesStore = useLogisticsContractInvoicesStore()
 
 // Reactive data
 const loading = ref(false)
@@ -2045,12 +2652,20 @@ const showActivitiesModalFlag = ref(false)
 const showAddActivityModal = ref(false)
 const showEditActivityModal = ref(false)
 const showCustomerDetectionModal = ref(false)
+const showContractRatesModal = ref(false)
+const showContractInvoicesModal = ref(false)
+const showAddRateModal = ref(false)
+const showAddInvoiceModal = ref(false)
+const showEditRateModal = ref(false)
+const showEditInvoiceModal = ref(false)
 
 // Selected items
 const selectedOpportunity = ref<Opportunities | null>(null)
 const opportunityToWin = ref<Opportunities | null>(null)
 const opportunityToDelete = ref<Opportunities | null>(null)
 const selectedActivity = ref<Activity | null>(null)
+const selectedRate = ref<LogisticsContractRate | null>(null)
+const selectedInvoice = ref<LogisticsContractInvoice | null>(null)
 
 // Customer detection
 const enhancedLeadService = new EnhancedLeadService()
@@ -2116,6 +2731,56 @@ const activityForm = reactive<{
   entity_type: 'crm/opportunities',
   entity_id: 0
 })
+
+// Contract rates and invoices data
+const newRate = reactive<Partial<CreateLogisticsContractRate>>({
+  opportunity_id: 0,
+  service_category: '',
+  rate_type: '',
+  rate_amount: 0,
+  currency_id: 0,
+  description: '',
+  is_active: true
+})
+
+const newInvoice = reactive<Partial<CreateLogisticsContractInvoice>>({
+  opportunity_id: 0,
+  invoice_number: '',
+  invoice_date: '',
+  total_amount: 0,
+  currency_id: 0,
+  status: 'draft'
+})
+
+const editRate = reactive<Partial<UpdateLogisticsContractRate>>({
+  service_category: '',
+  rate_type: '',
+  rate_amount: 0,
+  currency_id: 0,
+  description: '',
+  is_active: true
+})
+
+const editInvoice = reactive<Partial<UpdateLogisticsContractInvoice>>({
+  invoice_number: '',
+  invoice_date: '',
+  total_amount: 0,
+  currency_id: 0,
+  status: 'draft'
+})
+
+// Loading states for contract rates and invoices
+const addingRate = ref(false)
+const addingInvoice = ref(false)
+const updatingRate = ref(false)
+const updatingInvoice = ref(false)
+
+// Enhanced invoice modal states
+const showGenerateModal = ref(false)
+const showDetailModal = ref(false)
+const showLineItemsModal = ref(false)
+const contractInvoices = ref<LogisticsContractInvoice[]>([])
+const loadingInvoices = ref(false)
 
 // Computed properties
 const opportunities = computed(() => opportunitiesStore.opportunities)
@@ -3011,6 +3676,339 @@ const handleOpportunityMoved = async (opportunityId: number, newStageId: number)
     console.error('Failed to move opportunity:', err)
     error.value = err.message || 'Failed to move opportunity'
   }
+}
+
+// Contract Rates Functions
+const openContractRatesModal = (opportunity: Opportunities) => {
+  selectedOpportunity.value = opportunity
+  selectedRate.value = null // Reset for new rate
+  showContractRatesModal.value = true
+}
+
+const closeContractRatesModal = () => {
+  showContractRatesModal.value = false
+  selectedRate.value = null
+}
+
+const saveContractRate = async (rateData: any) => {
+  try {
+    saving.value = true
+    
+    // Set the opportunity_id from the selected opportunity
+    rateData.opportunity_id = selectedOpportunity.value?.id
+    rateData.company_id = useAuthStore().user?.company_id || 1
+    
+    if (rateData.isEditing) {
+      // Update existing rate (from RateModal edit button)
+      await logisticsContractRatesStore.updateRate(rateData.id, rateData)
+    } else if (selectedRate.value) {
+      // Update existing rate (from form edit)
+      await logisticsContractRatesStore.updateRate(selectedRate.value.id, rateData)
+    } else {
+      // Create new rate
+      await logisticsContractRatesStore.createRate(rateData)
+    }
+    
+    // Refresh the rates list
+    if (selectedOpportunity.value) {
+      await logisticsContractRatesStore.fetchRatesByOpportunity(selectedOpportunity.value.id)
+    }
+    
+    closeContractRatesModal()
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save contract rate'
+    console.error('Error saving contract rate:', err)
+  } finally {
+    saving.value = false
+  }
+}
+
+const addContractRate = async () => {
+  addingRate.value = true
+  try {
+    await logisticsContractRatesStore.createRate(newRate as CreateLogisticsContractRate)
+    showContractRatesModal.value = false
+    // Reset form
+    Object.assign(newRate, {
+      opportunity_id: 0,
+      service_category: '',
+      rate_type: '',
+      rate_amount: 0,
+      currency_id: 0,
+      description: '',
+      is_active: true
+    })
+  } catch (err: any) {
+    error.value = err.message || 'Failed to add contract rate'
+  } finally {
+    addingRate.value = false
+  }
+}
+
+const editContractRate = (rate: LogisticsContractRate) => {
+  selectedRate.value = rate
+  Object.assign(editRate, {
+    service_category: rate.service_category,
+    rate_type: rate.rate_type,
+    rate_amount: rate.rate_amount,
+    currency_id: rate.currency_id,
+    description: rate.description,
+    is_active: rate.is_active
+  })
+  showEditRateModal.value = true
+}
+
+const updateRate = async () => {
+  if (!selectedRate.value) return
+  
+  updatingRate.value = true
+  try {
+    await logisticsContractRatesStore.updateRate(selectedRate.value.id, editRate as UpdateLogisticsContractRate)
+    showEditRateModal.value = false
+    selectedRate.value = null
+  } catch (err: any) {
+    error.value = err.message || 'Failed to update contract rate'
+  } finally {
+    updatingRate.value = false
+  }
+}
+
+const deleteContractRate = async (rateId: number) => {
+  if (confirm('Are you sure you want to delete this contract rate?')) {
+    try {
+      await logisticsContractRatesStore.deleteRate(rateId)
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete contract rate'
+    }
+  }
+}
+
+// Contract Invoices Functions
+const openContractInvoicesModal = async (opportunity: Opportunities) => {
+  selectedOpportunity.value = opportunity
+  newInvoice.opportunity_id = opportunity.id
+  newInvoice.company_id = useAuthStore().user?.company_id || 1
+  showContractInvoicesModal.value = true
+  await fetchContractInvoices()
+}
+
+const addContractInvoice = async () => {
+  addingInvoice.value = true
+  try {
+    await logisticsContractInvoicesStore.createInvoice(newInvoice as CreateLogisticsContractInvoice)
+    showContractInvoicesModal.value = false
+    // Reset form
+    Object.assign(newInvoice, {
+      opportunity_id: 0,
+      invoice_number: '',
+      invoice_date: '',
+      total_amount: 0,
+      currency_id: 0,
+      status: 'draft'
+    })
+  } catch (err: any) {
+    error.value = err.message || 'Failed to add contract invoice'
+  } finally {
+    addingInvoice.value = false
+  }
+}
+
+const editContractInvoice = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  Object.assign(editInvoice, {
+    invoice_number: invoice.invoice_number,
+    invoice_date: invoice.invoice_date,
+    total_amount: invoice.total_amount,
+    currency_id: invoice.currency_id,
+    status: invoice.status
+  })
+  showEditInvoiceModal.value = true
+}
+
+const updateInvoice = async () => {
+  if (!selectedInvoice.value) return
+  
+  updatingInvoice.value = true
+  try {
+    await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, editInvoice as UpdateLogisticsContractInvoice)
+    showEditInvoiceModal.value = false
+    selectedInvoice.value = null
+  } catch (err: any) {
+    error.value = err.message || 'Failed to update contract invoice'
+  } finally {
+    updatingInvoice.value = false
+  }
+}
+
+const deleteContractInvoice = async (invoiceId: number) => {
+  if (confirm('Are you sure you want to delete this contract invoice?')) {
+    try {
+      await logisticsContractInvoicesStore.deleteInvoice(invoiceId)
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete contract invoice'
+    }
+  }
+}
+
+// Enhanced Invoice Functions
+const closeContractInvoicesModal = () => {
+  showContractInvoicesModal.value = false
+  selectedOpportunity.value = null
+  contractInvoices.value = []
+}
+
+const generateInvoice = () => {
+  showGenerateModal.value = true
+}
+
+const addNewInvoice = () => {
+  showAddInvoiceModal.value = true
+}
+
+const viewInvoice = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showDetailModal.value = true
+}
+
+const editInvoiceModal = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showEditInvoiceModal.value = true
+}
+
+const manageLineItems = (invoice: LogisticsContractInvoice) => {
+  selectedInvoice.value = invoice
+  showLineItemsModal.value = true
+}
+
+const deleteInvoice = async (invoice: LogisticsContractInvoice) => {
+  if (confirm('Are you sure you want to delete this invoice?')) {
+    try {
+      await logisticsContractInvoicesStore.deleteInvoice(invoice.id)
+      await fetchContractInvoices()
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete invoice'
+    }
+  }
+}
+
+const handleGenerateInvoice = async (invoiceData: any) => {
+  try {
+    await logisticsContractInvoicesStore.createInvoice(invoiceData)
+    await fetchContractInvoices()
+    showGenerateModal.value = false
+  } catch (err: any) {
+    error.value = err.message || 'Failed to generate invoice'
+  }
+}
+
+
+
+const handleSaveLineItems = async (lineItems: any[]) => {
+  try {
+    if (selectedInvoice.value) {
+      await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, {
+        line_items: lineItems
+      })
+      await fetchContractInvoices()
+      showLineItemsModal.value = false
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save line items'
+  }
+}
+
+const handleSaveEdit = async (invoiceData: any) => {
+  try {
+    if (selectedInvoice.value) {
+      await logisticsContractInvoicesStore.updateInvoice(selectedInvoice.value.id, invoiceData)
+      await fetchContractInvoices()
+      showEditInvoiceModal.value = false
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Failed to save invoice'
+  }
+}
+
+const fetchContractInvoices = async () => {
+  if (!selectedOpportunity.value) return
+  
+  try {
+    loadingInvoices.value = true
+    await logisticsContractInvoicesStore.fetchInvoices({
+      query: { opportunity_id: selectedOpportunity.value.id }
+    })
+    contractInvoices.value = logisticsContractInvoicesStore.getInvoices
+  } catch (err: any) {
+    error.value = err.message || 'Failed to fetch invoices'
+  } finally {
+    loadingInvoices.value = false
+  }
+}
+
+// Utility functions for invoice calculations
+const calculateTotalAmount = () => {
+  return contractInvoices.value.reduce((total, invoice) => {
+    return total + (calculateInvoiceTotalFromLineItems(invoice) || 0)
+  }, 0)
+}
+
+const calculatePaidAmount = () => {
+  return contractInvoices.value.reduce((total, invoice) => {
+    return total + (invoice.paid_amount || 0)
+  }, 0)
+}
+
+const calculateOutstandingAmount = () => {
+  return calculateTotalAmount() - calculatePaidAmount()
+}
+
+const calculateInvoiceTotalFromLineItems = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.line_items || invoice.line_items.length === 0) {
+    return invoice.total_amount || 0
+  }
+  
+  return invoice.line_items.reduce((total, item) => {
+    return total + ((item.quantity || 0) * (item.unit_price || 0))
+  }, 0)
+}
+
+const getStatusClasses = (status: string) => {
+  switch (status) {
+    case 'draft':
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+    case 'sent':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+    case 'paid':
+      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+    case 'overdue':
+      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    default:
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+  }
+}
+
+const formatStatus = (status: string) => {
+  return status.charAt(0).toUpperCase() + status.slice(1)
+}
+
+const isOverdue = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.due_date) return false
+  return new Date(invoice.due_date) < new Date()
+}
+
+const getDaysOverdue = (invoice: LogisticsContractInvoice) => {
+  if (!invoice.due_date) return 0
+  const dueDate = new Date(invoice.due_date)
+  const today = new Date()
+  const diffTime = today.getTime() - dueDate.getTime()
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+}
+
+const getPaymentPercentage = (invoice: LogisticsContractInvoice) => {
+  const total = calculateInvoiceTotalFromLineItems(invoice)
+  const paid = invoice.paid_amount || 0
+  if (total === 0) return 0
+  return Math.round((paid / total) * 100)
 }
 
 // Lifecycle
