@@ -811,7 +811,12 @@ const loadRates = async () => {
 
 const loadOpportunities = async () => {
   try {
-    await opportunitiesStore.fetchOpportunities({ query: { $limit: 1000 } })
+    await opportunitiesStore.fetchOpportunities({ 
+      query: { 
+        $limit: 1000,
+        $sort: { date_created: -1 } // Most recent first
+      } 
+    })
     opportunities.value = opportunitiesStore.getOpportunities
   } catch (err) {
     console.error('Failed to load opportunities:', err)

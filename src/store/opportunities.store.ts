@@ -27,7 +27,15 @@ export const useOpportunitiesStore = defineStore('opportunities', () => {
     error.value = null
 
     try {
-      const response = await feathersClient.service('crm/opportunities').find(params)
+      // Ensure proper sorting by recent date if not specified
+      const query = params?.query || {}
+      if (!query.$sort) {
+        query.$sort = {
+          date_created: -1 // Most recent first
+        }
+      }
+
+      const response = await feathersClient.service('crm/opportunities').find({ query })
       opportunities.value = response.data || []
       pagination.value = {
         total: response.total || 0,

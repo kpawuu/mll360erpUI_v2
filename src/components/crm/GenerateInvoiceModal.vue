@@ -379,7 +379,12 @@ const formatCurrency = (amount: number, currencyId: number = 1) => {
 // Load opportunities on mount
 const loadOpportunities = async () => {
   try {
-    await opportunitiesStore.fetchOpportunities({ query: { $limit: 1000 } })
+    await opportunitiesStore.fetchOpportunities({ 
+      query: { 
+        $limit: 1000,
+        $sort: { date_created: -1 } // Most recent first
+      } 
+    })
   } catch (error) {
     console.error('Error loading opportunities:', error)
   }
