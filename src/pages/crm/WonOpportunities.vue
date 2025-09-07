@@ -2470,7 +2470,7 @@ const saveContractRate = async (rateData: any) => {
       await logisticsContractRatesStore.createRate(rateData)
     }
     
-    // Refresh the rates list
+    // Refresh the rates list for this specific opportunity
     if (selectedOpportunity.value) {
       await logisticsContractRatesStore.fetchRatesByOpportunity(selectedOpportunity.value.id)
     }

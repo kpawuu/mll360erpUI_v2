@@ -146,6 +146,8 @@ export const useLogisticsContractRatesStore = defineStore('logisticsContractRate
 
     try {
       const response = await logisticsContractRatesControllers.getRatesByOpportunity(opportunityId)
+      // Update the local rates state with opportunity-specific rates
+      rates.value = response.data || response || []
       return response.data || response
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch rates by opportunity'
