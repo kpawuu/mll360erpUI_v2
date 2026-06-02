@@ -3,7 +3,7 @@ import { useAuthStore } from "../store/auth.store";
 import { initFlowbite } from 'flowbite';
 
 export function setupNavigationGuards(router: Router) {
-  router.beforeEach(async (to, from, next) => {
+  router.beforeEach(async (to, _from, next) => {
     console.log('Navigating to:', to.path);
     
     const authStore = useAuthStore();

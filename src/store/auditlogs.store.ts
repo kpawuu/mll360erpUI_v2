@@ -225,7 +225,7 @@ export const useAuditlogsStore = defineStore('auditlogs', () => {
 
   const handleAuthError = (err: any) => {
     if (err.code === 401) {
-      const authStore = useAuthStore()
+      const authStore = useAuthStore() as ReturnType<typeof useAuthStore> & { logout: () => Promise<void> }
       authStore.logout()
     }
   }

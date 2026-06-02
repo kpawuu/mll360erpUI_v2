@@ -1,6 +1,6 @@
 export interface PackageUnit {
   id: number
-  type: string
+  unit: string
   description?: string
   notes?: string
   package_type_id: number
@@ -15,14 +15,14 @@ export interface PackageUnit {
 }
 
 export interface CreatePackageUnit {
-  type: string
+  unit: string
   description?: string
   notes?: string
   package_type_id: number
 }
 
 export interface UpdatePackageUnit {
-  type?: string
+  unit?: string
   description?: string
   notes?: string
   package_type_id?: number

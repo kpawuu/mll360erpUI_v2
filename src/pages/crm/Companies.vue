@@ -1444,7 +1444,11 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted, watch } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useEntityStore } from '../../store/entity.store';
+  import { useEntityGroupStore } from '../../store/entity-group.store';
+  import { useAuthStore } from '../../store/auth.store';
   
   // View mode (cards or table)
   const viewMode = ref('cards');
@@ -1458,15 +1462,17 @@
   const editMode = ref(false);
   const currentCompany = ref(null);
   
-  // Company form data
+  // Company form data (maps to Entity: name, address, email, phonenumber, group_id)
   const companyForm = ref({
     name: '',
     industry: '',
     size: '',
     location: '',
+    group_id: null,
     primaryContact: {
       name: '',
-      email: ''
+      email: '',
+      phone: ''
     },
     status: 'active',
     customerSuccessScore: 85,
@@ -1515,121 +1521,62 @@
     notes: ''
   });
   
-  // Sample company data
-  const companies = ref([
-    {
-      id: 1,
-      name: 'TechnoGlobal Industries',
-      industry: 'Technology',
-      size: 'Enterprise',
-      location: 'San Francisco, CA',
-      website: 'https://technoglobal.com',
-      status: 'active',
-      logo: '/path/to/logo1.png',
-      primaryContact: {
-        name: 'John Smith',
-        email: 'john.smith@technoglobal.com',
-        phone: '+1 (555) 123-4567',
-        title: 'CTO'
-      },
-      onboardingStatus: 'completed',
-      implementationStatus: 'in-progress',
-      customerSuccessScore: 85,
-      renewalDate: '2026-05-15',
-      createdAt: '2025-01-10',
-      contracts: [
-        {
-          id: 101,
-          name: 'Enterprise License Agreement',
-          type: 'subscription',
-          status: 'active',
-          startDate: '2025-01-15',
-          endDate: '2026-01-14',
-          value: '$120,000',
-          documents: [
-            { id: 1001, name: 'Contract.pdf', type: 'pdf', uploadedAt: '2025-01-12' },
-            { id: 1002, name: 'SOW.docx', type: 'docx', uploadedAt: '2025-01-12' }
-          ]
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: 'NexGen Robotics',
-      industry: 'Manufacturing',
-      size: 'Mid-Market',
-      location: 'Boston, MA',
-      website: 'https://nexgenrobotics.com',
-      status: 'active',
-      logo: '/path/to/logo2.png',
-      primaryContact: {
-        name: 'Sarah Johnson',
-        email: 'sarah.j@nexgenrobotics.com',
-        phone: '+1 (555) 987-6543',
-        title: 'Operations Director'
-      },
-      onboardingStatus: 'in-progress',
-      implementationStatus: 'planning',
-      customerSuccessScore: 65,
-      renewalDate: '2026-07-20',
-      createdAt: '2025-03-05',
-      contracts: [
-        {
-          id: 102,
-          name: 'Manufacturing Solution',
-          type: 'subscription',
-          status: 'active',
-          startDate: '2025-03-10',
-          endDate: '2026-03-09',
-          value: '$75,000',
-          documents: [
-            { id: 1003, name: 'Contract.pdf', type: 'pdf', uploadedAt: '2025-03-07' }
-          ]
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: 'GlobalTech Solutions',
-      industry: 'Consulting',
-      size: 'Enterprise',
-      location: 'Chicago, IL',
-      website: 'https://globaltechsolutions.com',
-      status: 'active',
-      logo: '/path/to/logo3.png',
-      primaryContact: {
-        name: 'Michael Rodriguez',
-        email: 'm.rodriguez@globaltechsolutions.com',
-        phone: '+1 (555) 456-7890',
-        title: 'CEO'
-      },
-      onboardingStatus: 'completed',
-      implementationStatus: 'completed',
-      customerSuccessScore: 92,
-      renewalDate: '2025-12-31',
-      createdAt: '2025-01-01',
-      contracts: [
-        {
-          id: 103,
-          name: 'Enterprise Consulting Package',
-          type: 'subscription',
-          status: 'active',
-          startDate: '2025-01-01',
-          endDate: '2025-12-31',
-          value: '$200,000',
-          documents: [
-            { id: 1004, name: 'Contract.pdf', type: 'pdf', uploadedAt: '2024-12-15' },
-            { id: 1005, name: 'SOW.docx', type: 'docx', uploadedAt: '2024-12-15' },
-            { id: 1006, name: 'Addendum.pdf', type: 'pdf', uploadedAt: '2025-02-10' }
-          ]
-        }
-      ]
+  const entityStore = useEntityStore();
+  const entityGroupStore = useEntityGroupStore();
+  const authStore = useAuthStore();
+
+  // Companies = entities (customer companies) from API
+  const companies = computed(() => {
+    const entities = entityStore.getEntities || [];
+    return entities.map((e) => ({
+      id: e.id,
+      name: e.name,
+      industry: e.group?.group_name || '-',
+      size: '-',
+      location: e.address || '-',
+      website: '',
+      status: e.date_deleted ? 'inactive' : 'active',
+      group_id: e.group_id,
+      primaryContact: { name: '-', email: e.email || '-', phone: e.phonenumber || '-' },
+      customerSuccessScore: 0,
+      renewalDate: '',
+      createdAt: e.date_created || '',
+      contracts: []
+    }));
+  });
+
+  const route = useRoute();
+
+  onMounted(async () => {
+    const companyId = authStore.user?.company_id;
+    if (companyId) {
+      await entityStore.fetchEntitiesByCompany(companyId);
+      await entityGroupStore.fetchEntityGroups({ query: { $limit: 100 } });
     }
-  ]);
+    const editId = route.query.editEntity;
+    if (editId) {
+      const id = Number(editId);
+      const list = Array.isArray(companies.value) ? companies.value : [];
+      const company = list.find(c => c.id === id);
+      if (company) openCompanyModal('edit', company);
+    }
+  });
+
+  watch(() => route.query.editEntity, async (editId) => {
+    if (!editId) return;
+    const id = Number(editId);
+    const list = Array.isArray(companies.value) ? companies.value : [];
+    let company = list.find(c => c.id === id);
+    if (!company && entityStore.getEntities?.length) {
+      company = list.find(c => c.id === id);
+    }
+    if (company) openCompanyModal('edit', company);
+  });
   
   // Filtered companies based on search and filters
   const filteredCompanies = computed(() => {
-    return companies.value.filter(company => {
+    const list = Array.isArray(companies.value) ? companies.value : [];
+    return list.filter(company => {
       const nameMatch = company.name.toLowerCase().includes(searchTerm.value.toLowerCase());
       const industryMatch = filters.value.industry === '' || company.industry === filters.value.industry;
       const sizeMatch = filters.value.size === '' || company.size === filters.value.size;
@@ -1645,34 +1592,32 @@
   
     if (mode === 'edit' && company) {
       currentCompany.value = company;
-      // Populate form with company data
       companyForm.value = {
         name: company.name,
         industry: company.industry,
         size: company.size,
         location: company.location,
+        group_id: company.group_id ?? null,
         primaryContact: {
-          name: company.primaryContact.name,
-          email: company.primaryContact.email
+          name: company.primaryContact?.name || '',
+          email: company.primaryContact?.email || '',
+          phone: company.primaryContact?.phone || ''
         },
         status: company.status,
-        customerSuccessScore: company.customerSuccessScore,
-        createdAt: company.createdAt,
-        renewalDate: company.renewalDate,
-        notes: company.notes || ''
+        customerSuccessScore: company.customerSuccessScore || 85,
+        createdAt: company.createdAt || '',
+        renewalDate: company.renewalDate || '',
+        notes: ''
       };
     } else {
-      // Reset form for new company
       currentCompany.value = null;
       companyForm.value = {
         name: '',
         industry: '',
         size: '',
         location: '',
-        primaryContact: {
-          name: '',
-          email: ''
-        },
+        group_id: null,
+        primaryContact: { name: '', email: '', phone: '' },
         status: 'active',
         customerSuccessScore: 85,
         createdAt: new Date().toISOString().split('T')[0],
@@ -1687,46 +1632,33 @@
     currentCompany.value = null;
   }
   
-  function saveCompany() {
-    if (editMode.value && currentCompany.value) {
-      // Update existing company
-      const index = companies.value.findIndex(c => c.id === currentCompany.value.id);
-      if (index !== -1) {
-        companies.value[index] = {
-          ...companies.value[index],
+  async function saveCompany() {
+    const companyId = authStore.user?.company_id;
+    if (!companyId) return;
+    try {
+      if (editMode.value && currentCompany.value) {
+        await entityStore.updateEntity(currentCompany.value.id, {
           name: companyForm.value.name,
-          industry: companyForm.value.industry,
-          size: companyForm.value.size,
-          location: companyForm.value.location,
-          primaryContact: companyForm.value.primaryContact,
-          status: companyForm.value.status,
-          customerSuccessScore: companyForm.value.customerSuccessScore,
-          createdAt: companyForm.value.createdAt,
-          renewalDate: companyForm.value.renewalDate,
-          notes: companyForm.value.notes
-        };
+          address: companyForm.value.location,
+          phonenumber: companyForm.value.primaryContact?.phone,
+          email: companyForm.value.primaryContact?.email,
+          group_id: companyForm.value.group_id
+        });
+      } else {
+        await entityStore.createEntity({
+          company_id: companyId,
+          group_id: companyForm.value.group_id || 1,
+          name: companyForm.value.name,
+          address: companyForm.value.location,
+          phonenumber: companyForm.value.primaryContact?.phone,
+          email: companyForm.value.primaryContact?.email
+        });
+        await entityStore.fetchEntitiesByCompany(companyId);
       }
-    } else {
-      // Add new company
-      const newCompany = {
-        id: `company-${Date.now()}`,
-        name: companyForm.value.name,
-        industry: companyForm.value.industry,
-        size: companyForm.value.size,
-        location: companyForm.value.location,
-        primaryContact: companyForm.value.primaryContact,
-        status: companyForm.value.status,
-        customerSuccessScore: companyForm.value.customerSuccessScore,
-        createdAt: companyForm.value.createdAt,
-        renewalDate: companyForm.value.renewalDate,
-        notes: companyForm.value.notes,
-        contracts: [],
-        documents: []
-      };
-      companies.value.push(newCompany);
+      closeCompanyModal();
+    } catch (err) {
+      console.error('Failed to save company:', err);
     }
-  
-    closeCompanyModal();
   }
   
   // Export functions

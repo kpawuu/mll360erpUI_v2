@@ -590,12 +590,13 @@ watch(() => props.currencies, (newCurrencies) => {
   }
 }, { immediate: true })
 
-// Set opportunity_id when selectedOpportunity is provided
+// Set opportunity_id when selectedOpportunity is provided; use rates already loaded by parent (per-opportunity)
 watch(() => props.selectedOpportunity, (newOpportunity) => {
   if (newOpportunity && newOpportunity.id) {
     form.opportunity_id = newOpportunity.id
-    // Fetch existing rates for this opportunity
-    fetchExistingRates(newOpportunity.id)
+    // Parent pages load rates for this opportunity before opening the modal, so use store data
+    existingRates.value = logisticsContractRatesStore.getRates || []
+    loadingRates.value = false
   }
 }, { immediate: true })
 

@@ -3679,9 +3679,14 @@ const handleOpportunityMoved = async (opportunityId: number, newStageId: number)
 }
 
 // Contract Rates Functions
-const openContractRatesModal = (opportunity: Opportunities) => {
+const openContractRatesModal = async (opportunity: Opportunities) => {
   selectedOpportunity.value = opportunity
   selectedRate.value = null // Reset for new rate
+  try {
+    await logisticsContractRatesStore.fetchRatesByOpportunity(opportunity.id)
+  } catch (e) {
+    console.error('Failed to load rates for opportunity', e)
+  }
   showContractRatesModal.value = true
 }
 

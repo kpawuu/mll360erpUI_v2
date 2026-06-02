@@ -5,12 +5,11 @@ import type { AuthManagement } from '../api/models/authManagement.model';
 import { encrypt, decrypt } from '../utils/encrypDecrypt';
 import { authenticateFeathersClient } from '../api/feathers';
 
-// Define the auth store using Pinia
+// Define the auth store using Pinia (persist option from pinia-plugin-persistedstate)
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null as Users | null,
+        user: null as User | null,
         accessToken: null as string | null,
-        // refreshToken: null as string | null,
         success: false as boolean,
         error: null as any,
     }),
@@ -19,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
         key: 'auth-store',
         storage: localStorage,
         paths: ['user', 'success', 'error']
-    },
+    } as { key: string; storage: Storage; paths?: string[] },
 
     actions: {
         // Action to login the user
@@ -58,7 +57,7 @@ export const useAuthStore = defineStore('auth', {
         },
 
         // Action to register a new user
-        async register(user: Users) {
+        async register(user: User) {
             try {
                 this.error = null
                 this.success = false

@@ -1,12 +1,10 @@
 // Flowbite initialization utility
-let flowbiteInitialized = false;
 let observer: MutationObserver | null = null;
 
 export const initializeFlowbite = async () => {
     try {
         const { initFlowbite } = await import('flowbite');
         initFlowbite();
-        flowbiteInitialized = true;
         console.log('Flowbite initialized successfully');
     } catch (error) {
         console.warn('Failed to initialize Flowbite:', error);
@@ -14,7 +12,6 @@ export const initializeFlowbite = async () => {
 };
 
 export const reinitializeFlowbite = async () => {
-    flowbiteInitialized = false;
     await initializeFlowbite();
 };
 

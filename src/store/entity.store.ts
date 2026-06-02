@@ -170,7 +170,10 @@ export const useEntityStore = defineStore('entity', () => {
             loading.value = true;
             error.value = null;
             const response = await entityController.getByCompany(companyId);
-            return Array.isArray(response) ? response : ((response as any).data || []);
+            const data = Array.isArray(response) ? response : ((response as any).data || []);
+            entities.value = data;
+            pagination.value.total = data.length;
+            return data;
         } catch (err: any) {
             error.value = err.message || 'Failed to fetch entities by company';
             throw err;
@@ -201,8 +204,7 @@ export const useEntityStore = defineStore('entity', () => {
     const handleAuthError = (err: any) => {
         if (err.message?.includes('Authentication required')) {
             error.value = 'Session expired. Please login again.';
-            const authStore = useAuthStore();
-            // Optionally redirect to login or clear auth state
+            const authStore = useAuthStore() as ReturnType<typeof useAuthStore> & { logout: () => Promise<void> };
             authStore.logout();
         } else {
             error.value = err.message || 'An error occurred';

@@ -19,8 +19,8 @@
       </div>
     </div>
 
-    <!-- Debug Section (temporary) -->
-    <div v-if="true" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+    <!-- Debug Section (development only) -->
+    <div v-if="showDebug" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
       <h4 class="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">Debug Info:</h4>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
         <div>
@@ -2487,7 +2487,8 @@ const enhancedLeadService = new EnhancedLeadService()
 // Customer detection state
 const customerDetectionResult = ref<CustomerDetectionResult | null>(null)
 const isDetectingCustomer = ref(false)
-const showCustomerDetectionModal = ref(false)
+const showDebug = ref(false)
+  const showCustomerDetectionModal = ref(false)
 const selectedCustomer = ref<{ entity: any; contact: any } | null>(null)
 
 // Reactive data

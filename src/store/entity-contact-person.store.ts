@@ -64,6 +64,45 @@ export const useEntityContactPersonStore = defineStore('entityContactPerson', ()
     }
   }
 
+  /** Fetch all contact persons for the current user's company (for CRM Contacts page) */
+  const fetchAllContactPersonsForCompany = async (params?: { query?: any }) => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const companyId = getUserCompanyId.value
+      if (!companyId) {
+        throw new Error('User company not found')
+      }
+
+      const queryParams = {
+        ...params,
+        query: {
+          ...(params?.query || {}),
+          company_id: companyId,
+          $limit: params?.query?.$limit ?? 500,
+          $sort: params?.query?.$sort ?? { date_created: -1 }
+        }
+      }
+
+      const response = await entityContactPersonControllers.getContactPersons(queryParams)
+      const data = response.data || []
+      contactPersons.value = data
+      pagination.value = {
+        total: response.total ?? data.length,
+        limit: response.limit || 10,
+        skip: response.skip || 0,
+        currentPage: 1
+      }
+    } catch (err: any) {
+      error.value = err.message || 'Failed to fetch contact persons'
+      console.error('Error fetching contact persons:', err)
+      handleAuthError(err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   const createContactPerson = async (data: CreateEntityContactPerson) => {
     loading.value = true
     error.value = null
@@ -175,7 +214,7 @@ export const useEntityContactPersonStore = defineStore('entityContactPerson', ()
   const handleAuthError = (err: any) => {
     if (err.code === 401) {
       console.log('Authentication error, logging out...')
-      authStore.logout()
+      ;(authStore as ReturnType<typeof useAuthStore> & { logout: () => Promise<void> }).logout()
     }
   }
 
@@ -194,6 +233,7 @@ export const useEntityContactPersonStore = defineStore('entityContactPerson', ()
 
     // Actions
     fetchContactPersons,
+    fetchAllContactPersonsForCompany,
     createContactPerson,
     updateContactPerson,
     deleteContactPerson,

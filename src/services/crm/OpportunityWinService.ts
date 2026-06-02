@@ -5,9 +5,12 @@ import { useShipmentStore } from '../../store/shipment.store'
 import { useUserStore } from '../../store/user.store'
 import { useCompanyStore } from '../../store/company.store'
 import { useLogisticsContractRatesStore } from '../../store/logistics-contract-rates.store'
+import { useLogisticsContractInvoicesStore } from '../../store/logistics-contract-invoices.store'
 import { useAuthStore } from '../../store/auth.store'
 import { useStagesStore } from '../../store/stages.store'
 import feathersClient from '../../api/feathers'
+import type { CreateShipment } from '../../api/models/shipment.model'
+import { LogisticsRateCalculationService, type RateData } from '../../api/services/LogisticsRateCalculationService'
 
 export interface OpportunityWinData {
   opportunityId: number
@@ -69,11 +72,11 @@ export class OpportunityWinService {
     return useShipmentStore()
   }
   
-  private get userStore() {
+  private get _userStore() {
     return useUserStore()
   }
   
-  private get companyStore() {
+  private get _companyStore() {
     return useCompanyStore()
   }
 
@@ -81,7 +84,9 @@ export class OpportunityWinService {
     return useLogisticsContractRatesStore()
   }
 
-
+  private get logisticsContractInvoicesStore() {
+    return useLogisticsContractInvoicesStore()
+  }
 
   private get stagesStore() {
     return useStagesStore()
@@ -114,14 +119,16 @@ export class OpportunityWinService {
       } catch (error) {
         console.error('Error fetching opportunity via Feathers:', error)
         // Fallback to store method
-        const opportunity = await this.opportunitiesStore.fetchOpportunities({ query: { id: winData.opportunityId } })
-        if (!opportunity || !opportunity.data || opportunity.data.length === 0) {
+        await this.opportunitiesStore.fetchOpportunities({ query: { id: winData.opportunityId } })
+        const list = this.opportunitiesStore.getOpportunities
+        const found = list.find((o: { id: number }) => o.id === winData.opportunityId)
+        if (!found) {
           console.error('❌ Opportunity not found')
           result.message = 'Opportunity not found'
           result.errors?.push('Opportunity not found')
           return result
         }
-        opportunityData = opportunity.data[0]
+        opportunityData = found
         console.log('✅ Opportunity found via store:', opportunityData)
       }
 
@@ -145,7 +152,7 @@ export class OpportunityWinService {
 
       // Step 2: Process contact person creation
       console.log('📞 Step 2: Processing contact person creation')
-      const contactResult = await this.processContactCreation(opportunityData, customerResult.customerId)
+      const contactResult = await this.processContactCreation(opportunityData, customerResult.customerId!)
       if (!contactResult.success) {
         console.error('❌ Contact creation failed')
         result.message = 'Failed to create contact person'
@@ -227,7 +234,7 @@ export class OpportunityWinService {
   /**
    * Get opportunity details
    */
-  private async getOpportunity(opportunityId: number) {
+  private async _getOpportunity(opportunityId: number) {
     try {
       const opportunities = this.opportunitiesStore.opportunities
       return opportunities.find(opp => opp.id === opportunityId)
@@ -418,15 +425,13 @@ export class OpportunityWinService {
   /**
    * Generate logistics invoice using the calculation service
    */
-  private async generateLogisticsInvoice(opportunity: any, winData: OpportunityWinData): Promise<{ success: boolean; invoiceId?: number }> {
+  private async generateLogisticsInvoice(opportunity: any, _winData: OpportunityWinData): Promise<{ success: boolean; invoiceId?: number }> {
     try {
       // Get the rates for this opportunity
-      const rates = await this.logisticsContractRatesStore.fetchRates({
-        opportunity_id: opportunity.id,
-        is_active: true
-      })
+      await this.logisticsContractRatesStore.fetchRatesByOpportunity(opportunity.id)
+      const ratesData = this.logisticsContractRatesStore.getRates
 
-      if (!rates.data || rates.data.length === 0) {
+      if (!ratesData || ratesData.length === 0) {
         console.log('No rates found for invoice generation')
         return { success: false }
       }
@@ -441,7 +446,7 @@ export class OpportunityWinService {
       const calculation = LogisticsRateCalculationService.calculateLogisticsInvoice(
         opportunity,
         serviceData,
-        rates.data
+        ratesData as RateData[]
       )
 
       // Generate invoice number
@@ -491,16 +496,13 @@ export class OpportunityWinService {
   /**
    * Generate one-time invoice (if applicable)
    */
-  private async generateOneTimeInvoice(opportunity: any, customerId: number, winData: OpportunityWinData): Promise<{ success: boolean; invoiceId?: number }> {
+  private async generateOneTimeInvoice(opportunity: any, _customerId: number, _winData: OpportunityWinData): Promise<{ success: boolean; invoiceId?: number }> {
     try {
       // Get the rates for this opportunity
       let rates: any[] = []
       try {
-        const ratesResponse = await this.logisticsContractRatesStore.fetchRates({
-          opportunity_id: opportunity.id,
-          is_active: true
-        })
-        rates = ratesResponse.data || []
+        await this.logisticsContractRatesStore.fetchRatesByOpportunity(opportunity.id)
+        rates = this.logisticsContractRatesStore.getRates || []
       } catch (error) {
         console.error('Error fetching rates via store:', error)
         // Try using Feathers client directly as fallback
@@ -729,10 +731,10 @@ export class OpportunityWinService {
         company_id: currentCompanyId,
         client_id: customerId,
         user_id: currentUserId,
-        shipment_mode: opportunity.shipment_mode || 'Air',
+        shipment_mode: (opportunity.shipment_mode || 'Air') as 'Air' | 'Sea' | 'Road' | 'Rail' | 'Other',
         cargo_description: opportunity.title || 'Project from won opportunity',
         delivery_date: opportunity.contract_start_date || new Date().toISOString().split('T')[0],
-        category: 'Other',
+        category: 'Other' as const,
         file_number: `OPP-${opportunity.id}`,
         sequence: '001',
         year: new Date().getFullYear().toString()
@@ -742,13 +744,13 @@ export class OpportunityWinService {
       
       try {
         // Try using Feathers client directly first
-        const project = await feathersClient.service('shipments/shipments').create(projectData)
+        const project = await feathersClient.service('shipments/shipments').create(projectData as CreateShipment)
         console.log('✅ Initial project created via Feathers:', project.id)
         return { success: true, projectId: project.id }
       } catch (error) {
         console.error('Error creating project via Feathers:', error)
         // Fallback to store method
-        const project = await this.shipmentStore.createShipment(projectData)
+        const project = await this.shipmentStore.createShipment(projectData as CreateShipment)
         console.log('✅ Initial project created via store:', project.id)
         return { success: true, projectId: project.id }
       }
@@ -772,7 +774,7 @@ export class OpportunityWinService {
   /**
    * Send notifications about the won opportunity
    */
-  private async sendNotifications(opportunity: any, resultData: any) {
+  private async sendNotifications(opportunity: any, _resultData: any) {
     try {
       console.log('Sending notifications for won opportunity:', opportunity.id)
     } catch (error) {
@@ -783,7 +785,7 @@ export class OpportunityWinService {
   /**
    * Helper method to get shipment mode based on service type
    */
-  private getShipmentMode(serviceType: string): string {
+  private _getShipmentMode(serviceType: string): string {
     switch (serviceType) {
       case 'freight':
         return 'Air'
@@ -836,11 +838,11 @@ export class OpportunityWinService {
     }
   }
 
-  private getCustomerGroupId(): number {
+  private _getCustomerGroupId(): number {
     return 1
   }
 
-  private getActiveStatusId(): number {
+  private _getActiveStatusId(): number {
     return 1
   }
 

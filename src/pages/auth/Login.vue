@@ -3,7 +3,7 @@
     <div class="text-center lg:text-left">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back to MLL 360</h2>
       <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-        Build your design system effortlessly with our powerful component library.
+        Sign in to access your account and continue.
       </p>
     </div>
 
@@ -16,18 +16,18 @@
       <LoadingIndicator v-if="isLoading" />
 
       <!-- Custom Verification Error -->
-      <div v-if="showVerificationError" class="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <div v-if="showVerificationError" class="flex items-center p-4 mb-4 text-sm rounded-xl border bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/40 dark:border-amber-800/60 dark:text-amber-200" role="alert">
+        <svg class="flex-shrink-0 inline w-4 h-4 me-3 text-amber-600 dark:text-amber-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
         <span class="sr-only">Warning</span>
         <div class="flex-1">
-          <span class="font-medium">Account Not Verified!</span> Your account needs verification. 
-          <button @click="handleVerifyAccount" class="font-medium text-yellow-800 underline dark:text-yellow-300 hover:no-underline">
+          <span class="font-medium">Account Not Verified!</span> Your account needs verification.
+          <button @click="handleVerifyAccount" class="font-medium underline hover:no-underline text-amber-700 dark:text-amber-300">
             Click here to verify your account
           </button>
         </div>
-        <button type="button" @click="clearErrors" class="ms-auto -mx-1.5 -my-1.5 bg-yellow-50 text-yellow-500 rounded-lg focus:ring-2 focus:ring-yellow-400 p-1.5 hover:bg-yellow-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-yellow-300 dark:hover:bg-gray-700">
+        <button type="button" @click="clearErrors" class="ms-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 focus:ring-amber-400 p-1.5 inline-flex items-center justify-center h-8 w-8 text-amber-600 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900/50">
           <span class="sr-only">Close</span>
           <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
@@ -42,7 +42,7 @@
         <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
         <div class="relative">
           <input type="email" id="email" v-model="email"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 sm:text-sm rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block w-full p-3 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors"
             placeholder="alex.jordan@gmail.com" required>
         </div>
       </div>
@@ -51,13 +51,13 @@
         <div class="flex items-center justify-between mb-2">
           <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
           <a href="javascript:void(0);" @click="forgottenPassword"
-            class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">
+            class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-400 dark:hover:text-primary-300">
             Forgot password?
           </a>
         </div>
         <div class="relative">
           <input :type="showPassword ? 'text' : 'password'" id="password" v-model="password"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 sm:text-sm rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block w-full p-3 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors"
             placeholder="••••••••" required>
           <button type="button" @click="showPassword = !showPassword"
             class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -79,15 +79,15 @@
 
       <div class="flex items-center">
         <input id="remember" type="checkbox" v-model="rememberMe"
-          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
-        <label for="remember" class="ml-2 text-sm text-gray-600 dark:text-gray-300">
+          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-600 dark:focus:ring-primary-500 dark:ring-offset-gray-900">
+        <label for="remember" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
           Remember sign in details
         </label>
       </div>
 
       <div>
         <button type="submit" :disabled="isLoading"
-          class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+          class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-3 text-center transition-colors dark:bg-primary-500 dark:hover:bg-primary-600 dark:focus:ring-primary-500/50 dark:ring-offset-gray-900">
           <span v-if="isLoading" class="flex items-center justify-center">
             <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin"
               viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -332,4 +332,4 @@ const handleVerifyAccount = async () => {
 };
 </script>
 
-<style></style>ate>
+<style scoped></style>

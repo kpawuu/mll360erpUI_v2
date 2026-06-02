@@ -100,9 +100,13 @@ export const useActivitiesStore = defineStore('activities', () => {
       loading.value = true
       error.value = null
       
+      const companyId = authStore.user?.company_id
+      if (companyId == null) {
+        throw new Error('User company is required to create activity')
+      }
       const activityData = {
         ...data,
-        company_id: authStore.user?.company_id
+        company_id: companyId
       }
       
       const result = await createActivity(activityData)

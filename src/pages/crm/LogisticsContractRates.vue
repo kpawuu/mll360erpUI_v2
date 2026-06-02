@@ -149,9 +149,8 @@
                 v-model="filters.search"
                 @input="onSearchChange"
                 type="text"
-                placeholder="Search functionality coming soon..."
-                disabled
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                placeholder="Search by category, type, description, or opportunity..."
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200"
               >
               <div v-if="loading" class="absolute inset-y-0 right-0 flex items-center pr-4">
                 <div class="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
@@ -741,12 +740,26 @@ const pagination = reactive({
   end: 0
 })
 
+// Client-side search: filter rates by search string (category, type, description, opportunity title)
+const displayedRates = computed(() => {
+  const q = (filters.search || '').toLowerCase().trim()
+  if (!q) return rates.value
+  return rates.value.filter((r) => {
+    const cat = (r.service_category || '').toLowerCase()
+    const type = (r.rate_type || '').toLowerCase()
+    const desc = (r.description || '').toLowerCase()
+    const oppTitle = (r.opportunity?.title || '').toLowerCase()
+    const warehouse = (r.warehouse_location || '').toLowerCase()
+    return cat.includes(q) || type.includes(q) || desc.includes(q) || oppTitle.includes(q) || warehouse.includes(q)
+  })
+})
+
 // Computed properties
 const selectAll = computed({
-  get: () => selectedRates.value.length === rates.value.length && rates.value.length > 0,
+  get: () => displayedRates.value.length > 0 && selectedRates.value.length === displayedRates.value.length,
   set: (value) => {
     if (value) {
-      selectedRates.value = rates.value.map(rate => rate.id)
+      selectedRates.value = displayedRates.value.map(rate => rate.id)
     } else {
       selectedRates.value = []
     }
@@ -835,7 +848,8 @@ const loadCurrencies = async () => {
 // Filter methods
 const onSearchChange = () => {
   // Search functionality is currently disabled
-  // TODO: Implement search when backend supports it
+  // Client-side search: displayedRates computed filters rates by filters.search; no backend call needed
+  pagination.page = 1
 }
 
 const onCategoryFilterChange = () => {

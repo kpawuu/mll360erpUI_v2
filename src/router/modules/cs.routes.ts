@@ -6,6 +6,8 @@ import Files from '../../pages/cs/Files.vue';
 import Reports from '../../pages/cs/Reports.vue';
 import TruckRequests from '../../pages/cs/TruckRequests.vue';
 import Shipments from '../../pages/cs/Shipments.vue';
+import Orders from '../../pages/cs/Orders.vue';
+import OrderDetail from '../../pages/cs/OrderDetail.vue';
 import Contacts from '../../pages/crm/Contacts.vue';
 
 export const csRoutes: RouteRecordRaw[] = [
@@ -65,6 +67,33 @@ export const csRoutes: RouteRecordRaw[] = [
         meta: { 
           requiresAuth: true,
           title: 'Shipments'
+        },
+      },
+      {
+        path: "orders",
+        name: "cs-orders",
+        component: Orders,
+        meta: { 
+          requiresAuth: true,
+          title: 'Orders'
+        },
+      },
+      {
+        path: "orders/new",
+        name: "cs-orders-new",
+        component: OrderDetail,
+        meta: { 
+          requiresAuth: true,
+          title: 'New Order'
+        },
+      },
+      {
+        path: "orders/:id",
+        name: "cs-order-detail",
+        component: OrderDetail,
+        meta: { 
+          requiresAuth: true,
+          title: 'Order Detail'
         },
       },
       {

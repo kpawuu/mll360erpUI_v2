@@ -1,15 +1,16 @@
 <script setup>
 import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
+import Toast from './components/ui/Toast.vue'
 
-// initialize components based on data attribute selectors
 onMounted(() => {
-    initFlowbite();
+  initFlowbite()
 })
 </script>
 
 <template>
-  <router-view></router-view>
+  <router-view />
+  <Toast />
 </template>
 
 <style scoped>

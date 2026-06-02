@@ -9,19 +9,6 @@ const IV_LENGTH = 16; // For AES, this is always 16 bytes
 /**
  * Converts a string to an ArrayBuffer
  */
-function stringToArrayBuffer(str: string): ArrayBuffer {
-  const encoder = new TextEncoder();
-  return encoder.encode(str).buffer;
-}
-
-/**
- * Converts an ArrayBuffer to a string
- */
-function arrayBufferToString(buffer: ArrayBuffer): string {
-  const decoder = new TextDecoder();
-  return decoder.decode(new Uint8Array(buffer));
-}
-
 /**
  * Converts a base64 string to an ArrayBuffer
  */

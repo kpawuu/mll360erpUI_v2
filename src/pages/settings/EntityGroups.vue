@@ -931,6 +931,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useEntityGroupStore } from '../../store/entity-group.store'
 import { useEntityStore } from '../../store/entity.store'
 import type { EntityGroup } from '../../api/models/entity-group.model'
@@ -1161,9 +1162,9 @@ const viewEntityDetails = (entity: Entity) => {
     showEntityDetailsModal.value = true
 }
 
+const router = useRouter()
 const editEntity = (entity: Entity) => {
-    // TODO: Navigate to entity edit page or show entity edit modal
-    console.log('Edit entity:', entity.name)
+    router.push({ path: '/crm/companies', query: { editEntity: String(entity.id) } })
 }
 
 const closeModal = () => {

@@ -1,10 +1,10 @@
 <template>
   <div class="max-w-md w-full">
-    <div class="text-center">
+    <div class="text-center lg:text-left">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Verify Your Account</h2>
       <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-        We've sent a verification code to 
-        <span class="font-semibold text-gray-900 dark:text-white">{{ userEmail }}</span>. 
+        We've sent a verification code to
+        <span class="font-semibold text-gray-900 dark:text-white">{{ userEmail }}</span>.
         Please enter the code below to verify your account.
       </p>
     </div>
@@ -23,7 +23,7 @@
               @paste="handlePaste"
               ref="otpInputs"
               v-model="otpValues[index]"
-              class="block w-12 h-12 py-3 text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-xl font-semibold dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="block w-12 h-12 py-3 text-center text-gray-900 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xl font-semibold dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors"
               required
             />
           </div>
@@ -38,7 +38,7 @@
             v-else 
             type="button" 
             @click="resendOTP"
-            class="font-medium text-blue-600 hover:underline dark:text-blue-500"
+            class="font-medium text-primary-600 hover:underline dark:text-primary-400 dark:hover:text-primary-300"
           >
             Resend verification code
           </button>
@@ -46,7 +46,7 @@
       </div>
       
       <!-- Success Message -->
-      <div v-if="successMessage" class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+      <div v-if="successMessage" class="flex items-center p-4 mb-4 text-sm rounded-xl border bg-green-50 border-green-200 text-green-800 dark:bg-emerald-950/40 dark:border-emerald-800/60 dark:text-emerald-200" role="alert">
         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
@@ -55,7 +55,7 @@
       </div>
       
       <!-- Error Message -->
-      <div v-if="errorMessage" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+      <div v-if="errorMessage" class="flex items-center p-4 mb-4 text-sm rounded-xl border bg-red-50 border-red-200 text-red-800 dark:bg-red-950/40 dark:border-red-800/60 dark:text-red-200" role="alert">
         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
@@ -68,7 +68,7 @@
         <button 
           type="submit" 
           :disabled="isLoading || !isOtpComplete"
-          class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-3 text-center transition-colors dark:bg-primary-500 dark:hover:bg-primary-600 dark:focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span v-if="isLoading" class="flex items-center justify-center">
             <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,13 +83,13 @@
       
       <div class="text-center mt-4">
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          Didn't receive the code? <a href="#" @click.prevent="resendOTP" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Send to a different email address</a>
+          Didn't receive the code? <a href="#" @click.prevent="resendOTP" class="font-medium text-primary-600 hover:underline dark:text-primary-400 dark:hover:text-primary-300">Send to a different email address</a>
         </p>
       </div>
       
       <div class="text-center mt-2">
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          <a href="/auth/login" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Back to login</a>
+          <a href="/auth/login" class="font-medium text-primary-600 hover:underline dark:text-primary-400 dark:hover:text-primary-300">Back to login</a>
         </p>
       </div>
     </form>

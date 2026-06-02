@@ -824,6 +824,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useStagesStore } from '../../store/stages.store'
+import { useAuthStore } from '../../store/auth.store'
 import type { Stages } from '../../api/models/stages.model'
 
 const stagesStore = useStagesStore()
@@ -974,8 +975,8 @@ const saveStage = async () => {
         type: stageForm.value.type,
         position: stageForm.value.position,
         is_default: stageForm.value.is_default,
-        user_id: 1, // TODO: Get from auth store
-        company_id: 1 // TODO: Get from auth store
+        user_id: useAuthStore().user?.id ?? 0,
+        company_id: useAuthStore().user?.company_id ?? 0
       })
       showSuccessModal.value = true
       successMessage.value = 'Stage added successfully!'

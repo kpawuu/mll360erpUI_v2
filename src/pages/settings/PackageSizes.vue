@@ -4,165 +4,166 @@
     <div class="mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Package Sizes Management</h1>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg">Manage sizes for different package types in your operations</p>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Package Sizes Management</h1>
+          <p class="text-gray-600 dark:text-gray-400 text-lg">Manage sizes for different package types in your operations</p>
         </div>
-                <button @click="showCreateModal = true" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          Add Package Size
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            @click="exportCsv"
+            :disabled="packageSizeStore.loading || displayedPackageSizes.length === 0"
+            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-all duration-200"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            Export CSV
+          </button>
+          <button @click="openCreateModal" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 border border-blue-500">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Add Package Size
+          </button>
+        </div>
       </div>
     </div>
 
-        <!-- Search and Filters Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-            <!-- Card Header -->
+        <!-- Search and Filters Card (overflow-visible so Package Type dropdown is not clipped) -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-visible mb-6">
             <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Search & Filter Package Sizes</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">Find and manage your package sizes</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                            {{ filteredPackageSizes.length }} sizes
-                        </span>
-                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                        {{ packageSizeStore.pagination?.total ?? 0 }} sizes
+                    </span>
                 </div>
             </div>
-            
-            <!-- Card Body -->
             <div class="p-6">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <!-- Search Input -->
+                <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
                     <div class="lg:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Search Package Sizes</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </div>
-          <input 
-            v-model="searchQuery" 
-            @input="onSearchChange"
-            type="text" 
-                                placeholder="Search by size name, description, or package type..."
+                            <input
+                                v-model="searchQuery"
+                                @input="onSearchChange"
+                                type="text"
+                                placeholder="Search by size name, description, or notes..."
                                 :disabled="packageSizeStore.loading"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                            >
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 pr-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            />
                             <div v-if="packageSizeStore.loading" class="absolute inset-y-0 right-0 flex items-center pr-4">
                                 <div class="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
                             </div>
+                            <div v-else-if="isSearchDebouncing" class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                <div class="flex items-center space-x-2">
+                                    <div class="animate-pulse w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    <div class="animate-pulse w-2 h-2 bg-blue-500 rounded-full" style="animation-delay: 0.2s"></div>
+                                    <div class="animate-pulse w-2 h-2 bg-blue-500 rounded-full" style="animation-delay: 0.4s"></div>
+                                </div>
+                            </div>
                             <div v-else-if="searchQuery" class="absolute inset-y-0 right-0 flex items-center pr-4">
-                                <button 
-                                    @click="clearFilters"
-                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600"
-                                    title="Clear search"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                                <button type="button" @click="clearFilters" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600" title="Clear search">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
                         </div>
                         <div v-if="searchQuery" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            Searching for: "{{ searchQuery }}"
+                            <span v-if="isSearchDebouncing" class="flex items-center">
+                                <div class="animate-pulse w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                                Debouncing search for: "{{ searchQuery }}"
+                            </span>
+                            <span v-else class="flex items-center justify-between">
+                                <span>Searching for: "{{ searchQuery }}"</span>
+                                <button type="button" @click="packageSizeStore.setPage(1); loadPackageSizes()" class="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800">Search Now</button>
+                            </span>
                         </div>
-        </div>
-                    
-                    <!-- Refresh Button -->
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Sort by</label>
+                        <select v-model="sortField" @change="onSortOrModeChange" :disabled="packageSizeStore.loading" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-8 pl-3 py-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50">
+                            <option value="size">Size name</option>
+                            <option value="date_created">Date created</option>
+                            <option value="package_type_id">Package type</option>
+                        </select>
+                    </div>
+                    <div>
+                        <PackageTypeSearchInput
+                          :model-value="filterPackageTypeId"
+                          @update:model-value="v => { filterPackageTypeId = (v ?? 0); onSortOrModeChange() }"
+                          :display-value="filterPackageTypeId ? (packageTypesForFilter.find(p => p.id === filterPackageTypeId)?.type ?? '') : ''"
+                          label="Package type"
+                          placeholder="All package types"
+                          input-id="filter-package-type-sizes"
+                          allow-clear
+                        />
+                    </div>
                     <div class="flex items-end">
-        <button 
-          @click="loadPackageSizes" 
-          :disabled="packageSizeStore.loading"
-                            class="w-full text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-xl text-sm px-5 py-3 text-center inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
-        >
+                        <button
+                            @click="loadPackageSizes"
+                            :disabled="packageSizeStore.loading"
+                            class="w-full text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-3 text-center inline-flex items-center justify-center disabled:opacity-50 border border-blue-500"
+                        >
                             <div v-if="packageSizeStore.loading" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
-                            <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-          Refresh
-        </button>
-      </div>
-                    
-                    <!-- View Mode Toggle -->
-                    <div class="flex items-end justify-end">
+                            <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="flex items-end">
                         <div class="w-full">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">View Mode</label>
-                            <div class="inline-flex rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden" role="group">
-                                <button 
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">View</label>
+                            <div class="inline-flex rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden" role="group">
+                                <button
+                                    @click="viewMode = 'table'"
+                                    :class="['px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center', viewMode === 'table' ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm' : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20']"
+                                    :disabled="packageSizeStore.loading"
+                                    title="Table view"
+                                >
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    Table
+                                </button>
+                                <button
                                     @click="viewMode = 'grid'"
-                                    :class="[
-                                        'px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center',
-                                        viewMode === 'grid'
-                                            ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
-                                            : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20'
-                                    ]"
+                                    :class="['px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center', viewMode === 'grid' ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm' : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20']"
                                     :disabled="packageSizeStore.loading"
                                 >
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                                    </svg>
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
                                     Grid
                                 </button>
-                                <button 
+                                <button
                                     @click="viewMode = 'list'"
-                                    :class="[
-                                        'px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center',
-                                        viewMode === 'list'
-                                            ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
-                                            : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20'
-                                    ]"
+                                    :class="['px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center justify-center', viewMode === 'list' ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm' : 'text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:bg-blue-900/20']"
                                     :disabled="packageSizeStore.loading"
                                 >
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                                    </svg>
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
                                     List
                                 </button>
                             </div>
                         </div>
                     </div>
-    </div>
-
-                <!-- Quick Actions -->
-                <div v-if="searchQuery" class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">
-                                Found {{ filteredPackageSizes.length }} result{{ filteredPackageSizes.length !== 1 ? 's' : '' }}
-                            </span>
-                            <button 
-                                @click="clearFilters"
-                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200"
-                            >
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                Clear Search
-                            </button>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs text-gray-500 dark:text-gray-400">Search powered by</span>
-                            <div class="flex items-center space-x-1">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                                <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div v-if="hasFilters" class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Found {{ packageSizeStore.pagination?.total ?? 0 }} result(s)</span>
+                    <button @click="clearFilters" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        Clear Filters
+                    </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Error message -->
+        <div v-if="packageSizeStore.error" class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-center justify-between">
+            <p class="text-red-700 dark:text-red-300 text-sm">{{ packageSizeStore.error }}</p>
+            <button @click="packageSizeStore.clearError(); loadPackageSizes()" class="text-red-600 dark:text-red-400 hover:underline text-sm font-medium">Dismiss</button>
         </div>
 
         <!-- Loading State with Skeleton Loaders -->
@@ -189,8 +190,8 @@
                     <div class="flex justify-between">
                         <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
                         <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-24"></div>
-      </div>
-    </div>
+                    </div>
+                </div>
 
                 <!-- Buttons skeleton -->
                 <div class="flex space-x-2">
@@ -203,44 +204,95 @@
         <!-- Package Sizes Display -->
         <div v-else>
             <!-- Empty State -->
-            <div v-if="filteredPackageSizes.length === 0" class="flex flex-col items-center justify-center py-20">
+            <div v-if="displayedPackageSizes.length === 0" class="flex flex-col items-center justify-center py-20">
                 <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
                     <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                    {{ searchQuery ? 'No package sizes found' : 'No package sizes yet' }}
+                    {{ hasFilters ? 'No package sizes match filters' : 'No package sizes yet' }}
                 </h3>
                 <p class="text-gray-600 dark:text-gray-400 text-center max-w-md mb-8 text-lg">
-                    {{ searchQuery ? 'Try adjusting your search criteria or clear the filters.' : 'Get started by adding your first package size to organize your operations.' }}
+                    {{ hasFilters ? 'Try adjusting your search or filters, or clear filters.' : 'Get started by adding your first package size to organize your operations.' }}
                 </p>
                 <div class="flex space-x-4">
-                    <button 
-                        v-if="searchQuery"
+                    <button
+                        v-if="hasFilters"
                         @click="clearFilters"
-                        class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm transition-colors"
+                        class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm transition-colors dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         Clear Filters
                     </button>
-                    <button 
-                        @click="showCreateModal = true"
-                        class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200"
-                    >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
+                    <button @click="openCreateModal" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                         Add Package Size
                     </button>
                 </div>
             </div>
 
+            <!-- Table View -->
+            <div v-else-if="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center border border-blue-400">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Package Sizes</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ packageSizeStore.pagination?.total ?? 0 }} size(s) found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-4">Size</th>
+                                <th scope="col" class="px-6 py-4">Package type</th>
+                                <th scope="col" class="px-6 py-4">Description</th>
+                                <th scope="col" class="px-6 py-4">Created</th>
+                                <th scope="col" class="px-6 py-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="packageSize in displayedPackageSizes" :key="packageSize.id" class="bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group">
+                                <td class="px-6 py-4">
+                                    <div class="text-base font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">{{ packageSize.size }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ getPackageTypeName(packageSize) }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ packageSize.description || '—' }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(packageSize.date_created) }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="editPackageSize(packageSize)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            Edit
+                                        </button>
+                                        <button @click="deletePackageSize(packageSize.id)" class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-100 border border-red-200 rounded-lg hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Grid View -->
             <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div v-for="packageSize in filteredPackageSizes" :key="packageSize.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
+                <div v-for="packageSize in displayedPackageSizes" :key="packageSize.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
         <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-3">
@@ -250,7 +302,7 @@
                             </div>
           <div>
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ packageSize.size }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ packageSize.package_type?.type || 'Package Type' }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ getPackageTypeName(packageSize) }}</p>
           </div>
                         </div>
                         <div class="flex space-x-1">
@@ -278,7 +330,7 @@
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-500 dark:text-gray-400">Package Type:</span>
-                            <span class="text-gray-900 dark:text-white font-medium">{{ packageSize.package_type?.type || 'N/A' }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ getPackageTypeName(packageSize) }}</span>
           </div>
                         <div class="flex justify-between text-sm">
             <span class="text-gray-500 dark:text-gray-400">Created:</span>
@@ -305,7 +357,7 @@
 
             <!-- List View -->
             <div v-else class="space-y-4">
-                <div v-for="packageSize in filteredPackageSizes" :key="packageSize.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
+                <div v-for="packageSize in displayedPackageSizes" :key="packageSize.id" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
@@ -315,7 +367,7 @@
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ packageSize.size }}</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ packageSize.package_type?.type || 'Package Type' }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ getPackageTypeName(packageSize) }}</p>
                                 <div class="flex items-center space-x-4 mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <span>Description: {{ packageSize.description || 'N/A' }}</span>
                                     <span>Created: {{ formatDate(packageSize.date_created) }}</span>
@@ -334,9 +386,36 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
                                 Delete
-      </button>
-    </div>
+                            </button>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 px-2">
+                <div class="flex items-center space-x-4">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Show:</label>
+                    <select v-model.number="pageSize" @change="onPageSizeChange" :disabled="packageSizeStore.loading" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 block pr-8 pl-3 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50">
+                        <option :value="10">10</option>
+                        <option :value="25">25</option>
+                        <option :value="50">50</option>
+                    </select>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">of {{ packageSizeStore.pagination?.total ?? 0 }} entries</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button @click="goToPage((packageSizeStore.pagination?.currentPage ?? 1) - 1)" :disabled="(packageSizeStore.pagination?.currentPage ?? 1) <= 1 || packageSizeStore.loading" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 disabled:opacity-50">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                        Previous
+                    </button>
+                    <div class="flex space-x-1">
+                        <button v-for="page in visiblePages" :key="page" @click="goToPage(page)" :disabled="packageSizeStore.loading" :class="['inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg disabled:opacity-50', page === (packageSizeStore.pagination?.currentPage ?? 1) ? 'text-blue-600 bg-blue-50 border-blue-300 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700']">
+                            {{ page }}
+                        </button>
+                    </div>
+                    <button @click="goToPage((packageSizeStore.pagination?.currentPage ?? 1) + 1)" :disabled="(packageSizeStore.pagination?.currentPage ?? 1) >= totalPages || packageSizeStore.loading" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 disabled:opacity-50">
+                        Next
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -379,24 +458,16 @@
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Package Type -->
-          <div>
-                  <label for="package-type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Package Type</label>
-            <select 
-                    id="package-type"
-              v-model="packageSizeForm.package_type_id" 
-              required
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
-            >
-              <option value="">Select Package Type</option>
-              <option v-for="packageType in packageTypes" :key="packageType.id" :value="packageType.id">
-                {{ packageType.type }}
-              </option>
-            </select>
-                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Choose the package type this size belongs to.
-                  </p>
-          </div>
+                <!-- Package Type (searchable from API) -->
+                <PackageTypeSearchInput
+                  v-model="packageSizeForm.package_type_id"
+                  :display-value="packageTypeDisplayValue"
+                  label="Package Type"
+                  placeholder="Search or select package type..."
+                  input-id="package-type"
+                  required
+                  hint="Choose the package type this size belongs to."
+                />
           
                 <!-- Size Name -->
           <div>
@@ -525,6 +596,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { usePackageSizeStore } from '../../store/package-size.store'
 import { usePackageTypeStore } from '../../store/package-type.store'
+import { packageTypeControllers } from '../../api/controllers/package-type.controllers'
+import PackageTypeSearchInput from '../../components/ui/PackageTypeSearchInput.vue'
 import type { PackageSize } from '../../api/models/package-size.model'
 import type { PackageType } from '../../api/models/package-type.model'
 
@@ -532,7 +605,13 @@ const packageSizeStore = usePackageSizeStore()
 const packageTypeStore = usePackageTypeStore()
 
 const searchQuery = ref('')
-const viewMode = ref<'grid' | 'list'>('grid')
+const searchDebounceTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+const isSearchDebouncing = ref(false)
+const sortField = ref<'size' | 'date_created' | 'package_type_id'>('size')
+const filterPackageTypeId = ref(0)
+const packageTypesForFilter = ref<PackageType[]>([])
+const viewMode = ref<'table' | 'grid' | 'list'>('table')
+const pageSize = ref(10)
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const selectedPackageSize = ref<PackageSize | null>(null)
@@ -549,30 +628,59 @@ const packageSizeForm = ref({
   package_type_id: 0
 })
 
-const filteredPackageSizes = computed(() => {
-  const packageSizes = packageSizeStore.packageSizes
-  if (!searchQuery.value) return packageSizes
-  
-  const query = searchQuery.value.toLowerCase()
-  return packageSizes.filter(packageSize => 
-    packageSize.size.toLowerCase().includes(query) ||
-    (packageSize.description && packageSize.description.toLowerCase().includes(query)) ||
-    (packageSize.package_type && packageSize.package_type.type.toLowerCase().includes(query))
-  )
+const displayedPackageSizes = computed(() => packageSizeStore.packageSizes)
+
+const hasFilters = computed(() => !!searchQuery.value.trim() || filterPackageTypeId.value > 0)
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil((packageSizeStore.pagination?.total ?? 0) / (packageSizeStore.pagination?.limit || 10)))
+)
+
+const visiblePages = computed(() => {
+  const total = totalPages.value
+  const current = packageSizeStore.pagination?.currentPage ?? 1
+  const delta = 2
+  const range: number[] = []
+  for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+    range.push(i)
+  }
+  return range
 })
 
 const packageTypes = computed(() => packageTypeStore.packageTypes)
+
+function getPackageTypeName(packageSize: PackageSize) {
+  if (packageSize.package_type?.type) return packageSize.package_type.type
+  const pt = packageTypesForFilter.value.find(p => p.id === packageSize.package_type_id) ?? packageTypes.value.find(p => p.id === packageSize.package_type_id)
+  return pt?.type ?? 'N/A'
+}
+
+const packageTypeDisplayValue = computed(() => {
+  const size = editingPackageSize.value
+  if (!size) return ''
+  if (size.package_type && typeof size.package_type === 'object' && 'type' in size.package_type) {
+    return (size.package_type as PackageType).type
+  }
+  const pt = packageTypesForFilter.value.find(p => p.id === size.package_type_id) ?? packageTypes.value.find(p => p.id === size.package_type_id)
+  return pt?.type ?? ''
+})
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
 }
 
-const loadPackageSizes = async () => {
-  try {
-    await packageSizeStore.fetchPackageSizes()
-  } catch (error) {
-    console.error('Failed to load package sizes:', error)
+function loadPackageSizes() {
+  const sortKey = sortField.value
+  const limit = packageSizeStore.pagination?.limit ?? 10
+  const skip = packageSizeStore.pagination?.skip ?? 0
+  const query: Record<string, unknown> = {
+    $sort: { [sortKey]: 1 },
+    $limit: limit,
+    $skip: skip
   }
+  if (searchQuery.value.trim()) query.search = searchQuery.value.trim()
+  if (filterPackageTypeId.value > 0) query.package_type_id = filterPackageTypeId.value
+  packageSizeStore.fetchPackageSizes({ query })
 }
 
 const loadPackageTypes = async () => {
@@ -583,17 +691,70 @@ const loadPackageTypes = async () => {
   }
 }
 
-// Debounced search
-let searchTimeout: NodeJS.Timeout
 const onSearchChange = () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-  // Search is handled by computed property
-  }, 500)
+  if (searchDebounceTimer.value) clearTimeout(searchDebounceTimer.value)
+  isSearchDebouncing.value = true
+  searchDebounceTimer.value = setTimeout(() => {
+    isSearchDebouncing.value = false
+    packageSizeStore.setPage(1)
+    loadPackageSizes()
+  }, 400)
 }
 
-const clearFilters = () => {
+function clearFilters() {
+  if (searchDebounceTimer.value) {
+    clearTimeout(searchDebounceTimer.value)
+    searchDebounceTimer.value = null
+  }
+  isSearchDebouncing.value = false
   searchQuery.value = ''
+  filterPackageTypeId.value = 0
+  packageSizeStore.setPage(1)
+  loadPackageSizes()
+}
+
+function goToPage(page: number) {
+  if (page < 1 || page > totalPages.value) return
+  packageSizeStore.setPage(page)
+  loadPackageSizes()
+}
+
+function onPageSizeChange() {
+  packageSizeStore.setLimit(pageSize.value)
+  loadPackageSizes()
+}
+
+function onSortOrModeChange() {
+  packageSizeStore.setPage(1)
+  loadPackageSizes()
+}
+
+function exportCsv() {
+  const rows = displayedPackageSizes.value
+  if (!rows.length) return
+  const headers = ['Size', 'Description', 'Package type', 'Created']
+  const lines = [headers.join(',')]
+  for (const p of rows) {
+    const row = [
+      `"${(p.size || '').replace(/"/g, '""')}"`,
+      `"${(p.description || '').replace(/"/g, '""')}"`,
+      `"${getPackageTypeName(p).replace(/"/g, '""')}"`,
+      p.date_created || ''
+    ]
+    lines.push(row.join(','))
+  }
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `package-sizes-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function openCreateModal() {
+  packageSizeForm.value = { size: '', description: '', package_type_id: 0 }
+  showCreateModal.value = true
 }
 
 const editPackageSize = (packageSize: PackageSize) => {
@@ -661,6 +822,17 @@ const closeModal = () => {
 }
 
 onMounted(async () => {
-  await Promise.all([loadPackageSizes(), loadPackageTypes()])
+  if (!packageSizeStore.pagination?.limit || packageSizeStore.pagination.limit < 1) {
+    packageSizeStore.setLimit(10)
+  }
+  pageSize.value = packageSizeStore.pagination?.limit ?? 10
+  try {
+    const response = await packageTypeControllers.getPackageTypes({ query: { $limit: 100 } }) as { data?: PackageType[] }
+    packageTypesForFilter.value = Array.isArray(response?.data) ? response.data : []
+  } catch (e) {
+    console.error('Failed to load package types for filter:', e)
+  }
+  loadPackageTypes()
+  loadPackageSizes()
 })
 </script> 

@@ -1,6 +1,6 @@
-import feathersClient from "../feathers.ts";
-import type { AuthManagement } from "../models/authManagement.model.ts";
-import type {User} from "../models/user.model";
+import feathersClient from "../feathers";
+import type { AuthManagement } from "../models/authManagement.model";
+import type { User } from "../models/user.model";
 
 export const authController = {
     //login

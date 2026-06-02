@@ -504,6 +504,15 @@
                       </svg>
                       Activities
                     </button>
+                    <router-link
+                      :to="`/cs/orders/new?opportunityId=${opportunity.id}`"
+                      class="inline-flex items-center px-4 py-2 text-sm font-medium text-cyan-600 bg-cyan-50 border border-cyan-200 rounded-xl hover:bg-cyan-100 hover:border-cyan-300 focus:ring-4 focus:ring-cyan-100 dark:focus:ring-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400 dark:border-cyan-800 dark:hover:bg-cyan-900/30 transition-all duration-200 group/btn"
+                    >
+                      <svg class="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 12a1 1 0 1 0 2 0 1 1 0 0 0-2 0Zm4 0a1 1 0 1 0 2 0 1 1 0 0 0-2 0Zm-4 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0Zm4 0a1 1 0 1 0 2 0 1 1 0 0 0-2 0Z" clip-rule="evenodd"/>
+                      </svg>
+                      Create order
+                    </router-link>
                   </div>
                 </td>
               </tr>
@@ -2443,6 +2452,11 @@ const formatRateBasis = (basis: string) => {
 const openContractRatesModal = async (opportunity: Opportunities) => {
   selectedOpportunity.value = opportunity
   selectedRate.value = null // Reset for new rate
+  try {
+    await logisticsContractRatesStore.fetchRatesByOpportunity(opportunity.id)
+  } catch (e) {
+    console.error('Failed to load rates for opportunity', e)
+  }
   showContractRatesModal.value = true
 }
 

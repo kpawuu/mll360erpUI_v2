@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { shipmentControllers } from '../api/controllers/shipment.controllers'
-import type { Shipment, CreateShipment, UpdateShipment } from '../api/models/shipment.model'
+import { salesOrdersControllers } from '../api/controllers/sales-orders.controllers'
+import type {
+  SalesOrder,
+  CreateSalesOrder,
+  UpdateSalesOrder
+} from '../api/models/sales-order.model'
 
-export const useShipmentStore = defineStore('shipment', () => {
-  // State
-  const shipments = ref<Shipment[]>([])
+export const useSalesOrdersStore = defineStore('salesOrders', () => {
+  const salesOrders = ref<SalesOrder[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
   const pagination = ref({
@@ -15,62 +18,44 @@ export const useShipmentStore = defineStore('shipment', () => {
     currentPage: 1
   })
 
-  // Getters
-  const getShipments = computed(() => shipments.value)
+  const getSalesOrders = computed(() => salesOrders.value)
   const getLoading = computed(() => loading.value)
   const getError = computed(() => error.value)
   const getPagination = computed(() => pagination.value)
 
-  // Actions
-  const fetchShipments = async (params?: { query?: any }) => {
+  const fetchSalesOrders = async (params?: { query?: any }) => {
     loading.value = true
     error.value = null
-    
     try {
-      const response = await shipmentControllers.getShipments(params)
-      
+      const response = await salesOrdersControllers.getSalesOrders(params)
       if (response && response.data) {
-        shipments.value = response.data
+        salesOrders.value = response.data
         pagination.value = {
           total: response.total || 0,
           limit: response.limit || 10,
           skip: response.skip || 0,
           currentPage: Math.floor((response.skip || 0) / (response.limit || 10)) + 1
         }
-      } else if (Array.isArray(response)) {
-        shipments.value = response
-        pagination.value = {
-          total: response.length,
-          limit: response.length,
-          skip: 0,
-          currentPage: 1
-        }
       } else {
-        shipments.value = []
-        pagination.value = {
-          total: 0,
-          limit: 10,
-          skip: 0,
-          currentPage: 1
-        }
+        salesOrders.value = []
+        pagination.value = { total: 0, limit: 10, skip: 0, currentPage: 1 }
       }
     } catch (err: any) {
-      error.value = err.message || 'Failed to fetch shipments'
+      error.value = err.message || 'Failed to fetch orders'
       handleAuthError(err)
     } finally {
       loading.value = false
     }
   }
 
-  const fetchShipment = async (id: number) => {
+  const fetchSalesOrder = async (id: number) => {
     loading.value = true
     error.value = null
-    
     try {
-      const response = await shipmentControllers.getShipment(id)
+      const response = await salesOrdersControllers.getSalesOrder(id)
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to fetch shipment'
+      error.value = err.message || 'Failed to fetch order'
       handleAuthError(err)
       throw err
     } finally {
@@ -78,15 +63,15 @@ export const useShipmentStore = defineStore('shipment', () => {
     }
   }
 
-  const createShipment = async (shipmentData: CreateShipment) => {
+  const createSalesOrder = async (data: CreateSalesOrder) => {
     loading.value = true
     error.value = null
-    
     try {
-      const response = await shipmentControllers.createShipment(shipmentData)
+      const response = await salesOrdersControllers.createSalesOrder(data)
+      await fetchSalesOrders()
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to create shipment'
+      error.value = err.message || 'Failed to create order'
       handleAuthError(err)
       throw err
     } finally {
@@ -94,15 +79,15 @@ export const useShipmentStore = defineStore('shipment', () => {
     }
   }
 
-  const updateShipment = async (id: number, shipmentData: UpdateShipment) => {
+  const updateSalesOrder = async (id: number, data: UpdateSalesOrder) => {
     loading.value = true
     error.value = null
-    
     try {
-      const response = await shipmentControllers.updateShipment(id, shipmentData)
+      const response = await salesOrdersControllers.updateSalesOrder(id, data)
+      await fetchSalesOrders()
       return response
     } catch (err: any) {
-      error.value = err.message || 'Failed to update shipment'
+      error.value = err.message || 'Failed to update order'
       handleAuthError(err)
       throw err
     } finally {
@@ -110,15 +95,14 @@ export const useShipmentStore = defineStore('shipment', () => {
     }
   }
 
-  const deleteShipment = async (id: number) => {
+  const removeSalesOrder = async (id: number) => {
     loading.value = true
     error.value = null
-    
     try {
-      const response = await shipmentControllers.deleteShipment(id)
-      return response
+      await salesOrdersControllers.removeSalesOrder(id)
+      await fetchSalesOrders()
     } catch (err: any) {
-      error.value = err.message || 'Failed to delete shipment'
+      error.value = err.message || 'Failed to delete order'
       handleAuthError(err)
       throw err
     } finally {
@@ -126,7 +110,6 @@ export const useShipmentStore = defineStore('shipment', () => {
     }
   }
 
-  // Pagination actions
   const setPage = (page: number) => {
     pagination.value.currentPage = page
     pagination.value.skip = (page - 1) * pagination.value.limit
@@ -138,7 +121,6 @@ export const useShipmentStore = defineStore('shipment', () => {
     pagination.value.skip = 0
   }
 
-  // Error handling
   const clearError = () => {
     error.value = null
   }
@@ -150,28 +132,21 @@ export const useShipmentStore = defineStore('shipment', () => {
   }
 
   return {
-    // State
-    shipments,
+    salesOrders,
     loading,
     error,
     pagination,
-    
-    // Getters
-    getShipments,
+    getSalesOrders,
     getLoading,
     getError,
     getPagination,
-    
-    // Actions
-    fetchShipments,
-    fetchShipment,
-    createShipment,
-    updateShipment,
-    deleteShipment,
+    fetchSalesOrders,
+    fetchSalesOrder,
+    createSalesOrder,
+    updateSalesOrder,
+    removeSalesOrder,
     setPage,
     setLimit,
     clearError
   }
-}, {
-  persist: true
-}) 
+})

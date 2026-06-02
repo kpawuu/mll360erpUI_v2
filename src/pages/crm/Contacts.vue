@@ -33,7 +33,7 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Contacts</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">2,847</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ contacts.length }}</p>
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Customers</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">1,923</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ filteredContacts.length }}</p>
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">This Month</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">+127</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ entities.length }}</p>
           </div>
         </div>
       </div>
@@ -74,8 +74,8 @@
             </svg>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Segments</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">12</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Companies</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ entities.length }}</p>
           </div>
         </div>
       </div>
@@ -382,7 +382,11 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Company Name <span class="text-red-500">*</span>
               </label>
-              <input v-model="newContact.company" type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter company name">
+              <select v-model="newContact.entity_id" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option :value="null">Select company (entity)</option>
+                <option v-for="ent in entities" :key="ent.id" :value="ent.id">{{ ent.name }}</option>
+              </select>
+              <input v-model="newContact.company" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-2" placeholder="Company display name (optional)">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -888,7 +892,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useEntityContactPersonStore } from '../../store/entity-contact-person.store'
+import { useEntityStore } from '../../store/entity.store'
+import { useAuthStore } from '../../store/auth.store'
 
 // Define Contact interface
 interface Contact {
@@ -916,6 +923,7 @@ const viewingContact = ref<Contact | null>(null)
 
 // New contact form data
 const newContact = ref({
+  entity_id: null as number | null,
   firstName: '',
   lastName: '',
   email: '',
@@ -952,73 +960,40 @@ const selectedTags = ref<string[]>([])
 const editingTags = ref<string[]>([])
 const availableTags = ['VIP', 'Customer', 'Prospect', 'Partner', 'Lead', 'Hot Lead', 'Cold Lead']
 
-// Sample contacts data
-const contacts = ref<Contact[]>([
-  {
-    id: 1,
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@techcorp.com',
-    phone: '+1 (555) 123-4567',
-    company: 'TechCorp Solutions',
+const entityContactPersonStore = useEntityContactPersonStore()
+const entityStore = useEntityStore()
+const authStore = useAuthStore()
+
+// Contacts from API (entity contact persons)
+const contacts = computed<Contact[]>(() => {
+  const list = entityContactPersonStore.getContactPersons || []
+  return list.map((cp: any) => ({
+    id: cp.id,
+    name: cp.name,
+    email: cp.email_address || '',
+    phone: cp.phone_number || '',
+    company: cp.entity?.name || `Entity #${cp.entity_id}`,
     status: 'active' as const,
-    tags: ['VIP', 'Customer'],
-    lastContact: new Date('2024-01-15')
-  },
-  {
-    id: 2,
-    name: 'Michael Chen',
-    email: 'michael.chen@innovate.io',
-    phone: '+1 (555) 234-5678',
-    company: 'Innovate Labs',
-    status: 'pending' as const,
-    tags: ['Prospect'],
-    lastContact: new Date('2024-01-12')
-  },
-  {
-    id: 3,
-    name: 'Emily Rodriguez',
-    email: 'emily.r@globalventures.com',
-    phone: '+1 (555) 345-6789',
-    company: 'Global Ventures',
-    status: 'active' as const,
-    tags: ['Partner', 'VIP'],
-    lastContact: new Date('2024-01-10')
-  },
-  {
-    id: 4,
-    name: 'David Thompson',
-    email: 'david.t@startup.co',
-    phone: '+1 (555) 456-7890',
-    company: 'Startup Co.',
-    status: 'inactive' as const,
-    tags: ['Customer'],
-    lastContact: new Date('2023-12-28')
-  },
-  {
-    id: 5,
-    name: 'Lisa Wang',
-    email: 'lisa.wang@enterprise.net',
-    phone: '+1 (555) 567-8901',
-    company: 'Enterprise Networks',
-    status: 'active' as const,
-    tags: ['VIP', 'Customer'],
-    lastContact: new Date('2024-01-14')
-  },
-  {
-    id: 6,
-    name: 'James Wilson',
-    email: 'james.wilson@consulting.biz',
-    phone: '+1 (555) 678-9012',
-    company: 'Wilson Consulting',
-    status: 'active' as const,
-    tags: ['Prospect'],
-    lastContact: new Date('2024-01-13')
+    tags: cp.job_title ? [cp.job_title] : [],
+    lastContact: cp.date_created ? new Date(cp.date_created) : new Date()
+  }))
+})
+
+onMounted(async () => {
+  const companyId = authStore.user?.company_id
+  if (companyId) {
+    await entityContactPersonStore.fetchAllContactPersonsForCompany()
+    await entityStore.fetchEntitiesByCompany(companyId)
   }
-])
+})
+
+// Entities for dropdown when adding contact
+const entities = computed(() => entityStore.getEntities || [])
 
 // Computed properties
 const filteredContacts = computed(() => {
-  return contacts.value.filter(contact => {
+  const list = Array.isArray(contacts.value) ? contacts.value : []
+  return list.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
                          contact.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
                          contact.company.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -1056,6 +1031,7 @@ const closeModal = () => {
   showAddModal.value = false
   // Reset form
   newContact.value = {
+    entity_id: null,
     firstName: '',
     lastName: '',
     email: '',
@@ -1076,27 +1052,27 @@ const closeModal = () => {
   selectedTags.value = []
 }
 
-const submitForm = () => {
-  // Create new contact object
-  const contact: Contact = {
-    id: contacts.value.length + 1,
-    name: `${newContact.value.firstName} ${newContact.value.lastName}`,
-    email: newContact.value.email,
-    phone: newContact.value.phone,
-    company: newContact.value.company,
-    status: newContact.value.status as 'active' | 'inactive' | 'pending',
-    tags: [...selectedTags.value],
-    lastContact: new Date()
+const submitForm = async () => {
+  const companyId = authStore.user?.company_id
+  const entityId = newContact.value.entity_id
+  if (!companyId || !entityId) {
+    console.error('Company and Entity are required')
+    return
   }
-  
-  // Add to contacts list
-  contacts.value.unshift(contact)
-  
-  // Close modal
-  closeModal()
-  
-  // You could add a success notification here
-  console.log('Contact added successfully:', contact)
+  try {
+    await entityContactPersonStore.createContactPerson({
+      company_id: companyId,
+      entity_id: entityId,
+      name: `${newContact.value.firstName} ${newContact.value.lastName}`.trim() || newContact.value.email,
+      email_address: newContact.value.email,
+      phone_number: newContact.value.phone,
+      job_title: newContact.value.jobTitle || undefined
+    })
+    await entityContactPersonStore.fetchAllContactPersonsForCompany()
+    closeModal()
+  } catch (err) {
+    console.error('Failed to add contact:', err)
+  }
 }
 
 const removeTag = (tag: string) => {
@@ -1151,27 +1127,19 @@ const viewContact = (contact: Contact) => {
   showViewModal.value = true
 }
 
-const updateContact = () => {
-  // Find and update the contact in the contacts array
-  const index = contacts.value.findIndex(c => c.id === editingContact.value.id)
-  if (index !== -1) {
-    // Update the contact with new data
-    contacts.value[index] = {
-      ...contacts.value[index],
-      name: `${editingContact.value.firstName} ${editingContact.value.lastName}`,
-      email: editingContact.value.email,
-      phone: editingContact.value.phone,
-      company: editingContact.value.company,
-      status: editingContact.value.status,
-      tags: [...editingTags.value],
-      lastContact: new Date() // Update last contact time
-    }
-    
-    console.log('Contact updated successfully:', contacts.value[index])
+const updateContact = async () => {
+  try {
+    await entityContactPersonStore.updateContactPerson(editingContact.value.id, {
+      name: `${editingContact.value.firstName} ${editingContact.value.lastName}`.trim(),
+      email_address: editingContact.value.email,
+      phone_number: editingContact.value.phone,
+      job_title: editingContact.value.jobTitle || undefined
+    })
+    await entityContactPersonStore.fetchAllContactPersonsForCompany()
+    closeEditModal()
+  } catch (err) {
+    console.error('Failed to update contact:', err)
   }
-  
-  // Close the edit modal
-  closeEditModal()
 }
 
 const removeEditTag = (tag: string) => {
@@ -1201,14 +1169,15 @@ const closeEditModal = () => {
   editingTags.value = []
 }
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (contactToDelete.value) {
-    // Remove the contact from the contacts array
-    contacts.value = contacts.value.filter(c => c.id !== contactToDelete.value.id)
-    console.log('Contact deleted successfully:', contactToDelete.value.name)
+    try {
+      await entityContactPersonStore.deleteContactPerson(contactToDelete.value.id)
+      await entityContactPersonStore.fetchAllContactPersonsForCompany()
+    } catch (err) {
+      console.error('Failed to delete contact:', err)
+    }
   }
-  
-  // Close the delete modal
   closeDeleteModal()
 }
 

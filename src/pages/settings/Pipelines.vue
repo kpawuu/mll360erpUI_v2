@@ -1243,6 +1243,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { usePipelinesStore } from '../../store/pipelines.store'
+import { useAuthStore } from '../../store/auth.store'
 import type { Pipelines } from '../../api/models/pipelines.model'
 
 const pipelinesStore = usePipelinesStore()
@@ -1360,12 +1361,13 @@ const savePipeline = async () => {
       successMessage.value = 'Pipeline updated successfully!'
     } else {
       // Create new pipeline
+      const authStore = useAuthStore()
       await pipelinesStore.createPipeline({
         name: pipelineForm.value.name,
         description: pipelineForm.value.description,
         is_active: pipelineForm.value.is_active,
-        user_id: 1, // TODO: Get from auth store
-        company_id: 1 // TODO: Get from auth store
+        user_id: authStore.user?.id ?? 0,
+        company_id: authStore.user?.company_id ?? 0
       })
       showSuccessModal.value = true
       successMessage.value = 'Pipeline added successfully!'
